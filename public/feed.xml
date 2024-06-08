@@ -4,8 +4,16 @@
 	<subtitle>Tech enthusiast. Occasional doer of stuff. @KenHV</subtitle>
 	<link href="https://kenhv.com/feed.xml" rel="self" type="application/atom+xml"/>
     <link href="https://kenhv.com"/>
-	<updated>2024-06-02T00:00:00+00:00</updated>
+	<updated>2024-06-09T00:00:00+00:00</updated>
 	<id>https://kenhv.com/feed.xml</id>
+	<entry xml:lang="en">
+		<title>Setting up MPV - The Supreme Media Player</title>
+		<published>2024-06-09T00:00:00+00:00</published>
+		<updated>2024-06-09T00:00:00+00:00</updated>
+		<link href="https://kenhv.com/blog/setting-up-mpv/" type="text/html"/>
+		<id>https://kenhv.com/blog/setting-up-mpv/</id>
+		<description>The media player you use sucks. Switch to MPV.</description>
+	</entry>
 	<entry xml:lang="en">
 		<title>Treat Yourself to Good Typography</title>
 		<published>2024-06-02T00:00:00+00:00</published>
