@@ -44,6 +44,7 @@ links = [
     { name = "Telegram", icon = "telegram", url = "https://t.me/KenHV" },
 ]
 banner = "/img/banner.webp"     # 1200x630 image for OpenGraph
+twitter_username = "@KensurHV"
 
 homepage_layout = "about"             # "about" | "list" | "recent"
 
