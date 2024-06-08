@@ -1,6 +1,6 @@
 base_url = "https://kenhv.com"
 title = "Ken Harris"
-description = "Tech expert. Occasional doer of stuff. @KenHV"
+description = "Tech enthusiast. Occasional doer of stuff. @KenHV"
 default_language = "en"
 theme = "serene"
 output_dir = "public"

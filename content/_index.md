@@ -5,5 +5,5 @@ template = 'home.html'
 lang = 'en'
 +++
 
-Tech expert. Occasional doer of stuff.<br>
+Tech enthusiast. Occasional doer of stuff.<br>
 [Send me a mail](mailto:ken@kenhv.com) to get in touch.
