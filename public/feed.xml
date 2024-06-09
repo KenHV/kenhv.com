@@ -22,4 +22,12 @@
 		<id>https://kenhv.com/blog/treat-yourself-to-good-typography/</id>
 		<description>A guide to improving font rendering on all devices and browsers.</description>
 	</entry>
+	<entry xml:lang="en">
+		<title>Supercharge Your Linux System</title>
+		<published>2023-07-17T00:00:00+00:00</published>
+		<updated>2024-06-09T00:00:00+00:00</updated>
+		<link href="https://kenhv.com/blog/linux-tweaks/" type="text/html"/>
+		<id>https://kenhv.com/blog/linux-tweaks/</id>
+		<description>A repository of tweaks for Arch Linux.</description>
+	</entry>
 </feed>
