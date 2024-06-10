@@ -30,4 +30,12 @@
 		<id>https://kenhv.com/blog/linux-tweaks/</id>
 		<description>A repository of tweaks for Arch Linux.</description>
 	</entry>
+	<entry xml:lang="en">
+		<title>Smartphone Privacy for Everyone</title>
+		<published>2021-05-23T00:00:00+00:00</published>
+		<updated>2024-06-09T00:00:00+00:00</updated>
+		<link href="https://kenhv.com/blog/smartphone-privacy-for-everyone/" type="text/html"/>
+		<id>https://kenhv.com/blog/smartphone-privacy-for-everyone/</id>
+		<description>A guide to protect your privacy while using privacy-invasive platforms.</description>
+	</entry>
 </feed>
