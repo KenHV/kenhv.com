@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="{{ get_url(path='style.css', trailing_slash=false) }}">
+
+  <link rel="icon" type="image/x-icon" sizes="16x16 24x24 32x32 48x48" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/icon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/icon/favicon-16x16.png">
+  <link rel="apple-touch-icon" type="image/png" sizes="180x180" href="/icon/apple-touch-icon.png">
+
+  {% if config.generate_feed %}
+    <link rel="alternate" type="application/atom+xml" title="Atom" href="{{ get_url(path="atom.xml", trailing_slash=false) }}">
+  {% endif %}
+
+  {% block head %} {% endblock %}
+  {% block head_extend %}
+  <script async data-goatcounter="https://stats.kenhv.com/count" src="/count.js"></script>
+  {% endblock %}
+</head>
+
+<body>
+  {% block body %} {% endblock %}
+  {% block body_extend %} {% endblock %}
+</body>
+
+</html>

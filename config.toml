@@ -1,0 +1,17 @@
+title = "Ken Harris"
+author = "Ken Harris"
+base_url = "https://kenhv.com"
+
+build_search_index = false
+compile_sass = true
+generate_feed = true
+
+[markdown]
+highlight_code = true
+highlight_theme = "css"
+
+[slugify]
+paths = "safe"
+
+[extra]
+twitter_username = "@KensurHV"
