@@ -1,17 +1,33 @@
 @import "_normalize.scss";
-@import "_base16-ocean-dark.scss";
+@import "_syntax-highlighting.scss";
 
 :root {
-    --link: #06c;
-    --card: #eff1f5;
-    --outline: #bbb;
+    --bg: #ffffff;
+    --fg: #000000;
+    --link: #1c4bd0; // Tailwind blue 700 with fixed contrast
+    --card: #e5e5e5; // Darken BG 10%
+    --outline: #cccccc; // Darken BG 20%
 }
+
+/*
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg: #000000;
+        --fg: #ffffff;
+        --link: #5495ff; // Tailwind blue 500 with fixed contrast
+        --card: #191919; // Lighten BG 10%
+        --outline: #333333; // Lighten BG 20%
+    }
+}
+*/
 
 html {
     height: 100svh;
 }
 
 body {
+    background-color: var(--bg);
+    color: var(--fg);
     font-family: -apple-system, BlinkMacSystemFont, Arial, sans-serif;
     font-size: 1.05rem;
     line-height: 1.7;
@@ -30,6 +46,7 @@ h6 {
 }
 
 h1 {
+    margin-top: 0;
     margin-bottom: 10px;
 }
 
@@ -38,6 +55,10 @@ a:visited,
 a:hover,
 a:active {
     color: var(--link);
+}
+
+header {
+    padding-bottom: 1em;
 }
 
 header div {
@@ -77,7 +98,6 @@ footer {
 
 .zola-anchor {
     font-size: 0.8em;
-    margin-left: 0.5em;
 }
 
 code {
@@ -87,6 +107,7 @@ code {
 p code {
     padding: 0 2px 2px;
     background-color: var(--card);
+    word-wrap: break-word;
 }
 
 pre {
@@ -105,16 +126,3 @@ blockquote {
     border-left: medium solid var(--outline);
     padding: 0 5px;
 }
-
-/*
-table {
-    border-collapse: collapse;
-}
-
-th,
-td {
-    border: thin solid #999;
-    padding: 0.3em 0.4em;
-    text-align: left;
-}
-*/

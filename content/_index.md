@@ -9,6 +9,6 @@ description = "Tech enthusiast. Occasional doer of stuff. @KenHV"
 Tech enthusiast. Occasional doer of stuff.\
 Contact me at [ken@kenhv.com](mailto:ken@kenhv.com).
 
-[My blog 🡒](/blog)
+[My blog →](/blog)
 
-[GitHub](https://github.com) | [Telegram](https://t.me/KenHV)
+[GitHub](https://github.com/KenHV) | [Telegram](https://t.me/KenHV)

@@ -2,7 +2,7 @@
 title = "Smartphone Privacy for Everyone"
 description = "A guide to protect your privacy while using privacy-invasive platforms."
 date = 2021-05-23
-updated = 2024-06-09
+updated = 2024-06-29
 +++
 
 Smartphones are a crucial part of the modern-day. There's a 70% chance you're reading this from your smartphone. We use it for everything, from the simplest of tasks to computations that would be deemed impossible just a few years ago. In an ideal world, we would own the data that is on our phones. Unfortunately, we aren't living in a perfect world. Every single month, we hear about some new controversy regarding digital privacy. Yet we are stuck with using privacy-invasive platforms such as Facebook or YouTube. The reality is, there are simply no alternatives that have a userbase or content anywhere close to them.
@@ -43,26 +43,13 @@ On iOS, you are stuck with Apple's App Store. Contrary to popular belief, Apple 
 
 ## Basic Functionality
 
-[Simple Mobile Tools](https://simplemobiletools.com/) is a set of open-source Android apps that can replace most of the pre-installed apps. Here's a full list of apps that they offer:
+Fossify ([Play Store](https://play.google.com/store/apps/dev?id=7297838378654322558)) ([F-Droid](https://search.f-droid.org/?q=fossify)) is a set of open-source Android apps that can replace most of the pre-installed apps. These apps include Calendar, Clock, Contacts, File Manager, Gallery, Music Player, Notes, Phone, SMS Messaging, Voice Recorder and more. 
 
--   App Launcher
--   Calculator
--   Calendar
--   Camera
--   Clock
--   Contacts
--   Dialer
--   Draw (sketching app)
--   File Manager
--   Flashlight
--   Gallery
--   Music Player
--   Notes
--   SMS Messenger
-
-These apps don't require any additional permissions, they have customizable widgets, and theme options are linked across their apps. Switching to Simple apps will be a significant step in moving away from non-free software.
+These apps don't require any additional permissions, they have customizable widgets, and theme options are linked across their apps. Switching to Fossify apps will be a significant step in moving away from non-free software.
 
 On iOS, you are stuck with the default apps for almost all basic functionality.
+
+**Update:** Simple Mobile Tools was [sold to a scummy company](https://www.androidauthority.com/simple-mobile-tools-acquisition-3391041/), please switch to Fossify.
 
 ## Web Browser
 
@@ -82,7 +69,7 @@ One of the most significant selling points of smartphones is getting our daily d
 
 **Twitter** has paywalled all its APIs. Despite this, [Squawker](https://github.com/j-fbriere/squawker) manages to provide a feature-rich Twitter experience.
 
-[NewPipe](https://newpipe.net/) and [LibreTube](https://libretube.dev/) are lightweight clients for **YouTube**, and despite being lightweight, they are feature-packed. They can do everything that the official YouTube app can do and much more. You can download videos to your storage, set the default video quality, play videos in picture-in-picture or the background, play only audio, which essentially makes YouTube a music streaming service, and much more. To top it all off, they block all ads on YouTube so you can enjoy your favorite content without interruption. [Invidious](https://invidious.io/) is another great option; it's a web-based client and as such, a viable solution for iOS.
+[NewPipe](https://newpipe.net/) and [LibreTube](https://libretube.dev/) are lightweight clients for **YouTube**. Despite being lightweight, they are feature-packed. They can do everything that the official YouTube app can do and much more. You can download videos to your storage, set the default video quality, play videos in picture-in-picture or the background, play only audio, which essentially makes YouTube a music streaming service, and much more. To top it all off, they block all ads on YouTube so you can enjoy your favorite content without interruption. [Invidious](https://invidious.io/) is another great option; it's a web-based client and as such, a viable solution for iOS.
 
 **Reddit** [paywalled their APIs](https://arstechnica.com/gadgets/2024/02/exploring-reddits-third-party-app-environment-7-months-after-the-apicalypse/) like Twitter, killing a lot of third-party clients. There are some good third-party clients such as [Infinity](https://github.com/Docile-Alligator/Infinity-For-Reddit) that still exist, but they require a paid subscription. Fortunately, there is a way to get around this by using the official Reddit client's API keys on third-party apps. Follow [ReVanced's guide](https://github.com/KobeW50/ReVanced-Documentation/blob/main/Reddit-Client-ID-Guide.md). Alternatively, you can use Reddit as a PWA. On iOS, you can use the website with [Yesterday For Old Reddit](https://apps.apple.com/us/app/yesterday-for-old-reddit/id1603279883) or [Sink It for Reddit](https://apps.apple.com/us/app/sink-it-for-reddit/id6449873635).
 
