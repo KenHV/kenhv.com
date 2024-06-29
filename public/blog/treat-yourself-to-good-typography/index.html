@@ -8,6 +8,9 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/icon/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/icon/favicon-16x16.png">
 <link rel="apple-touch-icon" type="image/png" sizes="180x180" href="/icon/apple-touch-icon.png">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000000">
 <link rel="alternate" type="application/atom+xml" title="Atom" href="https://kenhv.com/atom.xml">
 <title>Treat Yourself to Good Typography | Ken Harris</title>
 <meta name="description" content="A guide to improving font rendering on all devices and browsers.">
@@ -49,21 +52,21 @@
 <article>
 <h1>Treat Yourself to Good Typography</h1>
 <span class="post-date">
-2 June 2024
+2 June 2024 | Updated on 29 June 2024
 </span>
 <p>Ah, typography, the cornerstone of great design. Optimising your fonts and typography settings will go a long way in improving readability, especially if you're someone who reads a lot. Here's how I setup my devices.</p>
 <h2 id="windows-vs-mac">Windows vs Mac <a class="zola-anchor" href="#windows-vs-mac" aria-label="Anchor link for: windows-vs-mac">#</a></h2>
 <p>Font rendering on Windows is handled by DirectWrite and ClearType. You might be familiar with the latter. Microsoft’s approach to rendering fonts is having “pixel-perfect” typography, literally. It aligns all glyphs to the pixel grid. The original font shapes are thrown out the window. Pun intended.</p>
 <p>Mac takes a different approach. Steve Jobs was obsessed with good design and typography. Hence, Mac’s font rendering engine has a “WYSIWYG” (what you see is what you get) philosophy. It preserves the font’s original shape. Fonts look how the designers intended them to.</p>
 <p>“So what are you saying, Windows bad Mac good?” Not at all. Apple has full control over their hardware, and all their displays are high DPI (dots/pixels per inch). In classic Apple fashion, they have a buzzword for it — Retina display. Most of us peasants are stuck with 96 DPI, which is pretty bad for legibility. Windows’s approach tends to do better here. Besides, all of this comes down to personal preference. Some prefer Windows’s approach, some prefer Mac’s. I won’t be going into Linux here, as it varies among distros.</p>
-<h2 id="improving-typography-on-windows">Improving typography on Windows <a class="zola-anchor" href="#improving-typography-on-windows" aria-label="Anchor link for: improving-typography-on-windows">#</a></h2>
+<h2 id="improving-typography-on-windows">Improving Typography on Windows <a class="zola-anchor" href="#improving-typography-on-windows" aria-label="Anchor link for: improving-typography-on-windows">#</a></h2>
 <p>Have you ever noticed that fonts look sharp in some applications but blurry in others? This is because of Windows’s horrible default display scaling. By default, scaling is set higher than 100% (mine was 125% for 1080p). If you revert back to 100%, the blurriness goes away but everything is too small.</p>
 <p>The fix is pretty simple. Go to Settings, Display. Look at the scale percentage. Now click on Scale (not the drop-down menu, the actual Scale menu option), and it will take you to the custom scaling settings. Enter the same value here; it will ask you to sign out and sign back in. You will no longer see blurry fonts on your system.</p>
 <p>Next up, let’s adjust ClearType settings. The inbuilt ClearType tuner is pretty bad. We’re going to use <a href="https://github.com/bp2008/BetterClearTypeTuner/">Better ClearType Tuner</a>, making the whole process much easier. Grab the zip from the <a href="https://github.com/bp2008/BetterClearTypeTuner/releases/tag/1.4.0.2">releases</a> section, extract it and run the program as administrator. I use RGB with maximum contrast (2200), you can play around with the values.</p>
 <p>There is a program called <a href="https://github.com/snowie2000/mactype">MacType</a>, which replaces Windows’s font rendering system with a custom rendering system. It works great where it does, but is very problematic where it doesn’t. I have dabbled with it but uninstalled it at the end.</p>
-<h2 id="better-web-fonts">Better web fonts <a class="zola-anchor" href="#better-web-fonts" aria-label="Anchor link for: better-web-fonts">#</a></h2>
+<h2 id="improving-browser-fonts">Improving Browser Fonts <a class="zola-anchor" href="#improving-browser-fonts" aria-label="Anchor link for: improving-browser-fonts">#</a></h2>
 <p>I don’t like the default fonts used on most sites. How did I fix it? I wrote a userscript that overrides web fonts with the fonts that are set as default in the browser. To set this up, first configure your browser’s default fonts to your liking. I use Charter for default/proportional and serif, SF Pro Display for sans-serif, and SF Mono for monospace.</p>
-<p>Download a userscript manager extension. I recommend <a href="https://chromewebstore.google.com/detail/violentmonkey/jinjaccalgkegednnccohejagnlnfdag">ViolentMonkey</a> for Chromium-based browsers and <a href="https://addons.mozilla.org/en-US/firefox/addon/firemonkey/">FireMonkey</a> for Firefox. Go to my script's <a href="https://greasyfork.org/en/scripts/496839-default-fonts">GreaseFork</a> page and install the script. You can exclude the script from running on certain sites if you want to, using your userscript manager.</p>
+<p>Download a userscript manager extension. I recommend <a href="https://violentmonkey.github.io/">ViolentMonkey</a>. Go to my script's <a href="https://greasyfork.org/en/scripts/496839-default-fonts">GreaseFork</a> page and install the script. You can exclude the script from running on certain sites if you want to, using your userscript manager.</p>
 <h2 id="android">Android <a class="zola-anchor" href="#android" aria-label="Anchor link for: android">#</a></h2>
 <p>Some Android manufacturers include settings to change fonts. If your OEM does not provide such options, your only choice left is to root your device. When I was using Android, I used a Magisk mod called <a href="https://gitlab.com/nongthaihoang/oh_my_font">Oh My Font</a> along with <a href="https://github.com/MrCarb0n/killgmsfont">Kill GMS Font</a>. In my opinion, this is the best typography experience you can get on Android. It uses Apple’s San Francisco fonts by default.</p>
 <h2 id="the-end">The End <a class="zola-anchor" href="#the-end" aria-label="Anchor link for: the-end">#</a></h2>

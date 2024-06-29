@@ -12,6 +12,10 @@
   <link rel="icon" type="image/png" sizes="16x16" href="/icon/favicon-16x16.png">
   <link rel="apple-touch-icon" type="image/png" sizes="180x180" href="/icon/apple-touch-icon.png">
 
+  <meta name="color-scheme" content="light dark" />
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff" />
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000000" />
+
   {% if config.generate_feed %}
     <link rel="alternate" type="application/atom+xml" title="Atom" href="{{ get_url(path="atom.xml", trailing_slash=false) }}">
   {% endif %}

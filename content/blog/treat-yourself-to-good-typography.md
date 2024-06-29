@@ -2,6 +2,7 @@
 title = "Treat Yourself to Good Typography"
 description = "A guide to improving font rendering on all devices and browsers."
 date = 2024-06-02
+updated = 2024-06-29
 +++
 
 Ah, typography, the cornerstone of great design. Optimising your fonts and typography settings will go a long way in improving readability, especially if you're someone who reads a lot. Here's how I setup my devices.
@@ -14,7 +15,7 @@ Mac takes a different approach. Steve Jobs was obsessed with good design and typ
 
 “So what are you saying, Windows bad Mac good?” Not at all. Apple has full control over their hardware, and all their displays are high DPI (dots/pixels per inch). In classic Apple fashion, they have a buzzword for it — Retina display. Most of us peasants are stuck with 96 DPI, which is pretty bad for legibility. Windows’s approach tends to do better here. Besides, all of this comes down to personal preference. Some prefer Windows’s approach, some prefer Mac’s. I won’t be going into Linux here, as it varies among distros.
 
-## Improving typography on Windows
+## Improving Typography on Windows
 
 Have you ever noticed that fonts look sharp in some applications but blurry in others? This is because of Windows’s horrible default display scaling. By default, scaling is set higher than 100% (mine was 125% for 1080p). If you revert back to 100%, the blurriness goes away but everything is too small.
 
@@ -24,11 +25,11 @@ Next up, let’s adjust ClearType settings. The inbuilt ClearType tuner is prett
 
 There is a program called [MacType](https://github.com/snowie2000/mactype), which replaces Windows’s font rendering system with a custom rendering system. It works great where it does, but is very problematic where it doesn’t. I have dabbled with it but uninstalled it at the end.
 
-## Better web fonts
+## Improving Browser Fonts
 
 I don’t like the default fonts used on most sites. How did I fix it? I wrote a userscript that overrides web fonts with the fonts that are set as default in the browser. To set this up, first configure your browser’s default fonts to your liking. I use Charter for default/proportional and serif, SF Pro Display for sans-serif, and SF Mono for monospace.
 
-Download a userscript manager extension. I recommend [ViolentMonkey](https://chromewebstore.google.com/detail/violentmonkey/jinjaccalgkegednnccohejagnlnfdag) for Chromium-based browsers and [FireMonkey](https://addons.mozilla.org/en-US/firefox/addon/firemonkey/) for Firefox. Go to my script's [GreaseFork](https://greasyfork.org/en/scripts/496839-default-fonts) page and install the script. You can exclude the script from running on certain sites if you want to, using your userscript manager.
+Download a userscript manager extension. I recommend [ViolentMonkey](https://violentmonkey.github.io/). Go to my script's [GreaseFork](https://greasyfork.org/en/scripts/496839-default-fonts) page and install the script. You can exclude the script from running on certain sites if you want to, using your userscript manager.
 
 ## Android
 
