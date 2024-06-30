@@ -1,5 +1,5 @@
 +++
-title = "Smartphone Privacy for Everyone"
+title = "Smartphone Privacy For Everyone"
 description = "A guide to protect your privacy while using privacy-invasive platforms."
 date = 2021-05-23
 updated = 2024-06-29

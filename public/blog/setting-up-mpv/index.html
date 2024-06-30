@@ -1,67 +1,4 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<link rel="stylesheet" href="https://kenhv.com/style.css?h=1a63986faa28cd9be13a">
-<link rel="icon" type="image/x-icon" sizes="16x16 24x24 32x32 48x48" href="/favicon.ico">
-<link rel="icon" type="image/png" sizes="32x32" href="/icon/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/icon/favicon-16x16.png">
-<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="/icon/apple-touch-icon.png">
-<meta name="color-scheme" content="light dark">
-<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
-<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000000">
-<link rel="alternate" type="application/atom+xml" title="Atom" href="https://kenhv.com/atom.xml">
-<title>Setting up MPV - The Supreme Media Player | Ken Harris</title>
-<meta name="description" content="The media player you use sucks. Switch to MPV.">
-<meta name="description" content="The media player you use sucks. Switch to MPV.">
-<meta itemprop="name" content="Ken Harris">
-<meta itemprop="description" content="The media player you use sucks. Switch to MPV.">
-<meta itemprop="image" content="https://kenhv.com/blog/setting-up-mpv/banner.png">
-<meta property="og:site_name" content="Ken Harris">
-<meta property="og:title" content="Setting up MPV - The Supreme Media Player | Ken Harris">
-<meta property="og:type" content="article">
-<meta property="og:url" content="https://kenhv.com/blog/setting-up-mpv/">
-<meta property="og:description" content="The media player you use sucks. Switch to MPV.">
-<meta property="og:image" content="https://kenhv.com/blog/setting-up-mpv/banner.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta property="twitter:card" content="summary_large_image">
-<meta property="twitter:url" content="https://kenhv.com/blog/setting-up-mpv/">
-<meta property="twitter:title" content="Setting up MPV - The Supreme Media Player | Ken Harris">
-<meta property="twitter:description" content="The media player you use sucks. Switch to MPV.">
-<meta property="twitter:image" content="https://kenhv.com/blog/setting-up-mpv/banner.png">
-<meta property="twitter:site" content="@KensurHV">
-<meta property="twitter:creator" content="@KensurHV">
-<link rel="canonical" href="https://kenhv.com/blog/setting-up-mpv/">
-<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
-<script async data-goatcounter="https://stats.kenhv.com/count" src="/count.js"></script>
-</head>
-<body>
-<header>
-<div>
-<nav>
-<a href="/">Ken Harris</a>
-</nav>
-<nav>
-<a href="/blog">Blog</a>
-</nav>
-</div>
-<hr>
-</header>
-<article>
-<h1>Setting up MPV - The Supreme Media Player</h1>
-<span class="post-date">
-9 June 2024
-</span>
-<p>The media player you use sucks. Switch to MPV.</p>
-<h2 id="installation">Installation <a class="zola-anchor" href="#installation" aria-label="Anchor link for: installation">#</a></h2>
-<p>If you’re on Linux, you know what to do. Install it through your package manager and skip to the configuration section. If you’re on Windows, read on. Make a folder where you want to install MPV, for example <code>D:\Programs\MPV</code>. Download the <a href="https://sourceforge.net/projects/mpv-player-windows/files/bootstrapper.zip/download">MPV bootstrapper</a> and extract the contents to the folder. Run <code>updater.bat</code> as administrator. It will ask you some questions. You can choose the default options for most questions. When it asks you to choose a variant (x86_64 or x86_64-v3), choose x86_64-v3 (press 2), unless your CPU was released over 10 years ago. I also install yt-dlp and FFmpeg.</p>
-<p>Once the script is finished, go to the newly created <code>installer</code> folder and run <code>mpv-install.bat</code> as administrator. This will register the application in Windows. Congrats, you have now installed MPV. If you ever want to uninstall MPV, run the uninstall script first and then simply delete the MPV folder. But before you start using it, there’s some essential configuration to be done.</p>
-<h2 id="configuration">Configuration <a class="zola-anchor" href="#configuration" aria-label="Anchor link for: configuration">#</a></h2>
-<p>Almost all configurations you will find on the internet overcomplicate everything. My config is small, simple, fast and makes MPV very user-friendly.</p>
-<p>If you’re on Linux, your config folder will be <code>~/.config/mpv</code>. For Windows, create a folder called <code>portable_config</code> inside your MPV folder, this will be your config folder. Inside your config folder, create a new file named <code>mpv.conf</code> with the following contents:</p>
-<pre class="z-code"><code><span class="z-text z-plain"># Essentials
+<!doctype html><html lang=en><head><meta charset=utf-8><meta content="width=device-width,initial-scale=1" name=viewport><link href="https://kenhv.com/style.css?h=63d52bdc2f3533da6687" rel=stylesheet><link sizes="16x16 24x24 32x32 48x48" href=/favicon.ico rel=icon type=image/x-icon><link href=/icon/favicon-32x32.png rel=icon sizes=32x32 type=image/png><link href=/icon/favicon-16x16.png rel=icon sizes=16x16 type=image/png><link href=/icon/apple-touch-icon.png rel=apple-touch-icon sizes=180x180 type=image/png><meta content="light dark" name=color-scheme><meta media="(prefers-color-scheme: light)" content=#ffffff name=theme-color><meta media="(prefers-color-scheme: dark)" content=#000000 name=theme-color><link href=https://kenhv.com/atom.xml rel=alternate title=Atom type=application/atom+xml><title>Setting up MPV - The Supreme Media Player | Ken Harris</title><meta content="The media player you use sucks. Switch to MPV." name=description><meta content="Ken Harris" name=author><meta content="Setting up MPV - The Supreme Media Player | Ken Harris" itemprop=name><meta content="The media player you use sucks. Switch to MPV." itemprop=description><meta content=https://kenhv.com/blog/setting-up-mpv/banner.png itemprop=image><meta content="Ken Harris" property=og:site_name><meta content="Setting up MPV - The Supreme Media Player | Ken Harris" property=og:title><meta content=https://kenhv.com/blog/setting-up-mpv/ property=og:url><meta content="The media player you use sucks. Switch to MPV." property=og:description><meta content=https://kenhv.com/blog/setting-up-mpv/banner.png property=og:image><meta content=1200 property=og:image:width><meta content=630 property=og:image:height><meta content=article property=og:type><meta content="Ken Harris" property=og:article:author><meta content=2024-06-09 property=og:article:published_time><meta content=summary_large_image property=twitter:card><meta content=https://kenhv.com/blog/setting-up-mpv/ property=twitter:url><meta content="Setting up MPV - The Supreme Media Player | Ken Harris" property=twitter:title><meta content="The media player you use sucks. Switch to MPV." property=twitter:description><meta content=https://kenhv.com/blog/setting-up-mpv/banner.png property=twitter:image><meta content=@KensurHV property=twitter:site><meta content=@KensurHV property=twitter:creator><link href=https://kenhv.com/blog/setting-up-mpv/ rel=canonical><meta content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" name=robots><script async data-goatcounter=https://stats.kenhv.com/count src=/count.js></script><body><header><div><nav><a href=/>Ken Harris</a></nav><nav><a href=/blog>Blog</a></nav></div><hr></header><article><h1>Setting up MPV - The Supreme Media Player</h1><span class=post-date> <time datetime=2024-06-09>9 June 2024</time> </span><p>The media player you use sucks. Switch to MPV.<h2 id=installation>Installation <a aria-label="Anchor link for: installation" class=zola-anchor href=#installation>#</a></h2><p>If you’re on Linux, you know what to do. Install it through your package manager and skip to the configuration section. If you’re on Windows, read on. Make a folder where you want to install MPV, for example <code>D:\Programs\MPV</code>. Download the <a href=https://sourceforge.net/projects/mpv-player-windows/files/bootstrapper.zip/download>MPV bootstrapper</a> and extract the contents to the folder. Run <code>updater.bat</code> as administrator. It will ask you some questions. You can choose the default options for most questions. When it asks you to choose a variant (x86_64 or x86_64-v3), choose x86_64-v3 (press 2), unless your CPU was released over 10 years ago. I also install yt-dlp and FFmpeg.<p>Once the script is finished, go to the newly created <code>installer</code> folder and run <code>mpv-install.bat</code> as administrator. This will register the application in Windows. Congrats, you have now installed MPV. If you ever want to uninstall MPV, run the uninstall script first and then simply delete the MPV folder. But before you start using it, there’s some essential configuration to be done.<h2 id=configuration>Configuration <a aria-label="Anchor link for: configuration" class=zola-anchor href=#configuration>#</a></h2><p>Almost all configurations you will find on the internet overcomplicate everything. My config is small, simple, fast and makes MPV very user-friendly.<p>If you’re on Linux, your config folder will be <code>~/.config/mpv</code>. For Windows, create a folder called <code>portable_config</code> inside your MPV folder, this will be your config folder. Inside your config folder, create a new file named <code>mpv.conf</code> with the following contents:<pre class=z-code><code><span class="z-text z-plain"># Essentials
 </span><span class="z-text z-plain">vo=gpu-next
 </span><span class="z-text z-plain">gpu-api=auto     
 </span><span class="z-text z-plain">hwdec=auto-safe
@@ -79,27 +16,7 @@
 </span><span class="z-text z-plain"># UOSC
 </span><span class="z-text z-plain">osd-bar=no
 </span><span class="z-text z-plain">border=no
-</span></code></pre>
-<p>Next up, we’re gonna install <a href="https://github.com/tomasklaen/uosc">UOSC</a>. UOSC is a custom GUI for MPV; the default GUI is extremely bare-bones. On Windows, go to your MPV installation folder (the folder should have mpv.exe in it), right click and open a terminal. Now run the following commands:</p>
-<pre data-lang="powershell" class="language-powershell z-code"><code class="language-powershell" data-lang="powershell"><span class="z-source z-powershell"><span class="z-support z-function z-powershell">Set-ExecutionPolicy</span> RemoteSigned <span class="z-keyword z-operator z-assignment z-powershell">-</span>Scope CurrentUser
+</span></code></pre><p>Next up, we’re gonna install <a href=https://github.com/tomasklaen/uosc>UOSC</a>. UOSC is a custom GUI for MPV; the default GUI is extremely bare-bones. On Windows, go to your MPV installation folder (the folder should have mpv.exe in it), right click and open a terminal. Now run the following commands:<pre class="language-powershell z-code" data-lang=powershell><code class=language-powershell data-lang=powershell><span class="z-source z-powershell"><span class="z-support z-function z-powershell">Set-ExecutionPolicy</span> RemoteSigned <span class="z-keyword z-operator z-assignment z-powershell">-</span>Scope CurrentUser
 </span><span class="z-source z-powershell">irm https:<span class="z-keyword z-operator z-assignment z-powershell">/</span><span class="z-keyword z-operator z-assignment z-powershell">/</span><span class="z-support z-function z-powershell">raw.githubusercontent.com</span><span class="z-keyword z-operator z-assignment z-powershell">/</span>tomasklaen<span class="z-keyword z-operator z-assignment z-powershell">/</span>uosc<span class="z-keyword z-operator z-assignment z-powershell">/</span>HEAD<span class="z-keyword z-operator z-assignment z-powershell">/</span>installers<span class="z-keyword z-operator z-assignment z-powershell">/</span>windows.ps1 <span class="z-keyword z-operator z-other z-powershell">|</span> iex
-</span></code></pre>
-<p>Linux users, run the following command:</p>
-<pre data-lang="bash" class="language-bash z-code"><code class="language-bash" data-lang="bash"><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">/bin/bash</span></span><span class="z-meta z-function-call z-arguments z-shell"><span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> -</span>c</span> <span class="z-string z-quoted z-double z-shell"><span class="z-punctuation z-definition z-string z-begin z-shell">"</span><span class="z-meta z-group z-expansion z-command z-parens z-shell"><span class="z-punctuation z-definition z-variable z-shell">$</span><span class="z-punctuation z-section z-parens z-begin z-shell">(</span><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">curl</span></span><span class="z-meta z-function-call z-arguments z-shell"><span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> -</span>fsSL</span> https://raw.githubusercontent.com/tomasklaen/uosc/HEAD/installers/unix.sh</span><span class="z-punctuation z-section z-parens z-end z-shell">)</span></span><span class="z-punctuation z-definition z-string z-end z-shell">"</span></span></span>
-</span></code></pre>
-<p>And that’s it! You can now start using MPV like any other media player. Really, that’s all you <strong>need</strong>.</p>
-<h2 id="beyond-the-basics">Beyond the Basics <a class="zola-anchor" href="#beyond-the-basics" aria-label="Anchor link for: beyond-the-basics">#</a></h2>
-<p>The above configuration is enough for most people, but MPV offers way more. It is scriptable, meaning the program can be extended in many ways. I will list some of them here.</p>
-<h3 id="audio-compressor">Audio Compressor <a class="zola-anchor" href="#audio-compressor" aria-label="Anchor link for: audio-compressor">#</a></h3>
-<p>An audio compressor turns down the loudest parts and turns up the quietest parts. To install an audio compressor, download the script from <a href="https://github.com/mpv-player/mpv/blob/master/TOOLS/lua/acompressor.lua">here</a> and add it to the <code>scripts</code> folder inside your config directory. You can press “n” to toggle the compressor. If you want to enable it by default, open the script with a text editor and change <code>default_enable = false</code> to <code>true</code>.</p>
-<h2 id="troubleshooting">Troubleshooting <a class="zola-anchor" href="#troubleshooting" aria-label="Anchor link for: troubleshooting">#</a></h2>
-<p>If MPV lags when you play media that doesn’t match your display resolution (such as 720p or 2160p on a 1080p screen), add <code>profile=fast</code> to your <code>mpv.conf</code> file. This disables MPV’s upscaling and downscaling algorithms. If that doesn’t fix it, remove the smoothmotion section.</p>
-<p>If MPV lags when you play media that matches your display resolution, try removing the smoothmotion section from the config.</p>
-<p>If you face crashes or weird glitches, set <code>vo=gpu</code> in your config file.</p>
-</article>
-<footer>
-<hr>
-<span>© 2024 KenHV | Licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0">CC BY-NC-SA 4.0</a></span>
-</footer>
-</body>
-</html>
+</span></code></pre><p>Linux users, run the following command:<pre class="language-bash z-code" data-lang=bash><code class=language-bash data-lang=bash><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">/bin/bash</span></span><span class="z-meta z-function-call z-arguments z-shell"><span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> -</span>c</span> <span class="z-string z-quoted z-double z-shell"><span class="z-punctuation z-definition z-string z-begin z-shell">"</span><span class="z-meta z-group z-expansion z-command z-parens z-shell"><span class="z-punctuation z-definition z-variable z-shell">$</span><span class="z-punctuation z-section z-parens z-begin z-shell">(</span><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">curl</span></span><span class="z-meta z-function-call z-arguments z-shell"><span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> -</span>fsSL</span> https://raw.githubusercontent.com/tomasklaen/uosc/HEAD/installers/unix.sh</span><span class="z-punctuation z-section z-parens z-end z-shell">)</span></span><span class="z-punctuation z-definition z-string z-end z-shell">"</span></span></span>
+</span></code></pre><p>And that’s it! You can now start using MPV like any other media player. Really, that’s all you <strong>need</strong>.<h2 id=beyond-the-basics>Beyond the Basics <a aria-label="Anchor link for: beyond-the-basics" class=zola-anchor href=#beyond-the-basics>#</a></h2><p>The above configuration is enough for most people, but MPV offers way more. It is scriptable, meaning the program can be extended in many ways. I will list some of them here.<h3 id=audio-compressor>Audio Compressor <a aria-label="Anchor link for: audio-compressor" class=zola-anchor href=#audio-compressor>#</a></h3><p>An audio compressor turns down the loudest parts and turns up the quietest parts. To install an audio compressor, download the script from <a href=https://github.com/mpv-player/mpv/blob/master/TOOLS/lua/acompressor.lua>here</a> and add it to the <code>scripts</code> folder inside your config directory. You can press “n” to toggle the compressor. If you want to enable it by default, open the script with a text editor and change <code>default_enable = false</code> to <code>true</code>.<h2 id=troubleshooting>Troubleshooting <a aria-label="Anchor link for: troubleshooting" class=zola-anchor href=#troubleshooting>#</a></h2><p>If MPV lags when you play media that doesn’t match your display resolution (such as 720p or 2160p on a 1080p screen), add <code>profile=fast</code> to your <code>mpv.conf</code> file. This disables MPV’s upscaling and downscaling algorithms. If that doesn’t fix it, remove the smoothmotion section.<p>If MPV lags when you play media that matches your display resolution, try removing the smoothmotion section from the config.<p>If you face crashes or weird glitches, set <code>vo=gpu</code> in your config file.</article><footer><hr><span>© 2024 KenHV | Licensed under <a href=https://creativecommons.org/licenses/by-nc-sa/4.0>CC BY-NC-SA 4.0</a></span></footer>

@@ -2,12 +2,12 @@
 title = "Supercharge Your Linux System"
 description = "A repository of tweaks for Arch Linux."
 date = 2023-07-17
-updated = 2024-06-09
+updated = 2024-06-30
 +++
 
-This post is intended to be a repository of tweaks for Arch Linux, although you can apply it to any distro. You must know how to set up an Arch Linux install beforehand.
+This post is intended to be a repository of tweaks for Arch Linux, although you can apply most of it to any distro. You must know how to set up an Arch Linux install beforehand.
 
-Go through the [Arch installation guide](https://wiki.archlinux.org/title/Installation_guide). I go with Ext4 for my partitions. Refer to the [bytes-per-inode ratio](https://wiki.archlinux.org/title/Ext4#Bytes-per-inode_ratio) and [reserved block](https://wiki.archlinux.org/title/Ext4#Reserved_blocks) sections before creating your Ext4 partition. As for the kernel, just use `linux-zen`. Don't bother with all those fancy-sounding custom kernels you find out there. Once you finish the base install, boot into your new system.
+Go through the [Arch installation guide](https://wiki.archlinux.org/title/Installation_guide). If you have an SSD and plan on wiping your drive, do a [memory cell clearing](https://wiki.archlinux.org/title/Solid_state_drive/Memory_cell_clearing#NVMe_drive) to [restore factory write speeds](https://www.anandtech.com/show/2738/8). I go with Ext4 for my partitions. Refer to the [bytes-per-inode ratio](https://wiki.archlinux.org/title/Ext4#Bytes-per-inode_ratio) and [reserved block](https://wiki.archlinux.org/title/Ext4#Reserved_blocks) sections before creating your Ext4 partition. As for the kernel, just use `linux-zen`. Don't bother with all those fancy-sounding custom kernels you find out there. Once you finish the base install, boot into your new system.
 
 XFCE and GNOME are both solid options for a desktop environment. Go through the [general recommendations](https://wiki.archlinux.org/title/General_recommendations). Except for security, because protection is no fun.
 
