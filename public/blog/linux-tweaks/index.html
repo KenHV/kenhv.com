@@ -1,9 +1,111 @@
-<!doctype html><html lang=en><head><meta charset=utf-8><meta content="width=device-width,initial-scale=1" name=viewport><link href="https://kenhv.com/style.css?h=63d52bdc2f3533da6687" rel=stylesheet><link sizes="16x16 24x24 32x32 48x48" href=/favicon.ico rel=icon type=image/x-icon><link href=/icon/favicon-32x32.png rel=icon sizes=32x32 type=image/png><link href=/icon/favicon-16x16.png rel=icon sizes=16x16 type=image/png><link href=/icon/apple-touch-icon.png rel=apple-touch-icon sizes=180x180 type=image/png><meta content="light dark" name=color-scheme><meta media="(prefers-color-scheme: light)" content=#ffffff name=theme-color><meta media="(prefers-color-scheme: dark)" content=#000000 name=theme-color><link href=https://kenhv.com/atom.xml rel=alternate title=Atom type=application/atom+xml><title>Supercharge Your Linux System | Ken Harris</title><meta content="A repository of tweaks for Arch Linux." name=description><meta content="Ken Harris" name=author><meta content="Supercharge Your Linux System | Ken Harris" itemprop=name><meta content="A repository of tweaks for Arch Linux." itemprop=description><meta content=https://kenhv.com/blog/linux-tweaks/banner.png itemprop=image><meta content="Ken Harris" property=og:site_name><meta content="Supercharge Your Linux System | Ken Harris" property=og:title><meta content=https://kenhv.com/blog/linux-tweaks/ property=og:url><meta content="A repository of tweaks for Arch Linux." property=og:description><meta content=https://kenhv.com/blog/linux-tweaks/banner.png property=og:image><meta content=1200 property=og:image:width><meta content=630 property=og:image:height><meta content=article property=og:type><meta content="Ken Harris" property=og:article:author><meta content=2023-07-17 property=og:article:published_time><meta content=2024-06-30 property=og:article:modified_time><meta content=summary_large_image property=twitter:card><meta content=https://kenhv.com/blog/linux-tweaks/ property=twitter:url><meta content="Supercharge Your Linux System | Ken Harris" property=twitter:title><meta content="A repository of tweaks for Arch Linux." property=twitter:description><meta content=https://kenhv.com/blog/linux-tweaks/banner.png property=twitter:image><meta content=@KensurHV property=twitter:site><meta content=@KensurHV property=twitter:creator><link href=https://kenhv.com/blog/linux-tweaks/ rel=canonical><meta content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" name=robots><script async data-goatcounter=https://stats.kenhv.com/count src=/count.js></script><body><header><div><nav><a href=/>Ken Harris</a></nav><nav><a href=/blog>Blog</a></nav></div><hr></header><article><h1>Supercharge Your Linux System</h1><span class=post-date> <time datetime=2023-07-17>17 July 2023</time> | Updated on <time datetime=2024-06-30>30 June 2024</time> </span><p>This post is intended to be a repository of tweaks for Arch Linux, although you can apply most of it to any distro. You must know how to set up an Arch Linux install beforehand.<p>Go through the <a href=https://wiki.archlinux.org/title/Installation_guide>Arch installation guide</a>. If you have an SSD and plan on wiping your drive, do a <a href=https://wiki.archlinux.org/title/Solid_state_drive/Memory_cell_clearing#NVMe_drive>memory cell clearing</a> to <a href=https://www.anandtech.com/show/2738/8>restore factory write speeds</a>. I go with Ext4 for my partitions. Refer to the <a href=https://wiki.archlinux.org/title/Ext4#Bytes-per-inode_ratio>bytes-per-inode ratio</a> and <a href=https://wiki.archlinux.org/title/Ext4#Reserved_blocks>reserved block</a> sections before creating your Ext4 partition. As for the kernel, just use <code>linux-zen</code>. Don’t bother with all those fancy-sounding custom kernels you find out there. Once you finish the base install, boot into your new system.<p>XFCE and GNOME are both solid options for a desktop environment. Go through the <a href=https://wiki.archlinux.org/title/General_recommendations>general recommendations</a>. Except for security, because protection is no fun.<p>I use XFCE with its compositor disabled. Intel’s modesetting driver now supports TearFree, thanks to our lord kerneltoast. It will eliminate tearing when you’re not using a compositor. As of writing this post, the xorg-server package doesn’t include it yet. I’m using <code>xorg-server-git</code>. <a href=https://wiki.archlinux.org/title/intel_graphics#With_the_modesetting_driver>Enable TearFree for the modesetting driver</a>.<p>If you go with GNOME, installing <code>gnome-shell-performance</code> and <code>mutter-performance</code> from the AUR will greatly improve your experience.<p>Set up your GPU drivers. I use <a href=https://github.com/bayasdev/envycontrol>EnvyControl</a> to manage <a href=https://wiki.archlinux.org/title/NVIDIA_Optimus>NVIDIA Optimus</a>. I keep my dGPU disabled unless I need it for gaming. Go through <a href=https://wiki.archlinux.org/title/intel_graphics>Intel graphics</a> for Intel. Take a look at <a href=https://wiki.archlinux.org/title/intel_graphics#Enable_GuC_/_HuC_firmware_loading>GuC/HuC firmware loading</a>, <a href=https://wiki.archlinux.org/title/intel_graphics#Framebuffer_compression_(enable_fbc)>framebuffer compression</a>, and <a href=https://wiki.archlinux.org/title/intel_graphics#Fastboot>fastboot</a> in particular.<p>Install appropriate drivers and verify <a href=https://wiki.archlinux.org/title/Hardware_video_acceleration>hardware video acceleration</a>. Set appropriate values for <code>LIBVA_DRIVER_NAME</code> and <code>VDPAU_DRIVER</code>. I set my environment variables using a bash script placed in <code>/etc/profile.d/startup.sh</code>. Using <code>bashrc</code> for this won’t work, because the environment variables must be set in the login shell.<p>For Firefox, refer to the <a href=https://wiki.archlinux.org/title/Firefox#Hardware_video_acceleration>hardware acceleration</a> section. Check out <a href=https://wiki.archlinux.org/title/Firefox#Touchscreen_gestures_and_pixel-perfect_trackpad_scrolling>touchscreen gestures and pixel-perfect trackpad scrolling</a>. Export them using <code>startup.sh</code>.<p>For Chromium and Chromium-based browsers, refer to its <a href=https://wiki.archlinux.org/title/Chromium#Hardware_video_acceleration>hardware acceleration</a> and <a href=https://wiki.archlinux.org/title/Chromium#Force_GPU_acceleration>force GPU acceleration</a> sections. You can verify it at chrome://gpu. Video decoding information is at the bottom of the page. You can <a href=https://wiki.archlinux.org/title/Chromium#Touchpad_Gestures_for_Navigation>enable touchpad gestures</a> on Chromium too. To enable middle mouse button scrolling, add the following flags:<pre class=z-code><code><span class="z-text z-plain"># Disable unsupported flag warning
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" sizes="16x16 24x24 32x32 48x48" href="/favicon.ico">
+  <link rel="apple-touch-icon" type="image/png" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="stylesheet" href="https://kenhv.com/style.css?h=63d52bdc2f3533da6687">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000000">
+  <link rel="alternate" type="application/atom+xml" title="Atom" href="https://kenhv.com/atom.xml">
+  <title>Supercharge Your Linux System | Ken Harris</title>
+  <link rel="canonical" href="https://kenhv.com/blog/linux-tweaks/">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="description" content="A repository of tweaks for Arch Linux.">
+  <meta name="author" content="Ken Harris">
+  <meta itemprop="name" content="Supercharge Your Linux System | Ken Harris">
+  <meta itemprop="description" content="A repository of tweaks for Arch Linux.">
+  <meta itemprop="image" content="https://kenhv.com/blog/linux-tweaks/banner.png">
+  <meta property="og:site_name" content="Ken Harris">
+  <meta property="og:title" content="Supercharge Your Linux System | Ken Harris">
+  <meta property="og:url" content="https://kenhv.com/blog/linux-tweaks/">
+  <meta property="og:description" content="A repository of tweaks for Arch Linux.">
+  <meta property="og:image" content="https://kenhv.com/blog/linux-tweaks/banner.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:type" content="article">
+  <meta property="og:article:author" content="Ken Harris">
+  <meta property="og:article:published_time" content="2023-07-17">
+  <meta property="og:article:modified_time" content="2024-06-30">
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://kenhv.com/blog/linux-tweaks/">
+  <meta property="twitter:title" content="Supercharge Your Linux System | Ken Harris">
+  <meta property="twitter:description" content="A repository of tweaks for Arch Linux.">
+  <meta property="twitter:image" content="https://kenhv.com/blog/linux-tweaks/banner.png">
+  <meta property="twitter:site" content="@KensurHV">
+  <meta property="twitter:creator" content="@KensurHV">
+  <script type="application/ld+json">
+  {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BlogPosting",
+      "headline": "Supercharge Your Linux System",
+      "description": "A repository of tweaks for Arch Linux.",
+      "image": "https://kenhv.com/blog/linux-tweaks/banner.png",
+      "datePublished": "2023-07-17",
+      
+      "dateModified": "2024-06-30",
+      
+      "author": {
+        "@type": "Person",
+        "name": "Ken Harris",
+        "url": "https://kenhv.com"
+      },
+      "publisher": {
+        "@type": "Person",
+        "name": "Ken Harris",
+        "url": "https://kenhv.com"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [{
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Blog",
+          "item": "https://kenhv.com/blog/"
+      }]
+    }
+  ]
+  }
+  </script>
+  <script async data-goatcounter="https://stats.kenhv.com/count" src="/count.js"></script>
+</head>
+<body>
+  <header>
+    <div>
+      <nav>
+        <a href="/">Ken Harris</a>
+      </nav>
+      <nav>
+        <a href="/blog">Blog</a>
+      </nav>
+    </div>
+    <hr>
+  </header>
+  <article>
+    <h1>Supercharge Your Linux System</h1><span class="post-date"><time datetime="2023-07-17">17 July 2023</time> | Updated on <time datetime="2024-06-30">30 June 2024</time></span>
+    <p>This post is intended to be a repository of tweaks for Arch Linux, although you can apply most of it to any distro. You must know how to set up an Arch Linux install beforehand.</p>
+    <p>Go through the&nbsp;<a href="https://wiki.archlinux.org/title/Installation_guide">Arch installation guide</a>. If you have an SSD and plan on wiping your drive, do a <a href="https://wiki.archlinux.org/title/Solid_state_drive/Memory_cell_clearing#NVMe_drive">memory cell clearing</a> to <a href="https://www.anandtech.com/show/2738/8">restore factory write speeds</a>. I go with Ext4 for my partitions. Refer to the&nbsp;<a href="https://wiki.archlinux.org/title/Ext4#Bytes-per-inode_ratio">bytes-per-inode ratio</a>&nbsp;and&nbsp;<a href="https://wiki.archlinux.org/title/Ext4#Reserved_blocks">reserved block</a>&nbsp;sections before creating your Ext4 partition. As for the kernel, just use&nbsp;<code>linux-zen</code>. Don’t bother with all those fancy-sounding custom kernels you find out there. Once you finish the base install, boot into your new system.</p>
+    <p>XFCE and GNOME are both solid options for a desktop environment. Go through the&nbsp;<a href="https://wiki.archlinux.org/title/General_recommendations">general recommendations</a>. Except for security, because protection is no fun.</p>
+    <p>I use XFCE with its compositor disabled. Intel’s modesetting driver now supports TearFree, thanks to our lord kerneltoast. It will eliminate tearing when you’re not using a compositor. As of writing this post, the xorg-server package doesn’t include it yet. I’m using&nbsp;<code>xorg-server-git</code>.&nbsp;<a href="https://wiki.archlinux.org/title/intel_graphics#With_the_modesetting_driver">Enable TearFree for the modesetting driver</a>.</p>
+    <p>If you go with GNOME, installing&nbsp;<code>gnome-shell-performance</code>&nbsp;and&nbsp;<code>mutter-performance</code>&nbsp;from the AUR will greatly improve your experience.</p>
+    <p>Set up your GPU drivers. I use&nbsp;<a href="https://github.com/bayasdev/envycontrol">EnvyControl</a>&nbsp;to manage&nbsp;<a href="https://wiki.archlinux.org/title/NVIDIA_Optimus">NVIDIA Optimus</a>. I keep my dGPU disabled unless I need it for gaming. Go through&nbsp;<a href="https://wiki.archlinux.org/title/intel_graphics">Intel graphics</a>&nbsp;for Intel. Take a look at&nbsp;<a href="https://wiki.archlinux.org/title/intel_graphics#Enable_GuC_/_HuC_firmware_loading">GuC/HuC firmware loading</a>,&nbsp;<a href="https://wiki.archlinux.org/title/intel_graphics#Framebuffer_compression_(enable_fbc)">framebuffer compression</a>, and&nbsp;<a href="https://wiki.archlinux.org/title/intel_graphics#Fastboot">fastboot</a>&nbsp;in particular.</p>
+    <p>Install appropriate drivers and verify&nbsp;<a href="https://wiki.archlinux.org/title/Hardware_video_acceleration">hardware video acceleration</a>. Set appropriate values for&nbsp;<code>LIBVA_DRIVER_NAME</code>&nbsp;and&nbsp;<code>VDPAU_DRIVER</code>. I set my environment variables using a bash script placed in&nbsp;<code>/etc/profile.d/startup.sh</code>. Using&nbsp;<code>bashrc</code>&nbsp;for this won’t work, because the environment variables must be set in the login shell.</p>
+    <p>For Firefox, refer to the&nbsp;<a href="https://wiki.archlinux.org/title/Firefox#Hardware_video_acceleration">hardware acceleration</a>&nbsp;section. Check out&nbsp;<a href="https://wiki.archlinux.org/title/Firefox#Touchscreen_gestures_and_pixel-perfect_trackpad_scrolling">touchscreen gestures and pixel-perfect trackpad scrolling</a>. Export them using&nbsp;<code>startup.sh</code>.</p>
+    <p>For Chromium and Chromium-based browsers, refer to its&nbsp;<a href="https://wiki.archlinux.org/title/Chromium#Hardware_video_acceleration">hardware acceleration</a>&nbsp;and&nbsp;<a href="https://wiki.archlinux.org/title/Chromium#Force_GPU_acceleration">force GPU acceleration</a>&nbsp;sections. You can verify it at chrome://gpu. Video decoding information is at the bottom of the page. You can&nbsp;<a href="https://wiki.archlinux.org/title/Chromium#Touchpad_Gestures_for_Navigation">enable touchpad gestures</a>&nbsp;on Chromium too. To enable middle mouse button scrolling, add the following flags:</p>
+    <pre class="z-code"><code><span class="z-text z-plain"># Disable unsupported flag warning
 </span><span class="z-text z-plain">--test-type
 </span><span class="z-text z-plain">
 </span><span class="z-text z-plain"># Enable middle mouse scroll
 </span><span class="z-text z-plain">--enable-blink-features=MiddleClickAutoscroll
-</span></code></pre><p><a href=https://wiki.archlinux.org/title/Profile-sync-daemon>Profile-sync-daemon</a> can help speed up your browser performance by storing your browser profiles in tmpfs. You can also store your browser cache in tmpfs, Arch has instructions for both <a href=https://wiki.archlinux.org/title/Firefox/Tweaks#Move_disk_cache_to_RAM>Firefox</a> and <a href=https://wiki.archlinux.org/title/Chromium#Cache_in_tmpfs>Chromium</a>, although I only use PSD.<p>Now onto power management. I use a script written by our lord kerneltoast. Create <code>/etc/systemd/system/powersave.service</code> with the following contents:<pre class=z-code><code><span class="z-text z-plain">[Unit]
+</span></code></pre>
+    <p><a href="https://wiki.archlinux.org/title/Profile-sync-daemon">Profile-sync-daemon</a>&nbsp;can help speed up your browser performance by storing your browser profiles in tmpfs. You can also store your browser cache in tmpfs, Arch has instructions for both&nbsp;<a href="https://wiki.archlinux.org/title/Firefox/Tweaks#Move_disk_cache_to_RAM">Firefox</a>&nbsp;and&nbsp;<a href="https://wiki.archlinux.org/title/Chromium#Cache_in_tmpfs">Chromium</a>, although I only use PSD.</p>
+    <p>Now onto power management. I use a script written by our lord kerneltoast. Create&nbsp;<code>/etc/systemd/system/powersave.service</code>&nbsp;with the following contents:</p>
+    <pre class="z-code"><code><span class="z-text z-plain">[Unit]
 </span><span class="z-text z-plain">Description=Powersave auto tune
 </span><span class="z-text z-plain">After=suspend.target
 </span><span class="z-text z-plain">After=hibernate.target
@@ -11,11 +113,48 @@
 </span><span class="z-text z-plain">
 </span><span class="z-text z-plain">[Service]
 </span><span class="z-text z-plain">Type=oneshot
-</span><span class="z-text z-plain">ExecStart=/usr/bin/bash -c "find /sys -regex '.*?power/control$' ! -path '*usb*' -exec bash -c 'echo on > {}; echo auto > {}' \\;"
+</span><span class="z-text z-plain">ExecStart=/usr/bin/bash -c "find /sys -regex '.*?power/control$' ! -path '*usb*' -exec bash -c 'echo on &gt; {}; echo auto &gt; {}' \\;"
 </span><span class="z-text z-plain">
 </span><span class="z-text z-plain">[Install]
 </span><span class="z-text z-plain">WantedBy=suspend.target
 </span><span class="z-text z-plain">WantedBy=hibernate.target
 </span><span class="z-text z-plain">WantedBy=hybrid-sleep.target
 </span><span class="z-text z-plain">WantedBy=multi-user.target
-</span></code></pre><p>Run <code>sudo systemctl enable powersave.service</code>. This enables runtime power management for all devices except USB. You can modify it to include certain USB devices if you really wish to.<p>For CPU frequency scaling, you have two options. You can let the kernel do the heavy lifting by installing <a href=https://gitlab.freedesktop.org/upower/power-profiles-daemon>power-profiles-daemon</a>. Or, you can install <a href=https://github.com/AdnanHodzic/auto-cpufreq>auto-cpufreq</a>, which is a userspace daemon that does the work. Try both and see what works best for you. <a href=https://github.com/AdnanHodzic/auto-cpufreq#troubleshooting>Disable pstate drivers</a> if you’re using auto-cpufreq. Install <a href=https://wiki.archlinux.org/title/CPU_frequency_scaling#thermald>thermald</a> along with either of the programs. Do not touch TLP, its a dumpster fire.<p>If possible, <a href=https://wiki.archlinux.org/title/Undervolting_CPU>undervolt</a> your CPU and GPU. On Intel machines, you can disable SGX in your BIOS to disable the Plundervolt fixes, which should enable undervolting on newer machines. Don’t be put off by the warning on the Arch Wiki page. I have my CPU undervolted to -150mV and GPU to -100mV. Your mileage <strong>will</strong> vary. Start at -80mV for the CPU and -50mV for the GPU.<p>Don’t use swapfiles or swap partitions, use <a href=https://wiki.archlinux.org/title/Zram>zram</a> instead. As we’re not swapping to disk, make sure to disable <a href=https://wiki.archlinux.org/title/Zswap>zswap</a> by adding the <code>zswap.enabled=0</code> kernel parameter. My machine has plenty of RAM, so I don’t use zram and also disable zswap.<p>Linux has had official NTFS drivers for a while now, but there are no official userspace utilities for NTFS3. Install <code>ntfsprogs-ntfs3</code> from the AUR. This lets you use all the NTFS-3G utilities but with NTFS3 instead.<p>Other tweaks that I perform:<ul><li><a href=https://wiki.archlinux.org/title/Improving_performance#Turn_off_CPU_exploit_mitigations>Turning off CPU mitigations</a><li><a href=https://wiki.archlinux.org/title/Improving_performance#Watchdogs>Disabling watchdog</a><li><a href=https://wiki.archlinux.org/title/Power_management#Disabling_NMI_watchdog>Disabling NMI watchdog</a><li><a href=https://wiki.archlinux.org/title/Solid_state_drive#Periodic_TRIM>Enabling periodic TRIM</a><li><a href=https://wiki.archlinux.org/title/Systemd/Journal#Journal_size_limit>Journal size limit</a><li><a href=https://wiki.archlinux.org/title/Uniform_look_for_Qt_and_GTK_applications>Uniform look for Qt and GTK applications</a><li><a href=https://wiki.archlinux.org/title/IPv6#Prefer_IPv4_over_IPv6>Prefer IPv4 over IPv6</a></ul><p>I will be updating this post as I go around changing/adding stuff. If you have any suggestions, feel free to mail me!</article><footer><hr><span>© 2024 KenHV | Licensed under <a href=https://creativecommons.org/licenses/by-nc-sa/4.0>CC BY-NC-SA 4.0</a></span></footer>
+</span></code></pre>
+    <p>Run <code>sudo systemctl enable powersave.service</code>. This enables runtime power management for all devices except USB. You can modify it to include certain USB devices if you really wish to.</p>
+    <p>For CPU frequency scaling, you have two options. You can let the kernel do the heavy lifting by installing <a href="https://gitlab.freedesktop.org/upower/power-profiles-daemon">power-profiles-daemon</a>. Or, you can install&nbsp;<a href="https://github.com/AdnanHodzic/auto-cpufreq">auto-cpufreq</a>, which is a userspace daemon that does the work. Try both and see what works best for you.&nbsp;<a href="https://github.com/AdnanHodzic/auto-cpufreq#troubleshooting">Disable pstate drivers</a>&nbsp;if you’re using auto-cpufreq. Install&nbsp;<a href="https://wiki.archlinux.org/title/CPU_frequency_scaling#thermald">thermald</a>&nbsp;along with either of the programs. Do not touch TLP, its a dumpster fire.</p>
+    <p>If possible,&nbsp;<a href="https://wiki.archlinux.org/title/Undervolting_CPU">undervolt</a>&nbsp;your CPU and GPU. On Intel machines, you can disable SGX in your BIOS to disable the Plundervolt fixes, which should enable undervolting on newer machines. Don’t be put off by the warning on the Arch Wiki page. I have my CPU undervolted to -150mV and GPU to -100mV. Your mileage&nbsp;<strong>will</strong>&nbsp;vary. Start at -80mV for the CPU and -50mV for the GPU.</p>
+    <p>Don’t use swapfiles or swap partitions, use&nbsp;<a href="https://wiki.archlinux.org/title/Zram">zram</a>&nbsp;instead. As we’re not swapping to disk, make sure to disable&nbsp;<a href="https://wiki.archlinux.org/title/Zswap">zswap</a>&nbsp;by adding the&nbsp;<code>zswap.enabled=0</code>&nbsp;kernel parameter. My machine has plenty of RAM, so I don’t use zram and also disable zswap.</p>
+    <p>Linux has had official NTFS drivers for a while now, but there are no official userspace utilities for NTFS3. Install&nbsp;<code>ntfsprogs-ntfs3</code>&nbsp;from the AUR. This lets you use all the NTFS-3G utilities but with NTFS3 instead.</p>
+    <p>Other tweaks that I perform:</p>
+    <ul>
+      <li>
+        <a href="https://wiki.archlinux.org/title/Improving_performance#Turn_off_CPU_exploit_mitigations">Turning off CPU mitigations</a>
+      </li>
+      <li>
+        <a href="https://wiki.archlinux.org/title/Improving_performance#Watchdogs">Disabling watchdog</a>
+      </li>
+      <li>
+        <a href="https://wiki.archlinux.org/title/Power_management#Disabling_NMI_watchdog">Disabling NMI watchdog</a>
+      </li>
+      <li>
+        <a href="https://wiki.archlinux.org/title/Solid_state_drive#Periodic_TRIM">Enabling periodic TRIM</a>
+      </li>
+      <li>
+        <a href="https://wiki.archlinux.org/title/Systemd/Journal#Journal_size_limit">Journal size limit</a>
+      </li>
+      <li>
+        <a href="https://wiki.archlinux.org/title/Uniform_look_for_Qt_and_GTK_applications">Uniform look for Qt and GTK applications</a>
+      </li>
+      <li>
+        <a href="https://wiki.archlinux.org/title/IPv6#Prefer_IPv4_over_IPv6">Prefer IPv4 over IPv6</a>
+      </li>
+    </ul>
+    <p>I will be updating this post as I go around changing/adding stuff. If you have any suggestions, feel free to mail me!</p>
+  </article>
+  <footer>
+    <hr>
+    <span>© 2024 KenHV | Licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0">CC BY-NC-SA 4.0</a></span>
+  </footer>
+</body>
+</html>
