@@ -5,10 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" sizes="16x16 24x24 32x32 48x48" href="/favicon.ico">
   <link rel="apple-touch-icon" type="image/png" sizes="180x180" href="/apple-touch-icon.png">
-  <link rel="stylesheet" href="https://kenhv.com/style.css?h=4d92791ce7d06f6caf73">
+  <link rel="stylesheet" href="https://kenhv.com/style.css?h=c47e564dc569c6a5e1fe">
   <meta name="color-scheme" content="light dark">
-  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
-  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000000">
   <link rel="alternate" type="application/atom+xml" title="Atom" href="https://kenhv.com/atom.xml">
   <title>Setting up MPV - The Supreme Media Player | Ken Harris</title>
   <link rel="canonical" href="https://kenhv.com/blog/setting-up-mpv/">
@@ -74,12 +72,7 @@
 <body>
   <header>
     <div>
-      <nav>
-        <a href="/">Ken Harris</a>
-      </nav>
-      <nav>
-        <a href="/blog">Blog</a>
-      </nav>
+      <span><a href="/">Ken Harris</a></span> <span><a href="/blog">Blog</a> <button class="dark-mode-button" id="dark-mode-on">◐</button> <button class="dark-mode-button" id="dark-mode-off">◑</button></span>
     </div>
     <hr>
   </header>
@@ -92,32 +85,32 @@
     <h2 id="configuration">Configuration <a class="zola-anchor" href="#configuration" aria-label="Anchor link for: configuration">#</a></h2>
     <p>Almost all configurations you will find on the internet overcomplicate everything. My config is small, simple, fast and makes MPV very user-friendly.</p>
     <p>If you’re on Linux, your config folder will be <code>~/.config/mpv</code>. For Windows, create a folder called <code>portable_config</code> inside your MPV folder, this will be your config folder. Inside your config folder, create a new file named <code>mpv.conf</code> with the following contents:</p>
-    <pre class="z-code"><code><span class="z-text z-plain"># Essentials
-</span><span class="z-text z-plain">vo=gpu-next
-</span><span class="z-text z-plain">gpu-api=auto     
-</span><span class="z-text z-plain">hwdec=auto-safe
-</span><span class="z-text z-plain">
-</span><span class="z-text z-plain"># Smoothmotion
-</span><span class="z-text z-plain">interpolation=yes
-</span><span class="z-text z-plain">tscale=oversample
-</span><span class="z-text z-plain">video-sync=display-resample
-</span><span class="z-text z-plain">
-</span><span class="z-text z-plain"># QoL
-</span><span class="z-text z-plain">keep-open=yes
-</span><span class="z-text z-plain">save-position-on-quit=yes
-</span><span class="z-text z-plain">autofit-larger=80%x80%
-</span><span class="z-text z-plain">
-</span><span class="z-text z-plain"># UOSC
-</span><span class="z-text z-plain">osd-bar=no
-</span><span class="z-text z-plain">border=no
-</span></code></pre>
+    <pre><code># Essentials
+vo=gpu-next
+gpu-api=auto     
+hwdec=auto-safe
+
+# Smoothmotion
+interpolation=yes
+tscale=oversample
+video-sync=display-resample
+
+# QoL
+keep-open=yes
+save-position-on-quit=yes
+autofit-larger=80%x80%
+
+# UOSC
+osd-bar=no
+border=no
+</code></pre>
     <p>Next up, we’re gonna install <a href="https://github.com/tomasklaen/uosc">UOSC</a>. UOSC is a custom GUI for MPV; the default GUI is extremely bare-bones. On Windows, go to your MPV installation folder (the folder should have mpv.exe in it), right click and open a terminal. Now run the following commands:</p>
-    <pre data-lang="powershell" class="language-powershell z-code"><code class="language-powershell" data-lang="powershell"><span class="z-source z-powershell"><span class="z-support z-function z-powershell">Set-ExecutionPolicy</span> RemoteSigned <span class="z-keyword z-operator z-assignment z-powershell">-</span>Scope CurrentUser
-</span><span class="z-source z-powershell">irm https:<span class="z-keyword z-operator z-assignment z-powershell">/</span><span class="z-keyword z-operator z-assignment z-powershell">/</span><span class="z-support z-function z-powershell">raw.githubusercontent.com</span><span class="z-keyword z-operator z-assignment z-powershell">/</span>tomasklaen<span class="z-keyword z-operator z-assignment z-powershell">/</span>uosc<span class="z-keyword z-operator z-assignment z-powershell">/</span>HEAD<span class="z-keyword z-operator z-assignment z-powershell">/</span>installers<span class="z-keyword z-operator z-assignment z-powershell">/</span>windows.ps1 <span class="z-keyword z-operator z-other z-powershell">|</span> iex
-</span></code></pre>
+    <pre data-lang="powershell" class="language-powershell"><code class="language-powershell" data-lang="powershell">Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+irm https://raw.githubusercontent.com/tomasklaen/uosc/HEAD/installers/windows.ps1 | iex
+</code></pre>
     <p>Linux users, run the following command:</p>
-    <pre data-lang="bash" class="language-bash z-code"><code class="language-bash" data-lang="bash"><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">/bin/bash</span></span><span class="z-meta z-function-call z-arguments z-shell"><span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> -</span>c</span> <span class="z-string z-quoted z-double z-shell"><span class="z-punctuation z-definition z-string z-begin z-shell">"</span><span class="z-meta z-group z-expansion z-command z-parens z-shell"><span class="z-punctuation z-definition z-variable z-shell">$</span><span class="z-punctuation z-section z-parens z-begin z-shell">(</span><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">curl</span></span><span class="z-meta z-function-call z-arguments z-shell"><span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> -</span>fsSL</span> https://raw.githubusercontent.com/tomasklaen/uosc/HEAD/installers/unix.sh</span><span class="z-punctuation z-section z-parens z-end z-shell">)</span></span><span class="z-punctuation z-definition z-string z-end z-shell">"</span></span></span>
-</span></code></pre>
+    <pre data-lang="bash" class="language-bash"><code class="language-bash" data-lang="bash">/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/tomasklaen/uosc/HEAD/installers/unix.sh)"
+</code></pre>
     <p>And that’s it! You can now start using MPV like any other media player. Really, that’s all you <strong>need</strong>.</p>
     <h2 id="beyond-the-basics">Beyond the Basics <a class="zola-anchor" href="#beyond-the-basics" aria-label="Anchor link for: beyond-the-basics">#</a></h2>
     <p>The above configuration is enough for most people, but MPV offers way more. It is scriptable, meaning the program can be extended in many ways. I will list some of them here.</p>
@@ -132,5 +125,16 @@
     <hr>
     <span>© 2024 KenHV | Licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0">CC BY-NC-SA 4.0</a></span>
   </footer>
+  <script>
+    const theme = sessionStorage.getItem("theme") ||
+      (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.body.classList.toggle("dark-mode", theme === "dark");
+    ["on", "off"].forEach(mode => {
+      document.getElementById(`dark-mode-${mode}`).addEventListener("click", () => {
+        document.body.classList.toggle("dark-mode", mode === "on");
+        sessionStorage.setItem("theme", mode === "on" ? "dark" : "light");
+      });
+    });
+  </script>
 </body>
 </html>

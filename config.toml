@@ -8,8 +8,6 @@ generate_feed = true
 #minify_html = true
 
 [markdown]
-highlight_code = true
-highlight_theme = "css"
 smart_punctuation = true
 
 [slugify]

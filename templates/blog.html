@@ -31,7 +31,6 @@
 {% endblock head %}
 
 {% block body %}
-{% include "header.html" %}
 <h1>{{ section.title }}</h1>
 {{ section.content | safe }}
 {% for post in section.pages | sort(attribute="date") | reverse %}
@@ -40,5 +39,4 @@
   <a class="post-list-title" href="{{ post.permalink }}">{{ post.title }}</a>
 </li>
 {% endfor %}
-{% include "footer.html" %}
 {% endblock body %}

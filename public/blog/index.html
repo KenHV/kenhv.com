@@ -5,10 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" sizes="16x16 24x24 32x32 48x48" href="/favicon.ico">
   <link rel="apple-touch-icon" type="image/png" sizes="180x180" href="/apple-touch-icon.png">
-  <link rel="stylesheet" href="https://kenhv.com/style.css?h=4d92791ce7d06f6caf73">
+  <link rel="stylesheet" href="https://kenhv.com/style.css?h=c47e564dc569c6a5e1fe">
   <meta name="color-scheme" content="light dark">
-  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
-  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000000">
   <link rel="alternate" type="application/atom+xml" title="Atom" href="https://kenhv.com/atom.xml">
   <title>Blog | Ken Harris</title>
   <link rel="canonical" href="https://kenhv.com/blog/">
@@ -37,12 +35,7 @@
 <body>
   <header>
     <div>
-      <nav>
-        <a href="/">Ken Harris</a>
-      </nav>
-      <nav>
-        <a href="/blog">Blog</a>
-      </nav>
+      <span><a href="/">Ken Harris</a></span> <span><a href="/blog">Blog</a> <button class="dark-mode-button" id="dark-mode-on">◐</button> <button class="dark-mode-button" id="dark-mode-off">◑</button></span>
     </div>
     <hr>
   </header>
@@ -67,5 +60,16 @@
     <hr>
     <span>© 2024 KenHV | Licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0">CC BY-NC-SA 4.0</a></span>
   </footer>
+  <script>
+    const theme = sessionStorage.getItem("theme") ||
+      (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.body.classList.toggle("dark-mode", theme === "dark");
+    ["on", "off"].forEach(mode => {
+      document.getElementById(`dark-mode-${mode}`).addEventListener("click", () => {
+        document.body.classList.toggle("dark-mode", mode === "on");
+        sessionStorage.setItem("theme", mode === "on" ? "dark" : "light");
+      });
+    });
+  </script>
 </body>
 </html>

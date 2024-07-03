@@ -1,31 +1,11 @@
-@import "_normalize.scss";
-@import "_syntax-highlighting.scss";
-
-:root {
-    --bg: #ffffff;
-    --fg: #000000;
-    --link: #1c4bd0; // Tailwind blue 700 with fixed contrast
-    --card: #e5e5e5; // Darken BG 10%
-    --outline: #cccccc; // Darken BG 20%
-}
-
-@media (prefers-color-scheme: dark) {
-    :root {
-        --bg: #000000;
-        --fg: #ffffff;
-        --link: #5495ff; // Tailwind blue 500 with fixed contrast
-        --card: #191919; // Lighten BG 10%
-        --outline: #333333; // Lighten BG 20%
-    }
-}
+@import "_normalize";
+@import "_theme";
 
 html {
     height: 100svh;
 }
 
 body {
-    background-color: var(--bg);
-    color: var(--fg);
     font-family: -apple-system, BlinkMacSystemFont, sans-serif;
     font-size: 1.05rem;
     line-height: 1.7;
@@ -45,15 +25,7 @@ h6 {
 }
 
 h1 {
-    margin-top: 0;
-    margin-bottom: 10px;
-}
-
-a,
-a:visited,
-a:hover,
-a:active {
-    color: var(--link);
+    margin: 0 0 10px;
 }
 
 header {
@@ -66,13 +38,23 @@ header div {
     align-items: center;
 }
 
+header button {
+    margin-left: 1em;
+    background: none;
+    color: inherit;
+    border: none;
+    padding: 0;
+    font: inherit;
+    outline: inherit;
+    cursor: pointer;
+}
+
 footer {
     font-size: 0.9rem;
     padding: 2em 0;
 }
 
-// Blog
-
+/* Blog */
 .post-list {
     display: flex;
 }
@@ -88,11 +70,9 @@ footer {
     word-break: break-word;
 }
 
-// Post
-
+/* Post */
 .post-date {
     font-size: 0.9rem;
-    font-style: italic;
 }
 
 .zola-anchor {
@@ -105,7 +85,7 @@ code {
 
 p code {
     padding: 0 2px 2px;
-    background-color: var(--card);
+    border-radius: 2px;
     word-wrap: break-word;
 }
 
@@ -121,6 +101,5 @@ img {
 }
 
 blockquote {
-    border-left: medium solid var(--outline);
-    padding-left: 10px;
+    padding-left: 1em;
 }

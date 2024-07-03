@@ -5,10 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" sizes="16x16 24x24 32x32 48x48" href="/favicon.ico">
   <link rel="apple-touch-icon" type="image/png" sizes="180x180" href="/apple-touch-icon.png">
-  <link rel="stylesheet" href="https://kenhv.com/style.css?h=4d92791ce7d06f6caf73">
+  <link rel="stylesheet" href="https://kenhv.com/style.css?h=c47e564dc569c6a5e1fe">
   <meta name="color-scheme" content="light dark">
-  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
-  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000000">
   <link rel="alternate" type="application/atom+xml" title="Atom" href="https://kenhv.com/atom.xml">
   <title>Supercharge Your Linux System | Ken Harris</title>
   <link rel="canonical" href="https://kenhv.com/blog/linux-tweaks/">
@@ -77,12 +75,7 @@
 <body>
   <header>
     <div>
-      <nav>
-        <a href="/">Ken Harris</a>
-      </nav>
-      <nav>
-        <a href="/blog">Blog</a>
-      </nav>
+      <span><a href="/">Ken Harris</a></span> <span><a href="/blog">Blog</a> <button class="dark-mode-button" id="dark-mode-on">◐</button> <button class="dark-mode-button" id="dark-mode-off">◑</button></span>
     </div>
     <hr>
   </header>
@@ -97,30 +90,30 @@
     <p>Install appropriate drivers and verify&nbsp;<a href="https://wiki.archlinux.org/title/Hardware_video_acceleration">hardware video acceleration</a>. Set appropriate values for&nbsp;<code>LIBVA_DRIVER_NAME</code>&nbsp;and&nbsp;<code>VDPAU_DRIVER</code>. I set my environment variables using a bash script placed in&nbsp;<code>/etc/profile.d/startup.sh</code>. Using&nbsp;<code>bashrc</code>&nbsp;for this won’t work, because the environment variables must be set in the login shell.</p>
     <p>For Firefox, refer to the&nbsp;<a href="https://wiki.archlinux.org/title/Firefox#Hardware_video_acceleration">hardware acceleration</a>&nbsp;section. Check out&nbsp;<a href="https://wiki.archlinux.org/title/Firefox#Touchscreen_gestures_and_pixel-perfect_trackpad_scrolling">touchscreen gestures and pixel-perfect trackpad scrolling</a>. Export them using&nbsp;<code>startup.sh</code>.</p>
     <p>For Chromium and Chromium-based browsers, refer to its&nbsp;<a href="https://wiki.archlinux.org/title/Chromium#Hardware_video_acceleration">hardware acceleration</a>&nbsp;and&nbsp;<a href="https://wiki.archlinux.org/title/Chromium#Force_GPU_acceleration">force GPU acceleration</a>&nbsp;sections. You can verify it at chrome://gpu. Video decoding information is at the bottom of the page. You can&nbsp;<a href="https://wiki.archlinux.org/title/Chromium#Touchpad_Gestures_for_Navigation">enable touchpad gestures</a>&nbsp;on Chromium too. To enable middle mouse button scrolling, add the following flags:</p>
-    <pre class="z-code"><code><span class="z-text z-plain"># Disable unsupported flag warning
-</span><span class="z-text z-plain">--test-type
-</span><span class="z-text z-plain">
-</span><span class="z-text z-plain"># Enable middle mouse scroll
-</span><span class="z-text z-plain">--enable-blink-features=MiddleClickAutoscroll
-</span></code></pre>
+    <pre><code># Disable unsupported flag warning
+--test-type
+
+# Enable middle mouse scroll
+--enable-blink-features=MiddleClickAutoscroll
+</code></pre>
     <p><a href="https://wiki.archlinux.org/title/Profile-sync-daemon">Profile-sync-daemon</a>&nbsp;can help speed up your browser performance by storing your browser profiles in tmpfs. You can also store your browser cache in tmpfs, Arch has instructions for both&nbsp;<a href="https://wiki.archlinux.org/title/Firefox/Tweaks#Move_disk_cache_to_RAM">Firefox</a>&nbsp;and&nbsp;<a href="https://wiki.archlinux.org/title/Chromium#Cache_in_tmpfs">Chromium</a>, although I only use PSD.</p>
     <p>Now onto power management. I use a script written by our lord kerneltoast. Create&nbsp;<code>/etc/systemd/system/powersave.service</code>&nbsp;with the following contents:</p>
-    <pre class="z-code"><code><span class="z-text z-plain">[Unit]
-</span><span class="z-text z-plain">Description=Powersave auto tune
-</span><span class="z-text z-plain">After=suspend.target
-</span><span class="z-text z-plain">After=hibernate.target
-</span><span class="z-text z-plain">After=hybrid-sleep.target
-</span><span class="z-text z-plain">
-</span><span class="z-text z-plain">[Service]
-</span><span class="z-text z-plain">Type=oneshot
-</span><span class="z-text z-plain">ExecStart=/usr/bin/bash -c "find /sys -regex '.*?power/control$' ! -path '*usb*' -exec bash -c 'echo on &gt; {}; echo auto &gt; {}' \\;"
-</span><span class="z-text z-plain">
-</span><span class="z-text z-plain">[Install]
-</span><span class="z-text z-plain">WantedBy=suspend.target
-</span><span class="z-text z-plain">WantedBy=hibernate.target
-</span><span class="z-text z-plain">WantedBy=hybrid-sleep.target
-</span><span class="z-text z-plain">WantedBy=multi-user.target
-</span></code></pre>
+    <pre><code>[Unit]
+Description=Powersave auto tune
+After=suspend.target
+After=hibernate.target
+After=hybrid-sleep.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/bash -c "find /sys -regex '.*?power/control$' ! -path '*usb*' -exec bash -c 'echo on &gt; {}; echo auto &gt; {}' \\;"
+
+[Install]
+WantedBy=suspend.target
+WantedBy=hibernate.target
+WantedBy=hybrid-sleep.target
+WantedBy=multi-user.target
+</code></pre>
     <p>Run <code>sudo systemctl enable powersave.service</code>. This enables runtime power management for all devices except USB. You can modify it to include certain USB devices if you really wish to.</p>
     <p>For CPU frequency scaling, you have two options. You can let the kernel do the heavy lifting by installing <a href="https://gitlab.freedesktop.org/upower/power-profiles-daemon">power-profiles-daemon</a>. Or, you can install&nbsp;<a href="https://github.com/AdnanHodzic/auto-cpufreq">auto-cpufreq</a>, which is a userspace daemon that does the work. Try both and see what works best for you.&nbsp;<a href="https://github.com/AdnanHodzic/auto-cpufreq#troubleshooting">Disable pstate drivers</a>&nbsp;if you’re using auto-cpufreq. Install&nbsp;<a href="https://wiki.archlinux.org/title/CPU_frequency_scaling#thermald">thermald</a>&nbsp;along with either of the programs. Do not touch TLP, its a dumpster fire.</p>
     <p>If possible,&nbsp;<a href="https://wiki.archlinux.org/title/Undervolting_CPU">undervolt</a>&nbsp;your CPU and GPU. On Intel machines, you can disable SGX in your BIOS to disable the Plundervolt fixes, which should enable undervolting on newer machines. Don’t be put off by the warning on the Arch Wiki page. I have my CPU undervolted to -150mV and GPU to -100mV. Your mileage&nbsp;<strong>will</strong>&nbsp;vary. Start at -80mV for the CPU and -50mV for the GPU.</p>
@@ -156,5 +149,16 @@
     <hr>
     <span>© 2024 KenHV | Licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0">CC BY-NC-SA 4.0</a></span>
   </footer>
+  <script>
+    const theme = sessionStorage.getItem("theme") ||
+      (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.body.classList.toggle("dark-mode", theme === "dark");
+    ["on", "off"].forEach(mode => {
+      document.getElementById(`dark-mode-${mode}`).addEventListener("click", () => {
+        document.body.classList.toggle("dark-mode", mode === "on");
+        sessionStorage.setItem("theme", mode === "on" ? "dark" : "light");
+      });
+    });
+  </script>
 </body>
 </html>
