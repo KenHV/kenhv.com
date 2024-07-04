@@ -1,0 +1,39 @@
+title: Ken Harris
+url: https://kenhv.com
+permalink: /blog/:title
+destination: public/
+
+plugins:
+  - jekyll-feed
+  - jekyll-last-modified-at
+  - jekyll-og-image
+  - jekyll-seo-tag
+  - jekyll-sitemap
+
+# SEO
+description: Tech enthusiast. Occasional doer of stuff. @KenHV
+author:
+  name: Ken Harris
+  twitter: KensurHV
+  url: https://kenhv.com
+twitter:
+  username: KensurHV
+  card: summary_large_image
+social:
+  name: Ken Harris
+  links:
+    - https://twitter.com/KensurHV
+    - https://github.com/KenHV
+    - https://t.me/KenHV
+
+# OG Image
+og_image:
+  domain: "kenhv.com"
+  canvas:
+    background_color: "#f5f5f5"
+  header:
+    font_family: "Inter, Bold"
+    color: "#171717"
+  content:
+    font_family: "Inter, Bold"
+    color: "#171717"

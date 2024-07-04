@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.3">Jekyll</generator><link href="https://kenhv.com/feed.xml" rel="self" type="application/atom+xml" /><link href="https://kenhv.com/" rel="alternate" type="text/html" /><updated>2024-07-04T12:30:09+00:00</updated><id>https://kenhv.com/feed.xml</id><title type="html">Ken Harris</title><subtitle>Tech enthusiast. Occasional doer of stuff. @KenHV</subtitle><author><name>Ken Harris</name></author><entry><title type="html">The Comfiest Streaming Service</title><link href="https://kenhv.com/blog/the-comfiest-streaming-service" rel="alternate" type="text/html" title="The Comfiest Streaming Service" /><published>2024-06-30T00:00:00+00:00</published><updated>2024-07-04T12:30:02+00:00</updated><id>https://kenhv.com/blog/the-comfiest-streaming-service</id><content type="html" xml:base="https://kenhv.com/blog/the-comfiest-streaming-service"><![CDATA[<p>What if I told you there’s a streaming service that</p>
+
+<ul>
+  <li>Has all movies, shows, anime, documentaries, etc. ever made</li>
+  <li>Has all releases/cuts</li>
+  <li>Has all quality options including HDR</li>
+  <li>Doesn’t lock content regionally</li>
+  <li>Lets you actually download media to your device</li>
+  <li>Lets you use external media players and subtitles</li>
+  <li>Is available on all platforms including TVs</li>
+</ul>
+
+<p>All for the low price of $3 a month? Oh, and you can convert any torrent to a direct link and get premium links for hosters like 4Shared and RapidGator. Sounds too good to be true? Well, it’s your lucky day.</p>
+
+<h2 id="the-catch">The Catch</h2>
+
+<p>You can simultaneously stream from 4 devices, but the catch is that they have to be on the same network. You can only access it from one IP at a time. If you’re using this at home, with all devices on the same WiFi network, this is not a problem. But you can’t stream from two different devices with two different networks (different IPs) at the same time.</p>
+
+<h2 id="the-components">The Components</h2>
+
+<p>This setup involves three components: <a href="https://www.stremio.com">Stremio</a>, Torrentio and <a href="https://real-debrid.com/?id=8866184">Real-Debrid</a>. Don’t be alarmed, I promise it’s <em>real</em> simple. Stremio is a streaming app that can be extended with add-ons. It has a polished interface that lets you browse all movies and shows listed on IMDb. Torrentio is a content aggregator add-on for Stremio, which lets you stream all those movies and shows directly in Stremio. Real-Debrid provides high-quality sources to Torrentio.</p>
+
+<h2 id="whats-real-debrid">What’s Real-Debrid?</h2>
+
+<p><a href="https://real-debrid.com/?id=8866184">Real-Debrid</a> is a debrid service. A debrid service lets you convert torrents to direct links and gives you access to dozens of premium hosting services (like RapidGator, 4Shared, etc). What makes a debrid service great is that they cache torrent files. They have a <strong>massive</strong> database of torrents stored in their servers. Pretty much anything you want to watch is available in torrent sites, and pretty much everything in torrent sites are cached in Real-Debrid’s servers. It’s as low as $3 a month (their 6 month plan is €16).</p>
+
+<h2 id="setting-it-up">Setting It Up</h2>
+
+<p>Sign up for a <a href="https://real-debrid.com/?id=8866184">Real-Debrid</a> account and buy a plan. Install <a href="https://www.stremio.com/">Stremio</a> and create an account. Now go to <a href="https://torrentio.strem.fun/configure">Torrentio</a>. Here you can configure several things such as providers, quality exclusions, sorting, language priority and maximum results per quality setting. The only option I change here is sorting, I have it set to “by quality then size”. Choose Real-Debrid as your debrid provider. Get your <a href="https://real-debrid.com/apitoken">Real-Debrid API key</a> and paste it in. Now click install, it will take you to Stremio where you can install the addon. That’s all there is to it! Now you can install Stremio on any device you want, you just have to sign in to your Stremio account. You don’t have to mess with Real-Debrid if you don’t want to. You can pretty much stop reading here.</p>
+
+<h2 id="stremio-web-for-ios">Stremio Web for iOS</h2>
+
+<p>Stremio doesn’t have a native app for iOS (available on macOS though), but you can use the PWA (progressive web app) with an external media player. I recommend <a href="https://apps.apple.com/in/app/outplayer/id1449923287">Outplayer</a>. There is only one problem with this setup. While Outplayer will remember where you left off, it won’t be synced with Stremio. To install the PWA, go to <a href="https://web.stremio.com">Stremio Web</a>, click on the share button, and add to home screen. Open the newly added Stremio app and login using the profile icon on the top right. It’ll say streaming server is not available, just select “don’t show again”. Go to Settings, scroll down to Advanced, and choose Outplayer as the external player.</p>
+
+<h2 id="useful-addons">Useful Addons</h2>
+
+<p>Stremio has quite the collection of addons. Browse through the addons section and add what you like. You can find more addons <a href="https://stremio-addons.netlify.app">here</a>. There are addons to connect Stremio with Letterboxd, Simkl and more. Cyberflix is a useful addon that shows trending movies on popular streaming services.</p>
+
+<h2 id="streaming-with-mpv">Streaming With MPV</h2>
+
+<p>I use MPV to consume media. I’ve written a <a href="https://kenhv.com/blog/setting-up-mpv">guide to set up MPV</a> if you’re interested. Stremio is actually built with MPV, but you can’t change the configuration. Stremio doesn’t have an option to choose MPV as an external player. You can either copy the stream link and open it with MPV, or use the <a href="https://web.stremio.com">web version</a>.</p>
+
+<p>I prefer the web version, as I don’t have to install the Stremio app on my computer. It also saves quite a bit of time. In the web version, you can set m3u playlist as the external player in Settings. You can then configure MPV to automatically open m3u files.</p>
+
+<h2 id="thoughts-on-piracy">Thoughts on Piracy</h2>
+
+<blockquote>
+  <p>Piracy is almost always a service problem and not a pricing problem.</p>
+
+  <p>— Gabe Newell</p>
+</blockquote>
+
+<p>I pay for music streaming because it’s convenient. It has everything I want to listen to in one place and has recommendations, curated playlists, statistics; everything I need. There is simply no movie streaming service that’s convenient. Every service has a limited and different catalogue, they don’t have all the editions of a movie, and quite a lot of content is simply not available on any service. I made a fully automated media server years ago, but that isn’t as convenient as this setup is either. Like Gabe said, it’s not a problem of pricing. I am willing to pay for convenience. It’s just that there’s nothing convenient about the streaming services available today.</p>
+
+<p>Oh and of course, all this information is purely for educational purposes, I am not responsible, blah blah. Have a good day.</p>]]></content><author><name>Ken Harris</name></author><summary type="html"><![CDATA[The $3 streaming service that beats everything on the market combined.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://kenhv.com/assets/images/og/posts/the-comfiest-streaming-service.png" /><media:content medium="image" url="https://kenhv.com/assets/images/og/posts/the-comfiest-streaming-service.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Setting up MPV - The Supreme Media Player</title><link href="https://kenhv.com/blog/setting-up-mpv" rel="alternate" type="text/html" title="Setting up MPV - The Supreme Media Player" /><published>2024-06-09T00:00:00+00:00</published><updated>2024-07-04T12:30:02+00:00</updated><id>https://kenhv.com/blog/setting-up-mpv</id><content type="html" xml:base="https://kenhv.com/blog/setting-up-mpv"><![CDATA[<p>The media player you use sucks. Switch to MPV.</p>
+
+<h2 id="installation">Installation</h2>
+
+<p>If you’re on Linux, you know what to do. Install it through your package manager and skip to the configuration section. If you’re on Windows, read on. Make a folder where you want to install MPV, for example <code class="language-plaintext highlighter-rouge">D:\Programs\MPV</code>. Download the <a href="https://sourceforge.net/projects/mpv-player-windows/files/bootstrapper.zip/download">MPV bootstrapper</a> and extract the contents to the folder. Run <code class="language-plaintext highlighter-rouge">updater.bat</code> as administrator. It will ask you some questions. You can choose the default options for most questions. When it asks you to choose a variant (x86_64 or x86_64-v3), choose x86_64-v3 (press 2), unless your CPU was released over 10 years ago. I also install yt-dlp and FFmpeg.</p>
+
+<p>Once the script is finished, go to the newly created <code class="language-plaintext highlighter-rouge">installer</code> folder and run <code class="language-plaintext highlighter-rouge">mpv-install.bat</code> as administrator. This will register the application in Windows. Congrats, you have now installed MPV. If you ever want to uninstall MPV, run the uninstall script first and then simply delete the MPV folder. But before you start using it, there’s some essential configuration to be done.</p>
+
+<h2 id="configuration">Configuration</h2>
+
+<p>Almost all configurations you will find on the internet overcomplicate everything. My config is small, simple, fast and makes MPV very user-friendly.</p>
+
+<p>If you’re on Linux, your config folder will be <code class="language-plaintext highlighter-rouge">~/.config/mpv</code>. For Windows, create a folder called <code class="language-plaintext highlighter-rouge">portable_config</code> inside your MPV folder, this will be your config folder. Inside your config folder, create a new file named <code class="language-plaintext highlighter-rouge">mpv.conf</code> with the following contents:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Essentials
+vo=gpu-next
+gpu-api=auto     
+hwdec=auto-safe
+
+# Smoothmotion
+interpolation=yes
+tscale=oversample
+video-sync=display-resample
+
+# QoL
+keep-open=yes
+save-position-on-quit=yes
+autofit-larger=80%x80%
+
+# UOSC
+osd-bar=no
+border=no
+</code></pre></div></div>
+
+<p>Next up, we’re gonna install <a href="https://github.com/tomasklaen/uosc">UOSC</a>. UOSC is a custom GUI for MPV; the default GUI is extremely bare-bones. On Windows, go to your MPV installation folder (the folder should have mpv.exe in it), right click and open a terminal. Now run the following commands:</p>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">Set-ExecutionPolicy</span><span class="w"> </span><span class="nx">RemoteSigned</span><span class="w"> </span><span class="nt">-Scope</span><span class="w"> </span><span class="nx">CurrentUser</span><span class="w">
+</span><span class="n">irm</span><span class="w"> </span><span class="nx">https://raw.githubusercontent.com/tomasklaen/uosc/HEAD/installers/windows.ps1</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">iex</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Linux users, run the following command:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/bin/bash <span class="nt">-c</span> <span class="s2">"</span><span class="si">$(</span>curl <span class="nt">-fsSL</span> https://raw.githubusercontent.com/tomasklaen/uosc/HEAD/installers/unix.sh<span class="si">)</span><span class="s2">"</span>
+</code></pre></div></div>
+
+<p>And that’s it! You can now start using MPV like any other media player. Really, that’s all you <strong>need</strong>.</p>
+
+<h2 id="beyond-the-basics">Beyond the Basics</h2>
+
+<p>The above configuration is enough for most people, but MPV offers way more. It is scriptable, meaning the program can be extended in many ways. I will list some of them here.</p>
+
+<h3 id="audio-compressor">Audio Compressor</h3>
+
+<p>An audio compressor turns down the loudest parts and turns up the quietest parts. To install an audio compressor, download the script from <a href="https://github.com/mpv-player/mpv/blob/master/TOOLS/lua/acompressor.lua">here</a> and add it to the <code class="language-plaintext highlighter-rouge">scripts</code> folder inside your config directory. You can press “n” to toggle the compressor. If you want to enable it by default, open the script with a text editor and change <code class="language-plaintext highlighter-rouge">default_enable = false</code> to <code class="language-plaintext highlighter-rouge">true</code>.</p>
+
+<h2 id="troubleshooting">Troubleshooting</h2>
+
+<p>If MPV lags when you play media that doesn’t match your display resolution (such as 720p or 2160p on a 1080p screen), add <code class="language-plaintext highlighter-rouge">profile=fast</code> to your <code class="language-plaintext highlighter-rouge">mpv.conf</code> file. This disables MPV’s upscaling and downscaling algorithms. If that doesn’t fix it, remove the smoothmotion section.</p>
+
+<p>If MPV lags when you play media that matches your display resolution, try removing the smoothmotion section from the config.</p>
+
+<p>If you face crashes or weird glitches, set <code class="language-plaintext highlighter-rouge">vo=gpu</code> in your config file.</p>]]></content><author><name>Ken Harris</name></author><summary type="html"><![CDATA[The media player you use sucks. Switch to MPV.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://kenhv.com/assets/images/og/posts/setting-up-mpv.png" /><media:content medium="image" url="https://kenhv.com/assets/images/og/posts/setting-up-mpv.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Treat Yourself to Good Typography</title><link href="https://kenhv.com/blog/treat-yourself-to-good-typography" rel="alternate" type="text/html" title="Treat Yourself to Good Typography" /><published>2024-06-02T00:00:00+00:00</published><updated>2024-07-04T12:30:02+00:00</updated><id>https://kenhv.com/blog/treat-yourself-to-good-typography</id><content type="html" xml:base="https://kenhv.com/blog/treat-yourself-to-good-typography"><![CDATA[<p>Ah, typography, the cornerstone of great design. Optimising your fonts and typography settings will go a long way in improving readability, especially if you’re someone who reads a lot. Here’s how I setup my devices.</p>
+
+<h2 id="windows-vs-mac">Windows vs Mac</h2>
+
+<p>Font rendering on Windows is handled by DirectWrite and ClearType. You might be familiar with the latter. Microsoft’s approach to rendering fonts is having “pixel-perfect” typography, literally. It aligns all glyphs to the pixel grid. The original font shapes are thrown out the window. Pun intended.</p>
+
+<p>Mac takes a different approach. Steve Jobs was obsessed with good design and typography. Hence, Mac’s font rendering engine has a “WYSIWYG” (what you see is what you get) philosophy. It preserves the font’s original shape. Fonts look how the designers intended them to.</p>
+
+<p>“So what are you saying, Windows bad Mac good?” Not at all. Apple has full control over their hardware, and all their displays are high DPI (dots/pixels per inch). In classic Apple fashion, they have a buzzword for it — Retina display. Most of us peasants are stuck with 96 DPI, which is pretty bad for legibility. Windows’s approach tends to do better here. Besides, all of this comes down to personal preference. Some prefer Windows’s approach, some prefer Mac’s. I won’t be going into Linux here, as it varies among distros.</p>
+
+<h2 id="improving-typography-on-windows">Improving Typography on Windows</h2>
+
+<p>Have you ever noticed that fonts look sharp in some applications but blurry in others? This is because of Windows’s horrible default display scaling. By default, scaling is set higher than 100% (mine was 125% for 1080p). If you revert back to 100%, the blurriness goes away but everything is too small.</p>
+
+<p>The fix is pretty simple. Go to Settings, Display. Look at the scale percentage. Now click on Scale (not the drop-down menu, the actual Scale menu option), and it will take you to the custom scaling settings. Enter the same value here; it will ask you to sign out and sign back in. You will no longer see blurry fonts on your system.</p>
+
+<p>Next up, let’s adjust ClearType settings. The inbuilt ClearType tuner is pretty bad. We’re going to use <a href="https://github.com/bp2008/BetterClearTypeTuner/">Better ClearType Tuner</a>, making the whole process much easier. Grab the zip from the <a href="https://github.com/bp2008/BetterClearTypeTuner/releases/tag/1.4.0.2">releases</a> section, extract it and run the program as administrator. I use RGB with maximum contrast (2200), you can play around with the values.</p>
+
+<p>There is a program called <a href="https://github.com/snowie2000/mactype">MacType</a>, which replaces Windows’s font rendering system with a custom rendering system. It works great where it does, but is very problematic where it doesn’t. I have dabbled with it but uninstalled it at the end.</p>
+
+<h2 id="improving-browser-fonts">Improving Browser Fonts</h2>
+
+<p>I don’t like the default fonts used on most sites. How did I fix it? I wrote a userscript that overrides web fonts with the fonts that are set as default in the browser. To set this up, first configure your browser’s default fonts to your liking. I use Charter for default/proportional and serif, SF Pro Display for sans-serif, and SF Mono for monospace.</p>
+
+<p>Download a userscript manager extension. I recommend <a href="https://violentmonkey.github.io/">ViolentMonkey</a>. Go to my script’s <a href="https://greasyfork.org/en/scripts/496839-default-fonts">GreaseFork</a> page and install the script. You can exclude the script from running on certain sites if you want to, using your userscript manager.</p>
+
+<h2 id="android">Android</h2>
+
+<p>Some Android manufacturers include settings to change fonts. If your OEM does not provide such options, your only choice left is to root your device. When I was using Android, I used a Magisk mod called <a href="https://gitlab.com/nongthaihoang/oh_my_font">Oh My Font</a> along with <a href="https://github.com/MrCarb0n/killgmsfont">Kill GMS Font</a>. In my opinion, this is the best typography experience you can get on Android. It uses Apple’s San Francisco fonts by default.</p>
+
+<h2 id="the-end">The End</h2>
+
+<p>If you made it all the way here, you might want to look into getting a shiny new high DPI monitor. If you have any suggestions, feel free to mail me.</p>]]></content><author><name>Ken Harris</name></author><summary type="html"><![CDATA[A guide to improving font rendering on all devices and browsers.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://kenhv.com/assets/images/og/posts/treat-yourself-to-good-typography.png" /><media:content medium="image" url="https://kenhv.com/assets/images/og/posts/treat-yourself-to-good-typography.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Supercharge Your Linux System</title><link href="https://kenhv.com/blog/linux-tweaks" rel="alternate" type="text/html" title="Supercharge Your Linux System" /><published>2023-07-17T00:00:00+00:00</published><updated>2024-07-04T12:30:02+00:00</updated><id>https://kenhv.com/blog/linux-tweaks</id><content type="html" xml:base="https://kenhv.com/blog/linux-tweaks"><![CDATA[<p>This post is intended to be a repository of tweaks for Arch Linux, although you can apply most of it to any distro. You must know how to set up an Arch Linux install beforehand.</p>
+
+<p>Go through the <a href="https://wiki.archlinux.org/title/Installation_guide">Arch installation guide</a>. If you have an SSD and plan on wiping your drive, do a <a href="https://wiki.archlinux.org/title/Solid_state_drive/Memory_cell_clearing#NVMe_drive">memory cell clearing</a> to <a href="https://www.anandtech.com/show/2738/8">restore factory write speeds</a>. I go with Ext4 for my partitions. Refer to the <a href="https://wiki.archlinux.org/title/Ext4#Bytes-per-inode_ratio">bytes-per-inode ratio</a> and <a href="https://wiki.archlinux.org/title/Ext4#Reserved_blocks">reserved block</a> sections before creating your Ext4 partition. As for the kernel, just use <code class="language-plaintext highlighter-rouge">linux-zen</code>. Don’t bother with all those fancy-sounding custom kernels you find out there. Once you finish the base install, boot into your new system.</p>
+
+<p>XFCE and GNOME are both solid options for a desktop environment. Go through the <a href="https://wiki.archlinux.org/title/General_recommendations">general recommendations</a>. Except for security, because protection is no fun.</p>
+
+<p>I use XFCE with its compositor disabled. Intel’s modesetting driver now supports TearFree, thanks to our lord kerneltoast. It will eliminate tearing when you’re not using a compositor. As of writing this post, the xorg-server package doesn’t include it yet. I’m using <code class="language-plaintext highlighter-rouge">xorg-server-git</code>. <a href="https://wiki.archlinux.org/title/intel_graphics#With_the_modesetting_driver">Enable TearFree for the modesetting driver</a>.</p>
+
+<p>If you go with GNOME, installing <code class="language-plaintext highlighter-rouge">gnome-shell-performance</code> and <code class="language-plaintext highlighter-rouge">mutter-performance</code> from the AUR will greatly improve your experience.</p>
+
+<p>Set up your GPU drivers. I use <a href="https://github.com/bayasdev/envycontrol">EnvyControl</a> to manage <a href="https://wiki.archlinux.org/title/NVIDIA_Optimus">NVIDIA Optimus</a>. I keep my dGPU disabled unless I need it for gaming. Go through <a href="https://wiki.archlinux.org/title/intel_graphics">Intel graphics</a> for Intel. Take a look at <a href="https://wiki.archlinux.org/title/intel_graphics#Enable_GuC_/_HuC_firmware_loading">GuC/HuC firmware loading</a>, <a href="https://wiki.archlinux.org/title/intel_graphics#Framebuffer_compression_(enable_fbc)">framebuffer compression</a>, and <a href="https://wiki.archlinux.org/title/intel_graphics#Fastboot">fastboot</a> in particular.</p>
+
+<p>Install appropriate drivers and verify <a href="https://wiki.archlinux.org/title/Hardware_video_acceleration">hardware video acceleration</a>. Set appropriate values for <code class="language-plaintext highlighter-rouge">LIBVA_DRIVER_NAME</code> and <code class="language-plaintext highlighter-rouge">VDPAU_DRIVER</code>. I set my environment variables using a bash script placed in <code class="language-plaintext highlighter-rouge">/etc/profile.d/startup.sh</code>. Using <code class="language-plaintext highlighter-rouge">bashrc</code> for this won’t work, because the environment variables must be set in the login shell.</p>
+
+<p>For Firefox, refer to the <a href="https://wiki.archlinux.org/title/Firefox#Hardware_video_acceleration">hardware acceleration</a> section. Check out <a href="https://wiki.archlinux.org/title/Firefox#Touchscreen_gestures_and_pixel-perfect_trackpad_scrolling">touchscreen gestures and pixel-perfect trackpad scrolling</a>. Export them using <code class="language-plaintext highlighter-rouge">startup.sh</code>.</p>
+
+<p>For Chromium and Chromium-based browsers, refer to its <a href="https://wiki.archlinux.org/title/Chromium#Hardware_video_acceleration">hardware acceleration</a> and <a href="https://wiki.archlinux.org/title/Chromium#Force_GPU_acceleration">force GPU acceleration</a> sections. You can verify it at chrome://gpu. Video decoding information is at the bottom of the page. You can <a href="https://wiki.archlinux.org/title/Chromium#Touchpad_Gestures_for_Navigation">enable touchpad gestures</a> on Chromium too. To enable middle mouse button scrolling, add the following flags:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Disable unsupported flag warning
+--test-type
+
+# Enable middle mouse scroll
+--enable-blink-features=MiddleClickAutoscroll
+</code></pre></div></div>
+
+<p><a href="https://wiki.archlinux.org/title/Profile-sync-daemon">Profile-sync-daemon</a> can help speed up your browser performance by storing your browser profiles in tmpfs. You can also store your browser cache in tmpfs, Arch has instructions for both <a href="https://wiki.archlinux.org/title/Firefox/Tweaks#Move_disk_cache_to_RAM">Firefox</a> and <a href="https://wiki.archlinux.org/title/Chromium#Cache_in_tmpfs">Chromium</a>, although I only use PSD.</p>
+
+<p>Now onto power management. I use a script written by our lord kerneltoast. Create <code class="language-plaintext highlighter-rouge">/etc/systemd/system/powersave.service</code> with the following contents:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[Unit]
+Description=Powersave auto tune
+After=suspend.target
+After=hibernate.target
+After=hybrid-sleep.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/bash -c "find /sys -regex '.*?power/control$' ! -path '*usb*' -exec bash -c 'echo on &gt; {}; echo auto &gt; {}' \\;"
+
+[Install]
+WantedBy=suspend.target
+WantedBy=hibernate.target
+WantedBy=hybrid-sleep.target
+WantedBy=multi-user.target
+</code></pre></div></div>
+
+<p>Run <code class="language-plaintext highlighter-rouge">sudo systemctl enable powersave.service</code>. This enables runtime power management for all devices except USB. You can modify it to include certain USB devices if you really wish to.</p>
+
+<p>For CPU frequency scaling, you have two options. You can let the kernel do the heavy lifting by installing <a href="https://gitlab.freedesktop.org/upower/power-profiles-daemon">power-profiles-daemon</a>. Or, you can install <a href="https://github.com/AdnanHodzic/auto-cpufreq">auto-cpufreq</a>, which is a userspace daemon that does the work. Try both and see what works best for you. <a href="https://github.com/AdnanHodzic/auto-cpufreq#troubleshooting">Disable pstate drivers</a> if you’re using auto-cpufreq. Install <a href="https://wiki.archlinux.org/title/CPU_frequency_scaling#thermald">thermald</a> along with either of the programs. Do not touch TLP, its a dumpster fire.</p>
+
+<p>If possible, <a href="https://wiki.archlinux.org/title/Undervolting_CPU">undervolt</a> your CPU and GPU. On Intel machines, you can disable SGX in your BIOS to disable the Plundervolt fixes, which should enable undervolting on newer machines. Don’t be put off by the warning on the Arch Wiki page. I have my CPU undervolted to -150mV and GPU to -100mV. Your mileage <strong>will</strong> vary. Start at -80mV for the CPU and -50mV for the GPU.</p>
+
+<p>Don’t use swapfiles or swap partitions, use <a href="https://wiki.archlinux.org/title/Zram">zram</a> instead. As we’re not swapping to disk, make sure to disable <a href="https://wiki.archlinux.org/title/Zswap">zswap</a> by adding the <code class="language-plaintext highlighter-rouge">zswap.enabled=0</code> kernel parameter. My machine has plenty of RAM, so I don’t use zram and also disable zswap.</p>
+
+<p>Linux has had official NTFS drivers for a while now, but there are no official userspace utilities for NTFS3. Install <code class="language-plaintext highlighter-rouge">ntfsprogs-ntfs3</code> from the AUR. This lets you use all the NTFS-3G utilities but with NTFS3 instead.</p>
+
+<p>Other tweaks that I perform:</p>
+
+<ul>
+  <li><a href="https://wiki.archlinux.org/title/Improving_performance#Turn_off_CPU_exploit_mitigations">Turning off CPU mitigations</a></li>
+  <li><a href="https://wiki.archlinux.org/title/Improving_performance#Watchdogs">Disabling watchdog</a></li>
+  <li><a href="https://wiki.archlinux.org/title/Power_management#Disabling_NMI_watchdog">Disabling NMI watchdog</a></li>
+  <li><a href="https://wiki.archlinux.org/title/Solid_state_drive#Periodic_TRIM">Enabling periodic TRIM</a></li>
+  <li><a href="https://wiki.archlinux.org/title/Systemd/Journal#Journal_size_limit">Journal size limit</a></li>
+  <li><a href="https://wiki.archlinux.org/title/Uniform_look_for_Qt_and_GTK_applications">Uniform look for Qt and GTK applications</a></li>
+  <li><a href="https://wiki.archlinux.org/title/IPv6#Prefer_IPv4_over_IPv6">Prefer IPv4 over IPv6</a></li>
+</ul>
+
+<p>I will be updating this post as I go around changing/adding stuff. If you have any suggestions, feel free to mail me!</p>]]></content><author><name>Ken Harris</name></author><summary type="html"><![CDATA[A repository of tweaks for Arch Linux.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://kenhv.com/assets/images/og/posts/linux-tweaks.png" /><media:content medium="image" url="https://kenhv.com/assets/images/og/posts/linux-tweaks.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Smartphone Privacy For Everyone</title><link href="https://kenhv.com/blog/smartphone-privacy-for-everyone" rel="alternate" type="text/html" title="Smartphone Privacy For Everyone" /><published>2021-05-23T00:00:00+00:00</published><updated>2024-07-04T12:30:02+00:00</updated><id>https://kenhv.com/blog/smartphone-privacy-for-everyone</id><content type="html" xml:base="https://kenhv.com/blog/smartphone-privacy-for-everyone"><![CDATA[<p>Smartphones are a crucial part of the modern-day. There’s a 70% chance you’re reading this from your smartphone. We use it for everything, from the simplest of tasks to computations that would be deemed impossible just a few years ago. In an ideal world, we would own the data that is on our phones. Unfortunately, we aren’t living in a perfect world. Every single month, we hear about some new controversy regarding digital privacy. Yet we are stuck with using privacy-invasive platforms such as Facebook or YouTube. The reality is, there are simply no alternatives that have a userbase or content anywhere close to them.</p>
+
+<p>Privacy and convenience are regarded to be inversely proportional; you generally have to sacrifice one for the other. But there exists a threshold where you can enjoy both. What we tech nerds find simple can really be rocket science for people outside the tech bubble. This article is for the common person coming from a non-tech background, looking to enhance their digital privacy in simple yet effective ways. Learn how to keep your data safer while using these spyware apps and platforms.</p>
+
+<p>All apps linked to in this article are not links to their Play Store or App Store listings. I’ve instead linked to their websites (if not, their GitHub link) so you can install it on whichever smartphone you use, using whichever method you prefer (elaborated in the <a href="#app-store">App Store section</a>). Feel free to skip to any section you want.</p>
+
+<h2 id="free-and-non-free-software">“Free” and “Non-Free” Software</h2>
+
+<p>The word free in the context of software implies “freedom” (free as in freedom, not free of cost). Free and open-source software (FOSS) or free software gives the user freedom to access, study, modify and share. The software that does not provide these freedoms to users is called proprietary (closed source) software. Most services we take for granted, such as WhatsApp, Instagram, YouTube, are all proprietary software that is also free to use. These are also called freeware.</p>
+
+<p>Open-source software is almost always free software, but there are some <a href="https://www.gnu.org/philosophy/open-source-misses-the-point.en.html">exceptions</a>. Software that’s both free and open-source are called FOSS - Free and Open-Source Software. The apps that I’ll be talking about are all FOSS.</p>
+
+<h2 id="platforms-and-clients">Platforms and Clients</h2>
+
+<p>To understand how you can better safeguard yourself when using data-collecting platforms, you must first understand what a platform and a client is.</p>
+
+<p>Say you have two phones, one running Android and one running iOS. These two phones are running entirely different operating systems. Yet, if you switch your SIM cards between them, you can still take calls and messages sent to that SIM. In this case, the phone acts as a client, and your SIM provider is the platform.</p>
+
+<p>More often than not, a significant chunk of the tracking happens within the client/app. By switching to FOSS clients for such platforms, we can enhance our privacy a lot and still access the same media. You can view all the content that your friends post on the forum, post content, send and receive messages, etc., from a different client. Like using two apps to manage SMS, for example. More often than not, you get the added benefit of additional features that aren’t available in the official clients.</p>
+
+<p>Using privacy-invasive platforms is the issue in the first place. While switching to FOSS clients may minimize data collection, this isn’t the proper solution. All the content that we post on the invasive platform will still be tracked. Switching to alternative platforms is the only way to be really free. I will provide both solutions in this article.</p>
+
+<h2 id="blocking-ads">Blocking Ads</h2>
+
+<p>This is the easiest step you can take to enhancing your online privacy. Blocking ads is not just beneficial to your privacy, but it also improves your experience with tech as a whole. Ads are annoying, and they bring trackers with them. Trackers, as the name implies, track all your moves online to serve you more relevant ads. While it’s not possible to block ads from apps such as Spotify or YouTube with this method, it will block in-app ads and ads on the internet.</p>
+
+<p>To block ads on Android, go to your Settings app and search for DNS. An option called Private DNS will show up. Tap it, select “Private DNS provider hostname” and enter the following address: <code class="language-plaintext highlighter-rouge">dns.adguard-dns.com</code>. It’s that simple. To disable it, you can set the Private DNS setting back to Automatic.</p>
+
+<p>For iOS, click <a href="https://github.com/paulmillr/encrypted-dns/raw/master/signed/adguard-default-https.mobileconfig">here</a> to add the AdGuard DNS profile to your mobile. Select Allow when the installation pop-up shows up. Then, go to Settings, click on the new “Profile Downloaded” option, select Install at the top, enter your PIN, and select Install again. Your iPhone will now start blocking ads. To disable it, go to Settings, General, VPN &amp; Device Management, DNS, and set it to automatic. System-wide ad blocking is offered as a paid functionality by the AdGuard app, but this is the same thing for free and is also officially provided by AdGuard.</p>
+
+<h2 id="app-store">App Store</h2>
+
+<p>Let’s start with the App Store itself. On Android, we use Play Store to install, update and manage all our apps. There’s an alternative called <a href="https://auroraoss.com/download/">Aurora Store</a>, which is a FOSS (Free and Open-Source) client for the Play Store service. You can do everything you do on Play Store with Aurora Store. It allows you to download older version of apps as well. There are also other app stores than Google’s Play Store, such as F-Droid. F-Droid is a repository of FOSS applications only. You can access this store by using their <a href="https://f-droid.org/">official client</a> or by <a href="https://auroraoss.com/download/">Aurora Droid</a>, a better looking client. All the apps listed in this article will be available via F-Droid.</p>
+
+<p>On iOS, you are stuck with Apple’s App Store. Contrary to popular belief, Apple does allow sideloading, even outside the EU. But there is a lot of catches and is much more complicated than sideloading on Android, so I will just point you in the right direction. Check out <a href="https://sidestore.io/">SideStore</a>. Even for tech-savvy people, this is usually not worth it, but it is there if you need it.</p>
+
+<h2 id="basic-functionality">Basic Functionality</h2>
+
+<p>Fossify (<a href="https://play.google.com/store/apps/dev?id=7297838378654322558">Play Store</a>) (<a href="https://search.f-droid.org/?q=fossify">F-Droid</a>) is a set of open-source Android apps that can replace most of the pre-installed apps. These apps include Calendar, Clock, Contacts, File Manager, Gallery, Music Player, Notes, Phone, SMS Messaging, Voice Recorder and more.</p>
+
+<p>These apps don’t require any additional permissions, they have customizable widgets, and theme options are linked across their apps. Switching to Fossify apps will be a significant step in moving away from non-free software.</p>
+
+<p>On iOS, you are stuck with the default apps for almost all basic functionality.</p>
+
+<p><strong>Update:</strong> Simple Mobile Tools was <a href="https://www.androidauthority.com/simple-mobile-tools-acquisition-3391041/">sold to a scummy company</a>, please switch to Fossify.</p>
+
+<h2 id="web-browser">Web Browser</h2>
+
+<p>Browsers are a crucial part of our digital life. Chrome is the browser that comes pre-installed on all Android devices, and it’s notorious for being a privacy nightmare. Chrome tracks your every tap and scroll on the internet. Chrome itself is proprietary, but it’s based on an open-source project called Chromium. Safari is the default browser on iOS. It’s much better than Chrome for privacy, but is still a non-free and closed-source browser.</p>
+
+<p><a href="https://www.mozilla.org/en-US/firefox/mobile">Firefox</a> is a browser that’s developed by a non-profit organization called Mozilla Foundation. Aside from being open-source, it has a plethora of features and additional extensions that you can install.</p>
+
+<p><a href="https://github.com/uazo/cromite">Cromite</a> is a browser that’s based on Chromium with inbuilt ad blockers and privacy hardening. It looks and functions exactly like Chrome with the added benefits of an ad-free web experience and no browser-level tracking.</p>
+
+<p>It must be noted that while iOS does have a lot of third-party browsers, Apple restricts them to use only the WebKit engine. So every browser is pretty much just Safari with some additional features.</p>
+
+<h2 id="social-media-and-entertainment">Social Media and Entertainment</h2>
+
+<p>One of the most significant selling points of smartphones is getting our daily dose of entertainment anywhere. We consume a lot of content in apps such as Instagram, Facebook, YouTube, etc. While the services themselves are non-free, you can still maintain privacy by using open-source clients for these services.</p>
+
+<p><a href="https://github.com/rignaneseleo/SlimSocial-for-Facebook">SlimSocial for Facebook</a> is a third-party client for <strong>Facebook</strong>. It’s much lighter than the notoriously bloated official client and has several features.</p>
+
+<p><strong>Twitter</strong> has paywalled all its APIs. Despite this, <a href="https://github.com/j-fbriere/squawker">Squawker</a> manages to provide a feature-rich Twitter experience.</p>
+
+<p><a href="https://newpipe.net/">NewPipe</a> and <a href="https://libretube.dev/">LibreTube</a> are lightweight clients for <strong>YouTube</strong>. Despite being lightweight, they are feature-packed. They can do everything that the official YouTube app can do and much more. You can download videos to your storage, set the default video quality, play videos in picture-in-picture or the background, play only audio, which essentially makes YouTube a music streaming service, and much more. To top it all off, they block all ads on YouTube so you can enjoy your favorite content without interruption. <a href="https://invidious.io/">Invidious</a> is another great option; it’s a web-based client and as such, a viable solution for iOS.</p>
+
+<p><strong>Reddit</strong> <a href="https://arstechnica.com/gadgets/2024/02/exploring-reddits-third-party-app-environment-7-months-after-the-apicalypse/">paywalled their APIs</a> like Twitter, killing a lot of third-party clients. There are some good third-party clients such as <a href="https://github.com/Docile-Alligator/Infinity-For-Reddit">Infinity</a> that still exist, but they require a paid subscription. Fortunately, there is a way to get around this by using the official Reddit client’s API keys on third-party apps. Follow <a href="https://github.com/KobeW50/ReVanced-Documentation/blob/main/Reddit-Client-ID-Guide.md">ReVanced’s guide</a>. Alternatively, you can use Reddit as a PWA. On iOS, you can use the website with <a href="https://apps.apple.com/us/app/yesterday-for-old-reddit/id1603279883">Yesterday For Old Reddit</a> or <a href="https://apps.apple.com/us/app/sink-it-for-reddit/id6449873635">Sink It for Reddit</a>.</p>
+
+<p>I would also like to mention a few alternative platforms for social media. <a href="https://joinmastodon.org/">Mastodon</a> is a decentralized platform similar to Facebook and Twitter. <a href="https://join-lemmy.org/">Lemmy</a> is an alternative for Reddit. <a href="https://pixelfed.org/">Pixelfed</a> is an image sharing platform similar to Instagram.</p>
+
+<h3 id="progressive-web-apps">Progressive Web Apps</h3>
+
+<p>All the platforms mentioned above (and more, like Instagram) have a Progressive Web App (PWA), which you can install by accessing the social media’s website through your browser. This is usually your only option on iOS. When you visit a website that offers a PWA, your browser should show a pop-up asking whether you want to add it to your home screen. You can also add to the home screen from your browser’s menu (share menu in Safari). This will install the PWA on your device, which has several benefits such as taking up no space on your device.</p>
+
+<h2 id="email">Email</h2>
+
+<p><a href="https://email.faircode.eu/">FairEmail</a> is a FOSS email client that can manage your Gmail, Yahoo Mail, Outlook, and just about every email provider. All your email accounts can be managed from a single app, as you can add unlimited accounts in one unified inbox, making your email experience not only private but also productive.</p>
+
+<p><a href="https://proton.me/mail">Proton Mail</a>, another offering from Proton, provides free privacy-respecting email accounts to everyone. Proton also offers several private services such as cloud storage (alternative to Google Drive and iCloud), do <a href="https://proton.me">check them out</a>.</p>
+
+<h2 id="closing-thoughts">Closing Thoughts</h2>
+
+<p>The original version of this article focussed only on Android and was not as user-friendly as it is now. If you have any suggestions, feel free to <a href="mailto:ken@kenhv.com">mail me</a>.</p>
+
+<blockquote>
+  <p>Arguing that you don’t care about the right to privacy because you have nothing to hide is no different than saying you don’t care about free speech because you have nothing to say.</p>
+
+  <p>— Edward Snowden</p>
+</blockquote>]]></content><author><name>Ken Harris</name></author><summary type="html"><![CDATA[A guide to protect your privacy while using privacy-invasive platforms.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://kenhv.com/assets/images/og/posts/smartphone-privacy-for-everyone.png" /><media:content medium="image" url="https://kenhv.com/assets/images/og/posts/smartphone-privacy-for-everyone.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>

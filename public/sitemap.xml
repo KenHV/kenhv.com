@@ -1,29 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-    <url>
-        <loc>https://kenhv.com/</loc>
-    </url>
-    <url>
-        <loc>https://kenhv.com/blog/</loc>
-    </url>
-    <url>
-        <loc>https://kenhv.com/blog/linux-tweaks/</loc>
-        <lastmod>2024-06-30</lastmod>
-    </url>
-    <url>
-        <loc>https://kenhv.com/blog/setting-up-mpv/</loc>
-        <lastmod>2024-06-09</lastmod>
-    </url>
-    <url>
-        <loc>https://kenhv.com/blog/smartphone-privacy-for-everyone/</loc>
-        <lastmod>2024-06-29</lastmod>
-    </url>
-    <url>
-        <loc>https://kenhv.com/blog/the-comfiest-streaming-service/</loc>
-        <lastmod>2024-06-30</lastmod>
-    </url>
-    <url>
-        <loc>https://kenhv.com/blog/treat-yourself-to-good-typography/</loc>
-        <lastmod>2024-06-29</lastmod>
-    </url>
+<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<url>
+<loc>https://kenhv.com/blog/smartphone-privacy-for-everyone</loc>
+<lastmod>2024-07-04T12:30:02+00:00</lastmod>
+</url>
+<url>
+<loc>https://kenhv.com/blog/linux-tweaks</loc>
+<lastmod>2024-07-04T12:30:02+00:00</lastmod>
+</url>
+<url>
+<loc>https://kenhv.com/blog/treat-yourself-to-good-typography</loc>
+<lastmod>2024-07-04T12:30:02+00:00</lastmod>
+</url>
+<url>
+<loc>https://kenhv.com/blog/setting-up-mpv</loc>
+<lastmod>2024-07-04T12:30:02+00:00</lastmod>
+</url>
+<url>
+<loc>https://kenhv.com/blog/the-comfiest-streaming-service</loc>
+<lastmod>2024-07-04T12:30:02+00:00</lastmod>
+</url>
+<url>
+<loc>https://kenhv.com/blog</loc>
+<lastmod>2024-07-04T12:30:02+00:00</lastmod>
+</url>
+<url>
+<loc>https://kenhv.com/</loc>
+<lastmod>2024-07-04T12:30:02+00:00</lastmod>
+</url>
 </urlset>

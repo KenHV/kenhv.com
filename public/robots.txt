@@ -1,4 +1,1 @@
-User-agent: *
-Disallow:
-Allow: /
 Sitemap: https://kenhv.com/sitemap.xml
