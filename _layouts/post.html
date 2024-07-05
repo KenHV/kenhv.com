@@ -12,5 +12,5 @@ layout: base
       {{ page.updated | date: "%-d %B %Y" }}</time>
     {% endif %}
   </span>
-  {{ content }}
+  {% include anchor_headings.html html=content anchorBody="#" anchorAttrs='class="anchor" aria-hidden="true"' %}
 </article>
