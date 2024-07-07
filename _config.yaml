@@ -1,7 +1,10 @@
 title: Ken Harris
 url: https://kenhv.com
 permalink: /blog/:title
+
 destination: public/
+sass:
+  style: compressed
 
 plugins:
   - jekyll-feed
@@ -9,6 +12,7 @@ plugins:
   - jekyll-og-image
   - jekyll-seo-tag
   - jekyll-sitemap
+  - jekyll-target-blank
 
 # SEO
 description: Tech enthusiast. Occasional doer of stuff. @KenHV
@@ -38,3 +42,7 @@ og_image:
     font_family: "Inter, Bold"
     color: "#171717"
   image: /assets/images/og-logo.jpg
+
+# Target Blank
+target-blank:
+  noreferrer: false

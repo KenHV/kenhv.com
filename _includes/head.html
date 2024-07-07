@@ -1,4 +1,5 @@
 <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{%if page.title %}{{ page.title }} | {% endif %}{{ site.title }}</title>
 
@@ -11,5 +12,7 @@
 <link rel="alternate" type="application/atom+xml" title="Feed" href="{{ '/feed.xml' | absolute_url }}">
 
 {%- seo title=false -%}
+<meta name="application-name" content="{{ site.title }}" />
+<meta name="application-url" content="{{ site.url }}" />
 
 <script async data-goatcounter="https://stats.kenhv.com/count" src="/count.js"></script>

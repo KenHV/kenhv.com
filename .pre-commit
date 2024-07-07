@@ -1,17 +1,18 @@
 #!/bin/bash
 
-staged_files=$(git diff --cached --name-only --diff-filter=ACM | grep -E "^public/.*\.(html|css|js)$")
+files=$(find public/ -type f -name "*.html")
 
-if [[ -z "$staged_files" ]]; then
+if [[ -z "$files" ]]; then
   exit 0
 fi
 
-for file in $staged_files; do
+for file in $files; do
   html-minifier-terser \
     --collapse-boolean-attributes \
     --collapse-whitespace \
     --conservative-collapse \
     --decode-entities \
+    --keep-closing-slash \
     --minify-css \
     --minify-js \
     --preserve-line-breaks \
@@ -25,4 +26,4 @@ for file in $staged_files; do
     -o $file $file
 done
 
-git add $staged_files
+git add $files
