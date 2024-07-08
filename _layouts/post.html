@@ -3,14 +3,16 @@ layout: base
 ---
 
 <article>
-  <h1>{{ page.title }}</h1>
-  <span class="post-date">
-    <time datetime="{{ page.date | date_to_xmlschema }}">
-      {{ page.date | date: "%-d %B %Y" }}</time>
-    {% if page.updated %}
-    | Updated on <time datetime="{{ page.updated | date_to_xmlschema }}">
-      {{ page.updated | date: "%-d %B %Y" }}</time>
-    {% endif %}
-  </span>
+  <hgroup>
+    <h1>{{ page.title }}</h1>
+    <span class="post-date">
+      <time datetime="{{ page.date | date_to_xmlschema }}">
+        {{ page.date | date: "%-d %B %Y" }}</time>
+      {% if page.updated %}
+      | Updated on <time datetime="{{ page.updated | date_to_xmlschema }}">
+        {{ page.updated | date: "%-d %B %Y" }}</time>
+      {% endif %}
+    </span>
+  </hgroup>
   {% include anchor_headings.html html=content anchorBody="#" anchorAttrs='class="anchor" aria-hidden="true"' %}
 </article>
