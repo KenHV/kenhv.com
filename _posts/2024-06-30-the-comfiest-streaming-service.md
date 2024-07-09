@@ -23,7 +23,7 @@ You can simultaneously stream from 4 devices, but the catch is that they have to
 
 ## The Components
 
-This setup involves three components: [Stremio](https://www.stremio.com), Torrentio and [Real-Debrid](https://real-debrid.com/). Don't be alarmed, I promise it's *real* simple. Stremio is a streaming app that can be extended with add-ons. It has a polished interface that lets you browse all movies and shows listed on IMDb. Torrentio is a content aggregator add-on for Stremio, which lets you stream all those movies and shows directly in Stremio. Real-Debrid provides high-quality sources to Torrentio.
+This setup involves three components: [Stremio](https://www.stremio.com), Torrentio and [Real-Debrid](https://real-debrid.com/). Don't be alarmed, I promise it's **real** simple. Stremio is a streaming app that can be extended with add-ons. It has a polished interface that lets you browse all movies and shows listed on IMDb. Torrentio is a content aggregator add-on for Stremio, which lets you stream all those movies and shows directly in Stremio. Real-Debrid provides high-quality sources to Torrentio.
 
 ## What's Real-Debrid?
 

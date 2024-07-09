@@ -4,7 +4,7 @@
 <title>{%if page.title %}{{ page.title }} | {% endif %}{{ site.title }}</title>
 
 {% assign cacheBust = site.time | date:'?v=%s' %}
-<link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url | append: cacheBust }}">
+<link rel="stylesheet" href="{{ '/assets/css/style.css' | append: cacheBust }}">
 
 <link rel="icon" type="image/x-icon" sizes="16x16 24x24 32x32 48x48" href="/favicon.ico">
 <link rel="icon" type="image/png" sizes="192x192" href="/favicon.png">
@@ -16,4 +16,5 @@
 <meta name="application-name" content="{{ site.title }}" />
 <meta name="application-url" content="{{ site.url }}" />
 
-<script async data-goatcounter="https://stats.kenhv.com/count" src="/count.js"></script>
+<script async src="/assets/js/script.js"></script>
+<script async data-goatcounter="https://stats.kenhv.com/count" src="/assets/js/analytics.js"></script>
