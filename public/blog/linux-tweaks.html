@@ -4,7 +4,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Supercharge Your Linux System | Ken Harris</title>
-<link rel="stylesheet" href="/assets/css/style.css?v=1720546641">
+<link rel="stylesheet" href="/assets/css/style.css?v=1720595965">
 <link rel="icon" type="image/x-icon" sizes="16x16 24x24 32x32 48x48" href="/favicon.ico">
 <link rel="icon" type="image/png" sizes="192x192" href="/favicon.png">
 <link rel="apple-touch-icon" sizes="192x192" href="/favicon.png">
@@ -34,30 +34,33 @@
 {"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Ken Harris","url":"https://kenhv.com"},"dateModified":"2024-07-04T12:30:20+00:00","datePublished":"2023-07-17T00:00:00+00:00","description":"A repository of tweaks for Arch Linux.","headline":"Supercharge Your Linux System","image":{"width":1200,"height":600,"alt":"Supercharge Your Linux System","url":"https://kenhv.com/assets/images/og/posts/linux-tweaks.png","@type":"imageObject"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://kenhv.com/blog/linux-tweaks"},"url":"https://kenhv.com/blog/linux-tweaks"}</script>
 <meta name="application-name" content="Ken Harris"/>
 <meta name="application-url" content="https://kenhv.com"/>
-<script async src="/assets/js/script.js"></script>
 <script async data-goatcounter="https://stats.kenhv.com/count" src="/assets/js/analytics.js"></script></head>
 <body><header>
-<div>
+<nav>
 <span>
 <a href="/">Ken Harris</a>
 </span>
 <span>
 <a href="/blog">Blog</a>
-<img class="dark-mode-button" id="dark-mode-on" src="/assets/images/lightbulb-off.svg" alt="Dark mode toggle">
-<img class="dark-mode-button" id="dark-mode-off" src="/assets/images/lightbulb.svg" alt="Dark mode toggle">
+<svg class="dark-mode-button" id="dark-mode-on" alt="Toggle theme" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="#171717" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+<path d="M16.8 11.2c.8-.9 1.2-2 1.2-3.2a6 6 0 0 0-9.3-5M2 2l20 20M6.3 6.3a4.67 4.67 0 0 0 1.2 5.2c.7.7 1.3 1.5 1.5 2.5m0 4h6m-5 4h4"></path>
+</svg>
+<svg class="dark-mode-button" id="dark-mode-off" alt="Toggle theme" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="#e5e5e5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+<path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5m0 4h6m-5 4h4"></path>
+</svg>
 </span>
-</div>
+</nav>
 <hr>
 </header><main aria-label="Content">
-<article>
+<article aria-label="Article">
 <hgroup>
 <h1>Supercharge Your Linux System</h1>
-<span class="post-date">
+<p class="post-date">
 <time datetime="2023-07-17T00:00:00+00:00">
 17 July 2023</time>
 | Updated on <time datetime="2024-06-30T00:00:00+00:00">
 30 June 2024</time>
-</span>
+</p>
 </hgroup>
 <p>This post is intended to be a repository of tweaks for Arch Linux, although you can apply most of it to any distro. You must know how to set up an Arch Linux install beforehand.</p>
 <p>Go through the <a href="https://wiki.archlinux.org/title/Installation_guide" target="_blank" rel="noopener">Arch installation guide</a>. If you have an SSD and plan on wiping your drive, do a <a href="https://wiki.archlinux.org/title/Solid_state_drive/Memory_cell_clearing#NVMe_drive" target="_blank" rel="noopener">memory cell clearing</a> to <a href="https://www.anandtech.com/show/2738/8" target="_blank" rel="noopener">restore factory write speeds</a>. I go with Ext4 for my partitions. Refer to the <a href="https://wiki.archlinux.org/title/Ext4#Bytes-per-inode_ratio" target="_blank" rel="noopener">bytes-per-inode ratio</a> and <a href="https://wiki.archlinux.org/title/Ext4#Reserved_blocks" target="_blank" rel="noopener">reserved block</a> sections before creating your Ext4 partition. As for the kernel, just use <code class="language-plaintext highlighter-rouge">linux-zen</code>. Don’t bother with all those fancy-sounding custom kernels you find out there. Once you finish the base install, boot into your new system.</p>
@@ -112,5 +115,5 @@ WantedBy=multi-user.target
 </main><footer>
 <hr>
 © 2024 KenHV | Licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a>
-</footer></body>
+</footer><script>const theme=sessionStorage.getItem("theme")||(window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");document.body.classList.toggle("dark-mode","dark"===theme),["on","off"].forEach((e=>{document.getElementById(`dark-mode-${e}`).addEventListener("click",(()=>{document.body.classList.toggle("dark-mode","on"===e),sessionStorage.setItem("theme","on"===e?"dark":"light")}))}))</script></body>
 </html>
