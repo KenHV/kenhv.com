@@ -34,13 +34,13 @@ social:
 og_image:
   domain: "kenhv.com"
   canvas:
-    background_color: "#f5f5f5"
+    background_color: "#ffffff"
   header:
     font_family: "Inter, Bold"
-    color: "#171717"
+    color: "#121212"
   content:
     font_family: "Inter, Bold"
-    color: "#171717"
+    color: "#121212"
   image: /assets/images/og-logo.jpg
 
 # Target Blank

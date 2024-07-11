@@ -1,35 +1,31 @@
-$foreground: #171717; // Neutral 900
-$background: #f5f5f5; // Neutral 100
-$secondary: #e5e5e5; // Neutral 200
-$tertiary: #d4d4d4; // Neutral 300
-$accent: #1d4ed8; // Blue 700
-$code:#10b981; // Emerald 500
+$foreground: #121212;
+$background: #fff;
+$secondary: darken($background, 10%);
+$link: #0066cc;
 
-$foreground-dark: #e5e5e5; // Neutral 200
-$background-dark: #171717; // Neutral 900
-$secondary-dark: #262626; // Neutral 800
-$tertiary-dark: #404040; // Neutral 700
-$accent-dark: #3b82f6; // Blue 500
+$foreground-dark: #ccc;
+$background-dark: #111;
+$secondary-dark: lighten($background-dark, 10%);
+$link-dark: #46a2ff;
 
 @mixin light-theme {
     color: $foreground;
     background-color: $background;
 
     a, a:link, a:visited, a:hover {
-        color: $accent;
+        color: $link;
     }
 
-    p code {
+    code {
         background-color: $secondary;
     }
 
     pre {
-        background-color: $secondary-dark;
-        color: $code;
+        background-color: $secondary;
     }
 
     blockquote {
-        border-left: medium solid $tertiary;
+        border-left: medium solid $secondary;
     }
 }
 
@@ -38,20 +34,19 @@ $accent-dark: #3b82f6; // Blue 500
     background-color: $background-dark;
 
     a, a:link, a:visited, a:hover {
-        color: $accent-dark;
+        color: $link-dark;
     }
 
-    p code {
+    code {
         background-color: $secondary-dark;
     }
 
     pre {
         background-color: $secondary-dark;
-        color: $code;
     }
 
     blockquote {
-        border-left: medium solid $tertiary-dark;
+        border-left: medium solid $secondary-dark;
     }
 }
 

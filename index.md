@@ -10,7 +10,7 @@ twitter:
 
 <hgroup>
 <h1 style="margin-bottom:0">Ken Harris</h1>
-<strong>@KenHV</strong>
+<b>@KenHV</b>
 </hgroup>
 
 Tech enthusiast. Occasional doer of stuff.\
