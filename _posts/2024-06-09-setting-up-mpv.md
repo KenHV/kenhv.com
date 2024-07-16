@@ -2,7 +2,6 @@
 layout: post
 title: "Setting up MPV - The Supreme Media Player"
 description: "The media player you use sucks. Switch to MPV."
-date: 2024-06-09
 ---
 
 The media player you use sucks. Switch to MPV.

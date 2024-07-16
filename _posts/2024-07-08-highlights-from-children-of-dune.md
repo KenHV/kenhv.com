@@ -2,7 +2,6 @@
 layout: post
 title: "Highlights From Children of Dune"
 description: "A collection of my highlights from Frank Herbert's Children of Dune."
-date: 2024-07-08
 ---
 
 I've never highlighted this many passages from a non-philosophy book. Half a century later, the Dune saga is more relevant than ever. A must-read for sure.

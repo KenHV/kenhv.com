@@ -8,9 +8,9 @@ layout: base
     <p class="post-date">
       <time datetime="{{ page.date | date_to_xmlschema }}">
         {{ page.date | date: "%-d %B %Y" }}</time>
-      {% if page.updated %}
-      | Updated on <time datetime="{{ page.updated | date_to_xmlschema }}">
-        {{ page.updated | date: "%-d %B %Y" }}</time>
+      {% if page.date_modified %}
+      | Updated on <time datetime="{{ page.date_modified | date_to_xmlschema }}">
+        {{ page.date_modified | date: "%-d %B %Y" }}</time>
       {% endif %}
       </p>
   </hgroup>

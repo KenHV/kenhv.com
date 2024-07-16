@@ -2,7 +2,6 @@
 layout: post
 title: "The Comfiest Streaming Service"
 description: "The $3 streaming service that beats everything on the market combined."
-date: 2024-06-30
 ---
 
 What if I told you there's a streaming service that
