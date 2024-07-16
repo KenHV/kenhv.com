@@ -4,8 +4,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Setting Up Firefox | Ken Harris</title>
-<link rel="preload" as="font" href="/assets/fonts/inter.woff2" crossorigin>
-<link rel="stylesheet" href="/assets/css/style.css?v=1721119615">
+<link rel="preload" as="font" href="/assets/fonts/geist.woff2" crossorigin>
+<link rel="stylesheet" href="/assets/css/style.css?v=1721137266">
 <script async data-goatcounter="https://stats.kenhv.com/gc" src="/assets/js/gc.js"></script>
 <link rel="icon" type="image/x-icon" sizes="16x16 24x24 32x32 48x48" href="/favicon.ico">
 <link rel="icon" type="image/png" sizes="192x192" href="/favicon.png">
@@ -103,10 +103,12 @@ Extensions <a href="#extensions" class="anchor" aria-hidden="true">#</a>
 <p><a href="https://github.com/bpc-clone/bpc_updates/releases/download/latest/bypass_paywalls_clean-latest.xpi" target="_blank" rel="noopener">Bypass Paywalls Clean</a> lets you bypass most of the popular paywalled sites and sites that need you to login after viewing a page or two (like Quora). After installing it, go to the extension options and enable “Check for update rules at startup”. Then go to “Opt-in” and enable everything.</p>
 <p><a href="https://addons.mozilla.org/en-US/firefox/addon/violentmonkey" target="_blank" rel="noopener">Violentmonkey</a> is an userscript manager. <a href="https://codeberg.org/Amm0ni4/bypass-all-shortlinks-debloated/raw/branch/main/Bypass_All_Shortlinks.user.js" target="_blank" rel="noopener">Bypass All Shortlinks Debloated</a> automatically skips a lot of link shorteners that make you wait or require CAPTCHAs. <a href="https://greasyfork.org/en/scripts/496839-default-fonts" target="_blank" rel="noopener">Default fonts</a> is my own userscript that replaces custom web fonts with browser defaults (<a href="/blog/treat-yourself-to-good-typography#improving-browser-fonts">read more here</a>).</p>
 <p><a href="https://addons.mozilla.org/en-US/firefox/addon/no-google-search-translation" target="_blank" rel="noopener">No Google Search Translation</a> disables the annoying Google feature that translates all search results.</p>
-<h2 id="misc-tweaks">
-Misc. Tweaks <a href="#misc-tweaks" class="anchor" aria-hidden="true">#</a>
+<h2 id="aboutconfig">
+about:config <a href="#aboutconfig" class="anchor" aria-hidden="true">#</a>
 </h2>
-<p>If you want to switch tabs by scrolling on the tab bar, go to <code class="language-plaintext highlighter-rouge">about:config</code> and set <code class="language-plaintext highlighter-rouge">toolkit.tabbox.switchByScrolling</code> to <code class="language-plaintext highlighter-rouge">true</code>.</p>
+<p>Setting <code class="language-plaintext highlighter-rouge">accessibility.force_disabled</code> to <code class="language-plaintext highlighter-rouge">1</code> in can help with <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1726887" target="_blank" rel="noopener">memory usage and performance</a>.</p>
+<p>If you don’t use Pocket, you can disable it by setting <code class="language-plaintext highlighter-rouge">extensions.pocket.enabled</code> to <code class="language-plaintext highlighter-rouge">false</code>.</p>
+<p>If you want to switch tabs by scrolling on the tab bar, set <code class="language-plaintext highlighter-rouge">toolkit.tabbox.switchByScrolling</code> to <code class="language-plaintext highlighter-rouge">true</code>.</p>
 <p>If you want to reduce spacing in the UI, <a href="https://support.mozilla.org/en-US/kb/compact-mode-workaround-firefox" target="_blank" rel="noopener">enable compact mode</a>.</p>
 <h2 id="thoughts-on-telemetry">
 Thoughts on Telemetry <a href="#thoughts-on-telemetry" class="anchor" aria-hidden="true">#</a>

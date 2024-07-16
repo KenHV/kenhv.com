@@ -42,9 +42,13 @@ Most Firefox guides out there recommend using [hardened configs](https://github.
 
 [No Google Search Translation](https://addons.mozilla.org/en-US/firefox/addon/no-google-search-translation) disables the annoying Google feature that translates all search results.
 
-## Misc. Tweaks
+## about:config
 
-If you want to switch tabs by scrolling on the tab bar, go to `about:config` and set `toolkit.tabbox.switchByScrolling` to `true`.
+Setting `accessibility.force_disabled` to `1` in can help with [memory usage and performance](https://bugzilla.mozilla.org/show_bug.cgi?id=1726887).
+
+If you don't use Pocket, you can disable it by setting `extensions.pocket.enabled` to `false`.
+
+If you want to switch tabs by scrolling on the tab bar, set `toolkit.tabbox.switchByScrolling` to `true`.
 
 If you want to reduce spacing in the UI, [enable compact mode](https://support.mozilla.org/en-US/kb/compact-mode-workaround-firefox).
 
