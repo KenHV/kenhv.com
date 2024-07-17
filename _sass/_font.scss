@@ -1,7 +1,8 @@
 @font-face {
-    font-family: "Geist";
-    src: local("Geist"), url("/assets/fonts/geist.woff2") format('woff2');
+    font-family: "Inter";
+    src: local("Inter"), url("/assets/fonts/inter.woff2") format('woff2');
     font-display: swap;
     font-style: normal;
     font-weight: 400 700;
+    font-feature-settings: 'liga' 1, 'calt' 1;
 }
