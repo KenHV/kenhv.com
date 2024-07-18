@@ -2,7 +2,8 @@
 layout: post
 title: "Smartphone Privacy For Everyone"
 description: "A guide to protect your privacy while using privacy-invasive platforms."
-date_modified: 2024-06-29
+seo:
+  date_modified: 2024-06-29
 ---
 
 Smartphones are a crucial part of the modern-day. There's a 70% chance you're reading this from your smartphone. We use it for everything, from the simplest of tasks to computations that would be deemed impossible just a few years ago. In an ideal world, we would own the data that is on our phones. Unfortunately, we aren't living in a perfect world. Every single month, we hear about some new controversy regarding digital privacy. Yet we are stuck with using privacy-invasive platforms such as Facebook or YouTube. The reality is, there are simply no alternatives that have a userbase or content anywhere close to them.

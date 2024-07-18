@@ -1,4 +1,5 @@
 ---
+title: Ken Harris
 layout: base
 image:
   path: /favicon.png

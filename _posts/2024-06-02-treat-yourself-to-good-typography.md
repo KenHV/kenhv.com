@@ -2,7 +2,8 @@
 layout: post
 title: "Treat Yourself to Good Typography"
 description: "A guide to improving font rendering on all devices and browsers."
-date_modified: 2024-06-29
+seo:
+  date_modified: 2024-06-29
 ---
 
 Ah, typography, the cornerstone of great design. Optimising your fonts and typography settings will go a long way in improving readability, especially if you're someone who reads a lot. Here's how I setup my devices.

@@ -1,7 +1,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{%if page.title %}{{ page.title }} | {% endif %}{{ site.title }}</title>
+<title>{{ page.title }}</title>
 
 <link rel="preload" as="font" href="/assets/fonts/inter.woff2" crossorigin>
 
@@ -15,10 +15,8 @@
 <link rel="apple-touch-icon" sizes="192x192" href="/favicon.png">
 
 {%- seo title=false -%}
-{%- if page.id and page.date_modified -%}
-<meta property="article:modified_time" content="{{ page.date_modified | date_to_xmlschema }}" />
+{%- if page.seo.date_modified -%}
+<meta property="article:modified_time" content="{{ page.seo.date_modified | date_to_xmlschema }}" />
 {%- endif -%}
-<meta name="application-name" content="{{ site.title }}" />
-<meta name="application-url" content="{{ site.url }}" />
 
 <link rel="alternate" type="application/atom+xml" title="Feed" href="{{ '/feed.xml' | absolute_url }}">

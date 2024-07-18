@@ -2,7 +2,8 @@
 layout: post
 title: "Setting Up Firefox"
 description: "A list of extensions and tweaks to improve Firefox without breakage."
-date_modified: 2024-07-17
+seo:
+  date_modified: 2024-07-17
 ---
 
 Google is [killing Manifest v2](https://blog.chromium.org/2024/05/manifest-v2-phase-out-begins.html) in an attempt to kill ad blockers. This change will affect not only Chrome, but browsers based on Chromium such as Edge. It's a good time to switch to Firefox. Everything just works; I've faced zero breakage on any site, even with some additional privacy protection settings turned on.

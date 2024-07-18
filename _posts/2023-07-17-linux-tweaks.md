@@ -2,7 +2,8 @@
 layout: post
 title: "Supercharge Your Linux System"
 description: "A repository of tweaks for Arch Linux."
-date_modified: 2024-07-14
+seo:
+  date_modified: 2024-07-14
 ---
 
 This post is intended to be a repository of tweaks for Arch Linux, although you can apply most of it to any distro. AMD specific optimisations are not covered. You must know how to set up an Arch Linux install beforehand.

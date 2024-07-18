@@ -1,7 +1,7 @@
 ---
+title: Blog by Ken Harris
 permalink: /blog
 layout: blog
-title: Blog
 image:
   path: /favicon.png
   height: 192
