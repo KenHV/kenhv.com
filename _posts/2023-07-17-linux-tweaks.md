@@ -2,6 +2,7 @@
 layout: post
 title: "Supercharge Your Linux System"
 description: "A repository of tweaks for Arch Linux."
+toc: false
 seo:
   date_modified: 2024-07-14
 ---

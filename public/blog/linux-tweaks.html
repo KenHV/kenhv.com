@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Supercharge Your Linux System</title>
 <link rel="preload" as="font" href="/assets/fonts/inter.woff2" crossorigin>
-<link rel="stylesheet" href="/assets/css/style.css?v=1721303479">
+<link rel="stylesheet" href="/assets/css/style.css?v=1721377489">
 <script async data-goatcounter="https://stats.kenhv.com/gc" src="/assets/js/gc.js"></script>
 <link rel="icon" type="image/x-icon" sizes="16x16 24x24 32x32 48x48" href="/favicon.ico">
 <link rel="icon" type="image/png" sizes="192x192" href="/favicon.png">
@@ -51,7 +51,6 @@
 </nav>
 <hr>
 </header><main aria-label="Content">
-<article aria-label="Article">
 <hgroup>
 <h1>Supercharge Your Linux System</h1>
 <p class="post-date">
@@ -61,6 +60,7 @@
 14 July 2024</time>
 </p>
 </hgroup>
+<article>
 <p>This post is intended to be a repository of tweaks for Arch Linux, although you can apply most of it to any distro. AMD specific optimisations are not covered. You must know how to set up an Arch Linux install beforehand.</p>
 <p>Go through the <a href="https://wiki.archlinux.org/title/Installation_guide" target="_blank" rel="noopener">Arch installation guide</a>. If you have an SSD and plan on wiping your drive, do a <a href="https://wiki.archlinux.org/title/Solid_state_drive/Memory_cell_clearing#NVMe_drive" target="_blank" rel="noopener">memory cell clearing</a> to <a href="https://www.anandtech.com/show/2738/8" target="_blank" rel="noopener">restore factory write speeds</a>. I go with Ext4 for my partitions. Refer to the <a href="https://wiki.archlinux.org/title/Ext4#Bytes-per-inode_ratio" target="_blank" rel="noopener">bytes-per-inode ratio</a> and <a href="https://wiki.archlinux.org/title/Ext4#Reserved_blocks" target="_blank" rel="noopener">reserved block</a> sections before creating your Ext4 partition. As for the kernel, just use <code class="language-plaintext highlighter-rouge">linux-zen</code>. Don’t bother with all those fancy-sounding custom kernels you find out there. Go through the <a href="https://wiki.archlinux.org/title/General_recommendations" target="_blank" rel="noopener">general recommendations</a>. Except for security, because protection is no fun.</p>
 <p>GNOME AND XFCE are both solid options for a desktop environment. I prefer GNOME. Installing <code class="language-plaintext highlighter-rouge">gnome-shell-performance</code> and <code class="language-plaintext highlighter-rouge">mutter-performance</code> from the AUR will greatly improve your experience. If your PC is extremely slow, you can use XFCE with it’s compositor disabled for more performance. <a href="https://wiki.archlinux.org/title/intel_graphics#Tearing" target="_blank" rel="noopener">Enable TearFree</a> to eliminate screen tearing when the compositor is off.</p>

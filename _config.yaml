@@ -2,6 +2,13 @@ title: Ken Harris
 url: https://kenhv.com
 permalink: /blog/:title
 
+defaults:
+  - scope:
+      path: ""
+      type: "posts"
+    values:
+      toc: true
+
 destination: public/
 sass:
   style: compressed
@@ -13,6 +20,7 @@ plugins:
   - jekyll-seo-tag
   - jekyll-sitemap
   - jekyll-target-blank
+  - jekyll-toc
 
 # SEO
 description: Tech enthusiast. Occasional doer of stuff. @KenHV
