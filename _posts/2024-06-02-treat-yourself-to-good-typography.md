@@ -3,7 +3,7 @@ layout: post
 title: "Treat Yourself to Good Typography"
 description: "A guide to improving font rendering on all devices and browsers."
 seo:
-  date_modified: 2024-06-29
+  date_modified: 2024-07-21
 ---
 
 Ah, typography, the cornerstone of great design. Optimising your fonts and typography settings will go a long way in improving readability, especially if you're someone who reads a lot. Here's how I setup my devices.
@@ -31,6 +31,8 @@ There is a program called [MacType](https://github.com/snowie2000/mactype), whic
 I don’t like the default fonts used on most sites. How did I fix it? I wrote a userscript that overrides web fonts with the fonts that are set as default in the browser. To set this up, first configure your browser’s default fonts to your liking. I use Charter for default/proportional and serif, SF Pro Display for sans-serif, and SF Mono for monospace.
 
 Download a userscript manager extension. I recommend [ViolentMonkey](https://violentmonkey.github.io/). Go to my script's [GreaseFork](https://greasyfork.org/en/scripts/496839-default-fonts) page and install the script. You can exclude the script from running on certain sites if you want to, using your userscript manager.
+
+On Firefox, you can use [Enforce Browser Fonts](https://addons.mozilla.org/en-US/firefox/addon/enforce-browser-fonts/), which uses built-in features to achieve the same.
 
 ## Android
 

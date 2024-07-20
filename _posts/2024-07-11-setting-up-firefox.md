@@ -3,7 +3,7 @@ layout: post
 title: "Setting Up Firefox"
 description: "A list of extensions and tweaks to improve Firefox without breakage."
 seo:
-  date_modified: 2024-07-20
+  date_modified: 2024-07-21
 ---
 
 Google is [killing Manifest v2](https://blog.chromium.org/2024/05/manifest-v2-phase-out-begins.html) in an attempt to kill ad blockers. This change will affect not only Chrome, but browsers based on Chromium such as Edge. It's a good time to switch to Firefox. Everything just works; I've faced zero breakage on any site, even with some additional privacy protection settings turned on.
@@ -39,11 +39,13 @@ Most Firefox guides out there recommend using [hardened configs](https://github.
 
 [Bypass Paywalls Clean](https://github.com/bpc-clone/bpc_updates/releases/download/latest/bypass_paywalls_clean-latest.xpi) lets you bypass most of the popular paywalled sites and sites that need you to login after viewing a page or two (like Quora). After installing it, go to the extension options and enable "Check for update rules at startup". Then go to "Opt-in" and enable everything.
 
-[Violentmonkey](https://addons.mozilla.org/en-US/firefox/addon/violentmonkey) is a userscript manager, which I use to install the following userscripts. [Bypass All Shortlinks Debloated](https://codeberg.org/Amm0ni4/bypass-all-shortlinks-debloated/raw/branch/main/Bypass_All_Shortlinks.user.js) automatically skips a lot of link shorteners that make you wait or require CAPTCHAs. [Default fonts](https://greasyfork.org/en/scripts/496839-default-fonts) is my own userscript that replaces custom web fonts with browser defaults ([read more here](/blog/treat-yourself-to-good-typography#improving-browser-fonts)).
+[Violentmonkey](https://addons.mozilla.org/en-US/firefox/addon/violentmonkey) is a userscript manager, which I use to install the following userscripts. [Bypass All Shortlinks Debloated](https://codeberg.org/Amm0ni4/bypass-all-shortlinks-debloated/raw/branch/main/Bypass_All_Shortlinks.user.js) automatically skips a lot of link shorteners that make you wait or require CAPTCHAs.
 
 [No Google Search Translation](https://addons.mozilla.org/en-US/firefox/addon/no-google-search-translation) disables the annoying Google feature that translates all search results.
 
 [Most Recent Tab](https://addons.mozilla.org/en-US/firefox/addon/most-recent-tab/) adds a shortcut to switch to the, well, most recent tab. After installing, you can go to Manage Extensions, click the settings icon, go to Manage Extension Shortcuts, and set the shortcut to what you want. I have mine set to `Ctrl + Q`.
+
+[Enforce Browser Fonts](https://addons.mozilla.org/en-US/firefox/addon/enforce-browser-fonts/) lets you disable web fonts and use the browser configured fonts ([related blog post](/blog/treat-yourself-to-good-typography#improving-browser-fonts)). You can change the default mode to whitelist or blacklist in the Manage Extension page.
 
 ## about:config
 

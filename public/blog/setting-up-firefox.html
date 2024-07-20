@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Setting Up Firefox</title>
 <link rel="preload" as="font" href="/assets/fonts/inter.woff2" crossorigin>
-<link rel="stylesheet" href="/assets/css/style.css?v=1721479119">
+<link rel="stylesheet" href="/assets/css/style.css?v=1721538242">
 <script async data-goatcounter="https://stats.kenhv.com/gc" src="/assets/js/gc.js"></script>
 <link rel="icon" type="image/x-icon" sizes="16x16 24x24 32x32 48x48" href="/favicon.ico">
 <link rel="icon" type="image/png" sizes="192x192" href="/favicon.png">
@@ -32,8 +32,8 @@
 <meta name="twitter:site" content="@KensurHV"/>
 <meta name="twitter:creator" content="@KensurHV"/>
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Ken Harris","url":"https://kenhv.com"},"dateModified":"2024-07-20T00:00:00+00:00","datePublished":"2024-07-11T00:00:00+00:00","description":"A list of extensions and tweaks to improve Firefox without breakage.","headline":"Setting Up Firefox","image":{"width":1200,"height":600,"alt":"Setting Up Firefox","url":"https://kenhv.com/assets/images/og/posts/setting-up-firefox.png","@type":"imageObject"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://kenhv.com/blog/setting-up-firefox"},"url":"https://kenhv.com/blog/setting-up-firefox"}</script>
-<meta property="article:modified_time" content="2024-07-20T00:00:00+00:00"/><link rel="alternate" type="application/atom+xml" title="Feed" href="https://kenhv.com/feed.xml"></head>
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Ken Harris","url":"https://kenhv.com"},"dateModified":"2024-07-21T00:00:00+00:00","datePublished":"2024-07-11T00:00:00+00:00","description":"A list of extensions and tweaks to improve Firefox without breakage.","headline":"Setting Up Firefox","image":{"width":1200,"height":600,"alt":"Setting Up Firefox","url":"https://kenhv.com/assets/images/og/posts/setting-up-firefox.png","@type":"imageObject"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://kenhv.com/blog/setting-up-firefox"},"url":"https://kenhv.com/blog/setting-up-firefox"}</script>
+<meta property="article:modified_time" content="2024-07-21T00:00:00+00:00"/><link rel="alternate" type="application/atom+xml" title="Feed" href="https://kenhv.com/feed.xml"></head>
 <body><header>
 <nav>
 <span>
@@ -56,8 +56,8 @@
 <p class="post-date">
 <time datetime="2024-07-11T00:00:00+00:00">
 11 July 2024</time>
-| Updated on <time datetime="2024-07-20T00:00:00+00:00">
-20 July 2024</time>
+| Updated on <time datetime="2024-07-21T00:00:00+00:00">
+21 July 2024</time>
 </p>
 </hgroup>
 <details>
@@ -116,9 +116,10 @@ Extensions <a href="#extensions" class="anchor" aria-hidden="true" tabindex="-1"
 <p><a href="https://addons.mozilla.org/en-US/firefox/addon/ublock-origin" target="_blank" rel="noopener">uBlock Origin</a> is the best ad blocker. I enable additional filter lists: everything under “Cookie notices” and everything under “Annoyances”. I also add the <a href="https://www.i-dont-care-about-cookies.eu/abp" target="_blank" rel="noopener">I don’t care about cookies</a> filter list (no need to install the extension).</p>
 <p><a href="https://addons.mozilla.org/en-US/firefox/addon/darkreader" target="_blank" rel="noopener">Dark Reader</a> adds a dark mode to every website. After installing it, open the extension menu, go to “Dev Tools”, “Advanced”, and click “Preview new design”.</p>
 <p><a href="https://github.com/bpc-clone/bpc_updates/releases/download/latest/bypass_paywalls_clean-latest.xpi" target="_blank" rel="noopener">Bypass Paywalls Clean</a> lets you bypass most of the popular paywalled sites and sites that need you to login after viewing a page or two (like Quora). After installing it, go to the extension options and enable “Check for update rules at startup”. Then go to “Opt-in” and enable everything.</p>
-<p><a href="https://addons.mozilla.org/en-US/firefox/addon/violentmonkey" target="_blank" rel="noopener">Violentmonkey</a> is a userscript manager, which I use to install the following userscripts. <a href="https://codeberg.org/Amm0ni4/bypass-all-shortlinks-debloated/raw/branch/main/Bypass_All_Shortlinks.user.js" target="_blank" rel="noopener">Bypass All Shortlinks Debloated</a> automatically skips a lot of link shorteners that make you wait or require CAPTCHAs. <a href="https://greasyfork.org/en/scripts/496839-default-fonts" target="_blank" rel="noopener">Default fonts</a> is my own userscript that replaces custom web fonts with browser defaults (<a href="/blog/treat-yourself-to-good-typography#improving-browser-fonts">read more here</a>).</p>
+<p><a href="https://addons.mozilla.org/en-US/firefox/addon/violentmonkey" target="_blank" rel="noopener">Violentmonkey</a> is a userscript manager, which I use to install the following userscripts. <a href="https://codeberg.org/Amm0ni4/bypass-all-shortlinks-debloated/raw/branch/main/Bypass_All_Shortlinks.user.js" target="_blank" rel="noopener">Bypass All Shortlinks Debloated</a> automatically skips a lot of link shorteners that make you wait or require CAPTCHAs.</p>
 <p><a href="https://addons.mozilla.org/en-US/firefox/addon/no-google-search-translation" target="_blank" rel="noopener">No Google Search Translation</a> disables the annoying Google feature that translates all search results.</p>
 <p><a href="https://addons.mozilla.org/en-US/firefox/addon/most-recent-tab/" target="_blank" rel="noopener">Most Recent Tab</a> adds a shortcut to switch to the, well, most recent tab. After installing, you can go to Manage Extensions, click the settings icon, go to Manage Extension Shortcuts, and set the shortcut to what you want. I have mine set to <code class="language-plaintext highlighter-rouge">Ctrl + Q</code>.</p>
+<p><a href="https://addons.mozilla.org/en-US/firefox/addon/enforce-browser-fonts/" target="_blank" rel="noopener">Enforce Browser Fonts</a> lets you disable web fonts and use the browser configured fonts (<a href="/blog/treat-yourself-to-good-typography#improving-browser-fonts">related blog post</a>). You can change the default mode to whitelist or blacklist in the Manage Extension page.</p>
 <h2 id="aboutconfig">
 about:config <a href="#aboutconfig" class="anchor" aria-hidden="true" tabindex="-1">#</a>
 </h2>
