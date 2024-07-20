@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Setting Up Firefox</title>
 <link rel="preload" as="font" href="/assets/fonts/inter.woff2" crossorigin>
-<link rel="stylesheet" href="/assets/css/style.css?v=1721377489">
+<link rel="stylesheet" href="/assets/css/style.css?v=1721479119">
 <script async data-goatcounter="https://stats.kenhv.com/gc" src="/assets/js/gc.js"></script>
 <link rel="icon" type="image/x-icon" sizes="16x16 24x24 32x32 48x48" href="/favicon.ico">
 <link rel="icon" type="image/png" sizes="192x192" href="/favicon.png">
@@ -32,8 +32,8 @@
 <meta name="twitter:site" content="@KensurHV"/>
 <meta name="twitter:creator" content="@KensurHV"/>
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Ken Harris","url":"https://kenhv.com"},"dateModified":"2024-07-17T00:00:00+00:00","datePublished":"2024-07-11T00:00:00+00:00","description":"A list of extensions and tweaks to improve Firefox without breakage.","headline":"Setting Up Firefox","image":{"width":1200,"height":600,"alt":"Setting Up Firefox","url":"https://kenhv.com/assets/images/og/posts/setting-up-firefox.png","@type":"imageObject"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://kenhv.com/blog/setting-up-firefox"},"url":"https://kenhv.com/blog/setting-up-firefox"}</script>
-<meta property="article:modified_time" content="2024-07-17T00:00:00+00:00"/><link rel="alternate" type="application/atom+xml" title="Feed" href="https://kenhv.com/feed.xml"></head>
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Ken Harris","url":"https://kenhv.com"},"dateModified":"2024-07-20T00:00:00+00:00","datePublished":"2024-07-11T00:00:00+00:00","description":"A list of extensions and tweaks to improve Firefox without breakage.","headline":"Setting Up Firefox","image":{"width":1200,"height":600,"alt":"Setting Up Firefox","url":"https://kenhv.com/assets/images/og/posts/setting-up-firefox.png","@type":"imageObject"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://kenhv.com/blog/setting-up-firefox"},"url":"https://kenhv.com/blog/setting-up-firefox"}</script>
+<meta property="article:modified_time" content="2024-07-20T00:00:00+00:00"/><link rel="alternate" type="application/atom+xml" title="Feed" href="https://kenhv.com/feed.xml"></head>
 <body><header>
 <nav>
 <span>
@@ -56,8 +56,8 @@
 <p class="post-date">
 <time datetime="2024-07-11T00:00:00+00:00">
 11 July 2024</time>
-| Updated on <time datetime="2024-07-17T00:00:00+00:00">
-17 July 2024</time>
+| Updated on <time datetime="2024-07-20T00:00:00+00:00">
+20 July 2024</time>
 </p>
 </hgroup>
 <details>
@@ -81,10 +81,10 @@
 <p>Google is <a href="https://blog.chromium.org/2024/05/manifest-v2-phase-out-begins.html" target="_blank" rel="noopener">killing Manifest v2</a> in an attempt to kill ad blockers. This change will affect not only Chrome, but browsers based on Chromium such as Edge. It’s a good time to switch to Firefox. Everything just works; I’ve faced zero breakage on any site, even with some additional privacy protection settings turned on.</p>
 <p>Most Firefox guides out there recommend using <a href="https://github.com/arkenfox/user.js" target="_blank" rel="noopener">hardened configs</a> or <a href="https://librewolf.net" target="_blank" rel="noopener">forks</a>. The only thing they harden is your life. I want to get shit done, not fumble around with my settings trying to unbreak a site every 30 seconds. My configuration is the middle ground, where your browser protects your privacy <em>and</em> your sanity.</p>
 <h2 id="settings">
-Settings <a href="#settings" class="anchor" aria-hidden="true">#</a>
+Settings <a href="#settings" class="anchor" aria-hidden="true" tabindex="-1">#</a>
 </h2>
 <h3 id="general">
-General <a href="#general" class="anchor" aria-hidden="true">#</a>
+General <a href="#general" class="anchor" aria-hidden="true" tabindex="-1">#</a>
 </h3>
 <ul>
 <li>Use autoscrolling: On</li>
@@ -94,14 +94,14 @@ General <a href="#general" class="anchor" aria-hidden="true">#</a>
 </li>
 </ul>
 <h3 id="home">
-Home <a href="#home" class="anchor" aria-hidden="true">#</a>
+Home <a href="#home" class="anchor" aria-hidden="true" tabindex="-1">#</a>
 </h3>
 <ul>
 <li>Sponsored shortcuts: Off</li>
 <li>Recommended Stories: Off</li>
 </ul>
 <h3 id="privacy-and-security">
-Privacy and Security <a href="#privacy-and-security" class="anchor" aria-hidden="true">#</a>
+Privacy and Security <a href="#privacy-and-security" class="anchor" aria-hidden="true" tabindex="-1">#</a>
 </h3>
 <ul>
 <li>Enhanced Tracking Protection: Strict</li>
@@ -111,27 +111,28 @@ Privacy and Security <a href="#privacy-and-security" class="anchor" aria-hidden=
 </li>
 </ul>
 <h2 id="extensions">
-Extensions <a href="#extensions" class="anchor" aria-hidden="true">#</a>
+Extensions <a href="#extensions" class="anchor" aria-hidden="true" tabindex="-1">#</a>
 </h2>
 <p><a href="https://addons.mozilla.org/en-US/firefox/addon/ublock-origin" target="_blank" rel="noopener">uBlock Origin</a> is the best ad blocker. I enable additional filter lists: everything under “Cookie notices” and everything under “Annoyances”. I also add the <a href="https://www.i-dont-care-about-cookies.eu/abp" target="_blank" rel="noopener">I don’t care about cookies</a> filter list (no need to install the extension).</p>
 <p><a href="https://addons.mozilla.org/en-US/firefox/addon/darkreader" target="_blank" rel="noopener">Dark Reader</a> adds a dark mode to every website. After installing it, open the extension menu, go to “Dev Tools”, “Advanced”, and click “Preview new design”.</p>
 <p><a href="https://github.com/bpc-clone/bpc_updates/releases/download/latest/bypass_paywalls_clean-latest.xpi" target="_blank" rel="noopener">Bypass Paywalls Clean</a> lets you bypass most of the popular paywalled sites and sites that need you to login after viewing a page or two (like Quora). After installing it, go to the extension options and enable “Check for update rules at startup”. Then go to “Opt-in” and enable everything.</p>
 <p><a href="https://addons.mozilla.org/en-US/firefox/addon/violentmonkey" target="_blank" rel="noopener">Violentmonkey</a> is a userscript manager, which I use to install the following userscripts. <a href="https://codeberg.org/Amm0ni4/bypass-all-shortlinks-debloated/raw/branch/main/Bypass_All_Shortlinks.user.js" target="_blank" rel="noopener">Bypass All Shortlinks Debloated</a> automatically skips a lot of link shorteners that make you wait or require CAPTCHAs. <a href="https://greasyfork.org/en/scripts/496839-default-fonts" target="_blank" rel="noopener">Default fonts</a> is my own userscript that replaces custom web fonts with browser defaults (<a href="/blog/treat-yourself-to-good-typography#improving-browser-fonts">read more here</a>).</p>
 <p><a href="https://addons.mozilla.org/en-US/firefox/addon/no-google-search-translation" target="_blank" rel="noopener">No Google Search Translation</a> disables the annoying Google feature that translates all search results.</p>
+<p><a href="https://addons.mozilla.org/en-US/firefox/addon/most-recent-tab/" target="_blank" rel="noopener">Most Recent Tab</a> adds a shortcut to switch to the, well, most recent tab. After installing, you can go to Manage Extensions, click the settings icon, go to Manage Extension Shortcuts, and set the shortcut to what you want. I have mine set to <code class="language-plaintext highlighter-rouge">Ctrl + Q</code>.</p>
 <h2 id="aboutconfig">
-about:config <a href="#aboutconfig" class="anchor" aria-hidden="true">#</a>
+about:config <a href="#aboutconfig" class="anchor" aria-hidden="true" tabindex="-1">#</a>
 </h2>
 <p>Setting <code class="language-plaintext highlighter-rouge">accessibility.force_disabled</code> to <code class="language-plaintext highlighter-rouge">1</code> in helps with <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1726887" target="_blank" rel="noopener">memory usage and performance</a>.</p>
-<p>To disable fullscreen fade animations, set <code class="language-plaintext highlighter-rouge">full-screen-api.transition-duration.enter</code> and <code class="language-plaintext highlighter-rouge">full-screen-api.transition-duration.exit</code> to <code class="language-plaintext highlighter-rouge">0 0</code>.</p>
+<p>To disable fullscreen fade animations, set <code class="language-plaintext highlighter-rouge">full-screen-api.transition-duration.enter</code> and <code class="language-plaintext highlighter-rouge">full-screen-api.transition-duration.leave</code> to <code class="language-plaintext highlighter-rouge">0 0</code>.</p>
 <p>If you don’t use Pocket, you can disable it by setting <code class="language-plaintext highlighter-rouge">extensions.pocket.enabled</code> to <code class="language-plaintext highlighter-rouge">false</code>.</p>
 <p>If you want to switch tabs by scrolling on the tab bar, set <code class="language-plaintext highlighter-rouge">toolkit.tabbox.switchByScrolling</code> to <code class="language-plaintext highlighter-rouge">true</code>.</p>
 <p>If you want to reduce spacing in the UI, <a href="https://support.mozilla.org/en-US/kb/compact-mode-workaround-firefox" target="_blank" rel="noopener">enable compact mode</a>.</p>
 <h2 id="thoughts-on-telemetry">
-Thoughts on Telemetry <a href="#thoughts-on-telemetry" class="anchor" aria-hidden="true">#</a>
+Thoughts on Telemetry <a href="#thoughts-on-telemetry" class="anchor" aria-hidden="true" tabindex="-1">#</a>
 </h2>
 <p>I’ve left telemetry on, and you should consider the same for FOSS applications. This helps the developers improve their applications. Remember: telemetry is not inherently evil, privacy-invasive telemetry is. You can visit <code class="language-plaintext highlighter-rouge">about:telemetry</code> in Firefox to view all the telemetry being sent.</p>
 <h2 id="footnotes">
-Footnotes <a href="#footnotes" class="anchor" aria-hidden="true">#</a>
+Footnotes <a href="#footnotes" class="anchor" aria-hidden="true" tabindex="-1">#</a>
 </h2>
 <div class="footnotes" role="doc-endnotes">
 <ol>

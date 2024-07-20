@@ -3,7 +3,7 @@ layout: post
 title: "Setting Up Firefox"
 description: "A list of extensions and tweaks to improve Firefox without breakage."
 seo:
-  date_modified: 2024-07-17
+  date_modified: 2024-07-20
 ---
 
 Google is [killing Manifest v2](https://blog.chromium.org/2024/05/manifest-v2-phase-out-begins.html) in an attempt to kill ad blockers. This change will affect not only Chrome, but browsers based on Chromium such as Edge. It's a good time to switch to Firefox. Everything just works; I've faced zero breakage on any site, even with some additional privacy protection settings turned on.
@@ -43,11 +43,13 @@ Most Firefox guides out there recommend using [hardened configs](https://github.
 
 [No Google Search Translation](https://addons.mozilla.org/en-US/firefox/addon/no-google-search-translation) disables the annoying Google feature that translates all search results.
 
+[Most Recent Tab](https://addons.mozilla.org/en-US/firefox/addon/most-recent-tab/) adds a shortcut to switch to the, well, most recent tab. After installing, you can go to Manage Extensions, click the settings icon, go to Manage Extension Shortcuts, and set the shortcut to what you want. I have mine set to `Ctrl + Q`.
+
 ## about:config
 
 Setting `accessibility.force_disabled` to `1` in helps with [memory usage and performance](https://bugzilla.mozilla.org/show_bug.cgi?id=1726887).
 
-To disable fullscreen fade animations, set `full-screen-api.transition-duration.enter` and `full-screen-api.transition-duration.exit` to `0 0`.
+To disable fullscreen fade animations, set `full-screen-api.transition-duration.enter` and `full-screen-api.transition-duration.leave` to `0 0`.
 
 If you don't use Pocket, you can disable it by setting `extensions.pocket.enabled` to `false`.
 

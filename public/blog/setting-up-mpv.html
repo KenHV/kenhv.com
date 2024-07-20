@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Setting up MPV - The Supreme Media Player</title>
 <link rel="preload" as="font" href="/assets/fonts/inter.woff2" crossorigin>
-<link rel="stylesheet" href="/assets/css/style.css?v=1721377489">
+<link rel="stylesheet" href="/assets/css/style.css?v=1721479119">
 <script async data-goatcounter="https://stats.kenhv.com/gc" src="/assets/js/gc.js"></script>
 <link rel="icon" type="image/x-icon" sizes="16x16 24x24 32x32 48x48" href="/favicon.ico">
 <link rel="icon" type="image/png" sizes="192x192" href="/favicon.png">
@@ -75,12 +75,12 @@
 <article>
 <p>The media player you use sucks. Switch to MPV.</p>
 <h2 id="installation">
-Installation <a href="#installation" class="anchor" aria-hidden="true">#</a>
+Installation <a href="#installation" class="anchor" aria-hidden="true" tabindex="-1">#</a>
 </h2>
 <p>If you’re on Linux, you know what to do. Install it through your package manager and skip to the configuration section. If you’re on Windows, read on. Make a folder where you want to install MPV, for example <code class="language-plaintext highlighter-rouge">D:\Programs\MPV</code>. Download the <a href="https://sourceforge.net/projects/mpv-player-windows/files/bootstrapper.zip/download" target="_blank" rel="noopener">MPV bootstrapper</a> and extract the contents to the folder. Run <code class="language-plaintext highlighter-rouge">updater.bat</code> as administrator. It will ask you some questions. You can choose the default options for most questions. When it asks you to choose a variant (x86_64 or x86_64-v3), choose x86_64-v3 (press 2), unless your CPU was released over 10 years ago. I also install yt-dlp and FFmpeg.</p>
 <p>Once the script is finished, go to the newly created <code class="language-plaintext highlighter-rouge">installer</code> folder and run <code class="language-plaintext highlighter-rouge">mpv-install.bat</code> as administrator. This will register the application in Windows. Congrats, you have now installed MPV. If you ever want to uninstall MPV, run the uninstall script first and then simply delete the MPV folder. But before you start using it, there’s some essential configuration to be done.</p>
 <h2 id="configuration">
-Configuration <a href="#configuration" class="anchor" aria-hidden="true">#</a>
+Configuration <a href="#configuration" class="anchor" aria-hidden="true" tabindex="-1">#</a>
 </h2>
 <p>Almost all configurations you will find on the internet overcomplicate everything. My config is small, simple, fast and makes MPV very user-friendly.</p>
 <p>If you’re on Linux, your config folder will be <code class="language-plaintext highlighter-rouge">~/.config/mpv</code>. For Windows, create a folder called <code class="language-plaintext highlighter-rouge">portable_config</code> inside your MPV folder, this will be your config folder. Inside your config folder, create a new file named <code class="language-plaintext highlighter-rouge">mpv.conf</code> with the following contents:</p>
@@ -112,15 +112,15 @@ border=no
 </code></pre></div></div>
 <p>And that’s it! You can now start using MPV like any other media player. Really, that’s all you <strong>need</strong>.</p>
 <h2 id="beyond-the-basics">
-Beyond the Basics <a href="#beyond-the-basics" class="anchor" aria-hidden="true">#</a>
+Beyond the Basics <a href="#beyond-the-basics" class="anchor" aria-hidden="true" tabindex="-1">#</a>
 </h2>
 <p>The above configuration is enough for most people, but MPV offers way more. It is scriptable, meaning the program can be extended in many ways. I will list some of them here.</p>
 <h3 id="audio-compressor">
-Audio Compressor <a href="#audio-compressor" class="anchor" aria-hidden="true">#</a>
+Audio Compressor <a href="#audio-compressor" class="anchor" aria-hidden="true" tabindex="-1">#</a>
 </h3>
 <p>An audio compressor turns down the loudest parts and turns up the quietest parts. To install an audio compressor, download the script from <a href="https://github.com/mpv-player/mpv/blob/master/TOOLS/lua/acompressor.lua" target="_blank" rel="noopener">here</a> and add it to the <code class="language-plaintext highlighter-rouge">scripts</code> folder inside your config directory. You can press “n” to toggle the compressor. If you want to enable it by default, open the script with a text editor and change <code class="language-plaintext highlighter-rouge">default_enable = false</code> to <code class="language-plaintext highlighter-rouge">true</code>.</p>
 <h2 id="troubleshooting">
-Troubleshooting <a href="#troubleshooting" class="anchor" aria-hidden="true">#</a>
+Troubleshooting <a href="#troubleshooting" class="anchor" aria-hidden="true" tabindex="-1">#</a>
 </h2>
 <p>If MPV lags when you play media that doesn’t match your display resolution (such as 720p or 2160p on a 1080p screen), add <code class="language-plaintext highlighter-rouge">profile=fast</code> to your <code class="language-plaintext highlighter-rouge">mpv.conf</code> file. This disables MPV’s upscaling and downscaling algorithms. If that doesn’t fix it, remove the smoothmotion section.</p>
 <p>If MPV lags when you play media that matches your display resolution, try removing the smoothmotion section from the config.</p>
