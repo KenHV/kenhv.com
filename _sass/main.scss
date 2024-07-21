@@ -11,19 +11,9 @@ body {
     font-weight: 450;
     line-height: 1.7;
     font-feature-settings: 'liga' 1, 'calt' 1;
-
-    max-width: 680px;
+    max-width: 650px;
     margin: 0 auto;
     padding: 1em;
-
-    min-height: 100svh;
-    display: flex;
-    flex-direction: column;
-    box-sizing: border-box;
-}
-
-main {
-    flex: 1;
 }
 
 h1,
@@ -62,7 +52,7 @@ header span {
 
 footer {
     font-size: 0.9rem;
-    margin: 2rem 0 0.625rem;
+    padding: 2em 0;
 }
 
 /* Blog */
