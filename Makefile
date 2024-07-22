@@ -9,12 +9,10 @@ minify:
 		html-minifier-terser \
 			--collapse-boolean-attributes \
 			--collapse-whitespace \
-			--conservative-collapse \
 			--decode-entities \
 			--keep-closing-slash \
 			--minify-css \
 			--minify-js \
-			--preserve-line-breaks \
 			--remove-comments \
 			--remove-empty-attributes \
 			--remove-redundant-attributes \
