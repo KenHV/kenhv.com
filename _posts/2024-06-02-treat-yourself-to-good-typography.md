@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Treat Yourself to Good Typography"
-description: "A guide to improving font rendering on all devices and browsers."
+description: "A guide to improve font rendering on all devices and browsers."
 seo:
   date_modified: 2024-07-21
 ---

@@ -61,6 +61,19 @@
   font-weight: bolder;
 }
 
+/* Tabular data
+ * ========================================================================== */
+
+/**
+ * 1. Correct table border color in Chrome, Edge, and Safari.
+ * 2. Remove text indentation from table contents in Chrome, Edge, and Safari.
+ */
+
+ :where(table) {
+  border-color: currentColor; /* 1 */
+  text-indent: 0; /* 2 */
+}
+
 /*
  * Add the correct display in all browsers.
  */
