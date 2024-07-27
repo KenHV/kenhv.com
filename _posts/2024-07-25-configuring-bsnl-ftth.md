@@ -2,17 +2,22 @@
 layout: post
 title: "Configuring BSNL FTTH"
 description: "A guide to set up BSNL FTTH with third-party routers and modems."
+seo:
+  date_modified: 2024-07-27
 ---
 
 BSNL-provided routers are bad. They are horribly slow, have poor range, and are not very secure. Their routers cost ₹3,000. For the same price, you can get much better hardware. Here's how to set up BSNL FTTH with your own hardware.
 
 ## Requirements
 
-- ONU ([TP-Link XZ000-G7 XPON ONU](https://www.amazon.in/dp/B0CYQDZ8NC))
-- Router ([TP-Link Archer C6 AC1200 Router](https://www.amazon.in/dp/B07GVR9TG7))
+- ONU 
+- Router
 - VLAN ID
 - PPPoE username (password is always `password`)
-- MAC address of the old router (if you have one)
+
+The ONU must be TEC-certified. A list of TEC-certified products can be found at the [MTCTE Portal](https://www.mtcte.tec.gov.in/certified_equipments). If you really don't want to go that route, you can spoof your MAC address to match a TEC-certified ONU. I had a BSNL-provided combo device, so I spoofed my MAC to that. You can also use a TEC-certified combo device with another router by using bridge mode. You can find instructions in [this Reddit post](https://www.reddit.com/r/bsnl/comments/ht37q4/guide_for_bsnl_ftth/).
+
+I have a [TP-Link XZ000-G7 XPON ONU](https://www.amazon.in/dp/B0CYQDZ8NC) and a [TP-Link Archer C6 AC1200 Router](https://www.amazon.in/dp/B07GVR9TG7). I've provided step-by-step instructions for these devices, but the configuration is the same for any ONU and router. You just have to find where each setting is located.
 
 ## ONU Configuration
 

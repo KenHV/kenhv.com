@@ -10,7 +10,7 @@ twitter:
 ---
 
 <hgroup>
-<h1 style="margin-bottom:0">Ken Harris</h1>
+<h1>Ken Harris</h1>
 <b>@KenHV</b>
 </hgroup>
 
