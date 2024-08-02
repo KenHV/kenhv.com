@@ -9,10 +9,10 @@ twitter:
   card: summary
 ---
 
-<hgroup>
+<div>
 <h1>Ken Harris</h1>
 <b>@KenHV</b>
-</hgroup>
+</div>
 
 Tech enthusiast. Occasional doer of stuff.\
 Contact me at [ken@kenhv.com](mailto:ken@kenhv.com).

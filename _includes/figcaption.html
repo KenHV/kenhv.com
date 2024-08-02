@@ -1,0 +1,8 @@
+<figure>
+    <img decoding="async"
+        {% if include.eager %}
+        loading="eager"
+        {% endif %}
+        src="{{ include.src }}" alt="{{ include.alt }}">
+    <figcaption>{{ include.caption }}</figcaption>
+</figure>

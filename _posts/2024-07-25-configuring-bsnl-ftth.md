@@ -3,7 +3,7 @@ layout: post
 title: "Configuring BSNL FTTH"
 description: "A guide to set up BSNL FTTH with third-party routers and modems."
 seo:
-  date_modified: 2024-07-27
+  date_modified: 2024-08-02
 ---
 
 BSNL-provided routers are bad. They are horribly slow, have poor range, and are not very secure. Their routers cost ₹3,000. For the same price, you can get much better hardware. Here's how to set up BSNL FTTH with your own hardware.
@@ -32,6 +32,8 @@ Now go to [192.168.1.1](http://192.168.1.1), set a password for your ONU, and lo
 ## Router Configuration
 
 Connect to the router using ethernet or Wi-Fi. TP-Link also has an app to configure routers, you can use it if you like. Go to [192.168.0.1](http://192.168.0.1) and go through the setup process. Set your connection type to PPPoE and enter your PPPoE username and password (password is `password`). If you're migrating from another router, you'll need to change your new router's MAC address to the old one. Go to Advanced, Network, Internet, set "Router MAC Address" to "Use Custom MAC Address", then enter your old MAC address. Finally, you need to configure MTU. Go to Advanced, Network, Internet, Advanced Settings, and change your MTU value to `1492`. BSNL caps MTU to 1492 across India.
+
+Depending on your area, you might get IPv6 support. You can use the same PPPoE credentials for IPv6 as well.
 
 ## Support
 

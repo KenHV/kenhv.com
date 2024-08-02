@@ -3,7 +3,7 @@ layout: post
 title: "Setting Up Firefox"
 description: "A list of extensions and tweaks to improve Firefox without breakage."
 seo:
-  date_modified: 2024-07-21
+  date_modified: 2024-08-02
 ---
 
 Google is [killing Manifest v2](https://blog.chromium.org/2024/05/manifest-v2-phase-out-begins.html) in an attempt to kill ad blockers. This change will affect not only Chrome, but browsers based on Chromium such as Edge. It's a good time to switch to Firefox. Everything just works; I've faced zero breakage on any site, even with some additional privacy protection settings turned on.
@@ -58,6 +58,10 @@ If you don't use Pocket, you can disable it by setting `extensions.pocket.enable
 If you want to switch tabs by scrolling on the tab bar, set `toolkit.tabbox.switchByScrolling` to `true`.
 
 If you want to reduce spacing in the UI, [enable compact mode](https://support.mozilla.org/en-US/kb/compact-mode-workaround-firefox).
+
+### Sync about:config Tweaks
+
+Firefox lets you sync custom preferences. Let's take `accessibility.force_disabled` as an example. Prepend the preference with `services.sync.prefs.sync.` so that it becomes `services.sync.prefs.sync.accessibility.force_disabled`. Paste it in the search box, add it as a `boolean`, and set it to `true`.
 
 ## Thoughts on Telemetry
 
