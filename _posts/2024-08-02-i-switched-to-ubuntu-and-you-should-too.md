@@ -4,8 +4,8 @@ title: "I Switched to Ubuntu and You Should Too"
 description: "An essay on why you should be using (and recommending) Ubuntu."
 image:
   path: /assets/images/bell-curve-linux-distros.webp
-  width: 1280
-  height: 720
+  width: 650
+  height: 366
   alt: "Bell curve meme about Linux distros."
 ---
 

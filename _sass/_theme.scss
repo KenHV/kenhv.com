@@ -12,7 +12,10 @@ $link-dark: #46a2ff;
     color: $foreground;
     background-color: $background;
 
-    a, a:link, a:visited, a:hover {
+    a,
+    a:link,
+    a:visited,
+    a:hover {
         color: $link;
     }
 
@@ -37,7 +40,10 @@ $link-dark: #46a2ff;
     color: $foreground-dark;
     background-color: $background-dark;
 
-    a, a:link, a:visited, a:hover {
+    a,
+    a:link,
+    a:visited,
+    a:hover {
         color: $link-dark;
     }
 

@@ -8,7 +8,7 @@ layout: base
     <time datetime="{{ page.date | date_to_xmlschema }}">
       {{ page.date | date: "%-d %B %Y" }}</time>
     {% if page.seo.date_modified %}
-    | Updated on <time datetime="{{ page.seo.date_modified | date_to_xmlschema }}">
+    / Updated on <time datetime="{{ page.seo.date_modified | date_to_xmlschema }}">
       {{ page.seo.date_modified | date: "%-d %B %Y" }}</time>
     {% endif %}
   </p>
@@ -20,6 +20,6 @@ layout: base
 </details>
 {% endif %}
 
-<article>
+<article ontouchstart="">
   {% include anchor_headings.html html=content anchorBody="#" anchorClass="anchor" anchorAttrs='aria-hidden="true" tabindex="-1"' %}
 </article>

@@ -19,4 +19,10 @@ Contact me at [ken@kenhv.com](mailto:ken@kenhv.com).
 
 [My blog →](/blog)
 
-[GitHub](https://github.com/KenHV) \| [Twitter](https://twitter.com/KensurHV) \| [Telegram](https://t.me/KenHV)
+[GitHub](https://github.com/KenHV) /
+[Twitter](https://twitter.com/KensurHV) /
+[Telegram](https://t.me/KenHV)
+
+<br>
+This site is a member of the [Chads webring](https://webri.ng/webring/chads).\
+Visit a [random Chads site →](https://webri.ng/webring/chads/random?via=https%3A%2F%2Fkenhv.com)
