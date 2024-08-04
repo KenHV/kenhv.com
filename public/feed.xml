@@ -1,4 +1,143 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.3">Jekyll</generator><link href="https://kenhv.com/feed.xml" rel="self" type="application/atom+xml" /><link href="https://kenhv.com/" rel="alternate" type="text/html" /><updated>2024-08-02T21:13:12+05:30</updated><id>https://kenhv.com/feed.xml</id><title type="html">Ken Harris</title><subtitle>Tech enthusiast. Occasional doer of stuff. @KenHV</subtitle><author><name>Ken Harris</name></author><entry><title type="html">I Switched to Ubuntu and You Should Too</title><link href="https://kenhv.com/blog/i-switched-to-ubuntu-and-you-should-too" rel="alternate" type="text/html" title="I Switched to Ubuntu and You Should Too" /><published>2024-08-02T00:00:00+05:30</published><updated>2024-08-02T21:10:11+05:30</updated><id>https://kenhv.com/blog/i-switched-to-ubuntu-and-you-should-too</id><content type="html" xml:base="https://kenhv.com/blog/i-switched-to-ubuntu-and-you-should-too"><![CDATA[<figure>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.3">Jekyll</generator><link href="https://kenhv.com/feed.xml" rel="self" type="application/atom+xml" /><link href="https://kenhv.com/" rel="alternate" type="text/html" /><updated>2024-08-04T13:26:42+05:30</updated><id>https://kenhv.com/feed.xml</id><title type="html">Ken Harris</title><subtitle>Tech enthusiast. Occasional doer of stuff. @KenHV</subtitle><author><name>Ken Harris</name></author><entry><title type="html">Fail2Ban With Nginx and Cloudflare Free (With IPv6 Support)</title><link href="https://kenhv.com/blog/fail2ban-with-nginx-and-cloudflare-ipv6" rel="alternate" type="text/html" title="Fail2Ban With Nginx and Cloudflare Free (With IPv6 Support)" /><published>2024-08-04T00:00:00+05:30</published><updated>2024-08-04T13:26:39+05:30</updated><id>https://kenhv.com/blog/fail2ban-with-nginx-and-cloudflare-ipv6</id><content type="html" xml:base="https://kenhv.com/blog/fail2ban-with-nginx-and-cloudflare-ipv6"><![CDATA[<p>This post will teach you how to set up Fail2Ban actions for services reverse-proxied by Nginx and proxied by Cloudflare. I’ll be using Vaultwarden as an example. I have Nginx and Fail2Ban installed natively, and Vaultwarden in a Docker container. You can adjust it to work with Nginx and/or Fail2Ban running in Docker containers.</p>
+
+<h2 id="unmask-visitor-ip-in-nginx">Unmask Visitor IP in Nginx</h2>
+
+<p>Nginx needs to know the visitor’s real IP for the ban to work. Without this step, Nginx will simply see Cloudflare IPs and let it through. Even if you’re not going to use Fail2Ban, you should set this up.</p>
+
+<p>Make sure <code>jq</code> and <code>crontab</code> are installed in your system. We’ll be using a cronjob to fetch Cloudflare IPs and Nginx’s <a href="https://nginx.org/en/docs/http/ngx_http_realip_module.html">ngx_http_realip_module</a> to unmask the IPs. The script we’re using is from <a href="https://github.com/jaapmarcus/nginx-cloudflare-real-ip/tree/use-api-instead">this GitHub repo</a>.</p>
+
+<p>Place the script somewhere on your system. I have it in <code>/opt/scripts/cloudflare.sh</code>.</p>
+
+<pre><code class="language-bash">#!/bin/bash
+
+cf_ips="$(curl -fsLm2 --retry 1 https://api.cloudflare.com/client/v4/ips)"
+CLOUDFLARE_FILE_PATH=${1:-/etc/nginx/cloudflare}
+
+echo "# Cloudflare IP Ranges" &gt; $CLOUDFLARE_FILE_PATH
+echo "" &gt;&gt; $CLOUDFLARE_FILE_PATH
+echo "# - IPv4" &gt;&gt; $CLOUDFLARE_FILE_PATH
+for ipv4 in $(echo "$cf_ips" | jq -r '.result.ipv4_cidrs[]//""' | sort); do
+    echo "set_real_ip_from $ipv4;" &gt;&gt; $CLOUDFLARE_FILE_PATH
+done
+echo "" &gt;&gt; $CLOUDFLARE_FILE_PATH
+echo "# - IPv6" &gt;&gt; $CLOUDFLARE_FILE_PATH
+for ipv6 in $(echo "$cf_ips" | jq -r '.result.ipv6_cidrs[]//""' | sort); do
+    echo "set_real_ip_from $ipv6;" &gt;&gt; $CLOUDFLARE_FILE_PATH
+done
+echo "" &gt;&gt; $CLOUDFLARE_FILE_PATH
+echo "real_ip_header CF-Connecting-IP;" &gt;&gt; $CLOUDFLARE_FILE_PATH
+
+nginx -t &amp;&amp; systemctl reload nginx
+</code></pre>
+
+<p>Make sure the file permissions are set to <code>755</code> (<code>sudo chmod 755 /opt/scripts/cloudflare.sh</code>).</p>
+
+<p>Add the following cronjob using <code>sudo crontab -e</code>:</p>
+
+<pre><code class="language-bash"># Sync Cloudflare IPs and reload Nginx
+0 4 * * * /opt/scripts/cloudflare.sh &gt;/dev/null 2&gt;&amp;1
+</code></pre>
+
+<p>Add this line to the <code>http</code> block in your Nginx config <code>/etc/nginx/nginx.conf</code>:</p>
+
+<pre><code>include /etc/nginx/cloudflare;
+</code></pre>
+
+<p>Now for every service you’re reverse-proxying, add this line inside <code>location</code> in the <code>server</code> block:</p>
+
+<pre><code>include proxy_params;
+</code></pre>
+
+<p>Run <code>sudo nginx -t</code> to verify the config, and reload the config using <code>sudo systemctl reload nginx</code>. Nginx will now unmask the visitors’ real IP coming through Cloudflare proxy.</p>
+
+<h2 id="setup-cloudflare">Setup Cloudflare</h2>
+
+<p>Free Cloudflare accounts are limited to 5 WAF rules per zone. But Cloudflare offers one free <a href="https://developers.cloudflare.com/waf/tools/lists/custom-lists/">custom list</a> that can store 10,000 IPs. This is more than enough.</p>
+
+<p>Start by creating a custom list. Follow <a href="https://developers.cloudflare.com/waf/tools/lists/create-dashboard/">these instructions</a>. You can name it whatever you want. Make sure “Type” is set to “IP”. Select “Create” and check the URL. It will be in the following format: <code>https://dash.cloudflare.com/&lt;account-id&gt;/configurations/lists/&lt;list-id&gt;/add</code>. Note down the values in <code>account-id</code> and <code>list-id</code>, we’ll be using this later.</p>
+
+<p>We also need an API token to edit this list. Follow <a href="https://developers.cloudflare.com/fundamentals/api/get-started/create-token/">these instructions</a>. We’ll be using a custom token. Set the permissions to “Account”, “Account Filter Lists”, and “Edit”. Note down the API token.</p>
+
+<p>Next up, create a WAF rule. Follow <a href="https://developers.cloudflare.com/waf/custom-rules/create-dashboard/">these instructions</a>. Set “Field” to “IP Source Address” and “Operator” to “is in list”. Your list should automatically be selected. Set “Action” to “Block” and “Order” to “First”. That’s your Cloudflare setup done!</p>
+
+<h2 id="setup-fail2ban">Setup Fail2Ban</h2>
+
+<p>Make sure <code>jp</code> is installed in your system.</p>
+
+<p>The action we’re going to be using is from <a href="https://gist.github.com/Xunnamius/6057a660d06bcf13cc1f478af9131423?permalink_comment_id=5049552#gistcomment-5049552">@sebres</a>. This supports both IPv4 and IPv6 addresses. Create <code>/etc/fail2ban/action.d/cloudflare-list.conf</code> with the following contents:</p>
+
+<pre><code>[Definition]
+actionban = curl -s -o /dev/null -X POST &lt;_cf_api_prms&gt; \
+                 -d '[{"ip":"'"&lt;cfip&gt;"'","comment":"Created by fail2ban &lt;name&gt;"}]' \
+                 &lt;_cf_api_url&gt;
+actionunban = id=$(curl -s -X GET &lt;_cf_api_prms&gt; \
+                   "&lt;_cf_api_url&gt;?search=&lt;cfip&gt;&amp;per_page=1" \
+                   | { jp --unquoted 'result[0].id | not_null(@, `""`)' 2&gt;/dev/null; })
+              if [ -z "$id" ]; then echo "&lt;name&gt;: id for &lt;ip&gt; cannot be found"; exit 0; fi;
+              curl -s -o /dev/null -X DELETE &lt;_cf_api_prms&gt; \
+                   -d '{"items":[{"id":"'"$id"'"}]}' \
+                   &lt;_cf_api_url&gt;
+_cf_api_url = https://api.cloudflare.com/client/v4/accounts/&lt;cfaccountid&gt;/rules/lists/&lt;cfbanlistid&gt;/items
+_cf_api_prms = -H 'Authorization: bearer &lt;cfapitoken&gt;' -H 'Content-Type: application/json'
+
+[Init]
+cfip = &lt;ip&gt;
+
+[Init?family=inet6]
+cfip = $(fail2ban-python -c 'import sys; from fail2ban.server.ipdns import IPAddr; a = IPAddr(sys.argv[1]+"/"+sys.argv[2]); print(str(a))' "&lt;ip&gt;" 64)
+</code></pre>
+
+<p>Now create <code>/etc/fail2ban/action.d/cloudflare-list.local</code> with the following contents:</p>
+
+<pre><code>[Init]
+cfapitoken = &lt;api-token&gt;
+cfaccountid = &lt;account-id&gt;
+cfbanlistid = &lt;list-id&gt;
+</code></pre>
+
+<p>Fill in the details, and <strong>make sure</strong> you set the file’s permissions to <code>640</code> (<code>sudo chmod 640 /etc/fail2ban/action.d/cloudflare-list.local</code>) to ensure only <em>root</em> can read this file.</p>
+
+<p>Let’s configure Fail2Ban for Vaultwarden. <a href="https://github.com/dani-garcia/vaultwarden/wiki/Logging">Enable logging</a> in Vaultwarden. Create <code>/etc/fail2ban/filter.d/vaultwarden.local</code> with the following contents:</p>
+
+<pre><code>[INCLUDES]
+before = common.conf
+
+[Definition]
+failregex = ^.*?Username or password is incorrect\. Try again\. IP: &lt;ADDR&gt;\. Username:.*$
+ignoreregex =
+</code></pre>
+
+<p>Now create <code>/etc/fail2ban/jail.d/vaultwarden.local</code> with the following contents:</p>
+
+<pre><code>[vaultwarden]
+enabled = true
+filter = vaultwarden
+backend = auto
+logpath = &lt;path/to/vaultwarden.log&gt;
+action = cloudflare-list
+         nginx-block-map
+maxretry = 3
+bantime = 1d
+findtime = 15m
+</code></pre>
+
+<p>Depending on your config, you might want to set <a href="https://github.com/dani-garcia/vaultwarden/wiki/Fail2Ban-Setup#note-for-docker-users">chain = FORWARD</a>. Note that we’re not banning the IP using firewall rules, because we’ll be receiving requests from Cloudflare’s IPs.</p>
+
+<h2 id="setup-nginx">Setup Nginx</h2>
+
+<p>Add the following line to the <code>http</code> block in your main Nginx config (<code>/etc/nginx/nginx.conf</code>):</p>
+
+<pre><code>map $remote_addr $ip_blacklisted { include blacklisted-sessions.map; }
+</code></pre>
+
+<p>Add the following line to the <code>server</code> block of services you’re reverse-proxying:</p>
+
+<pre><code>if ($ip_blacklisted) { return 403; }
+</code></pre>
+
+<h2 id="test-your-config">Test Your Config</h2>
+
+<p>To verify if everything is working, go to your Vaultwarden instance and try logging in with incorrect credentials 3 times. Check <code>/var/log/fail2ban.log</code> (<code>sudo tail -f /var/log/fail2ban.log</code>), it should say that your IP has been banned. Without reloading your Vaultwarden web vault page, try logging in with the correct credentials. It won’t work, as Nginx will only return 403. If you reload the page, Cloudflare will say you’ve been banned. To unban yourself, run <code>sudo fail2ban-client set vaultwarden unbanip &lt;banned-ip&gt;</code>. Congrats! You have secured your Vaultwarden instance with two layers of protection using Fail2Ban.</p>]]></content><author><name>Ken Harris</name></author><summary type="html"><![CDATA[A guide to set up Fail2Ban with Nginx and Cloudflare free plan with IPv6 support. Includes instructions to restore original visitor IP in Nginx.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://kenhv.com/assets/images/og/posts/fail2ban-with-nginx-and-cloudflare-ipv6.png" /><media:content medium="image" url="https://kenhv.com/assets/images/og/posts/fail2ban-with-nginx-and-cloudflare-ipv6.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">I Switched to Ubuntu and You Should Too</title><link href="https://kenhv.com/blog/i-switched-to-ubuntu-and-you-should-too" rel="alternate" type="text/html" title="I Switched to Ubuntu and You Should Too" /><published>2024-08-02T00:00:00+05:30</published><updated>2024-08-02T21:13:18+05:30</updated><id>https://kenhv.com/blog/i-switched-to-ubuntu-and-you-should-too</id><content type="html" xml:base="https://kenhv.com/blog/i-switched-to-ubuntu-and-you-should-too"><![CDATA[<figure>
     <img decoding="async" fetchpriority="high" style="aspect-ratio:16/9" width="650" src="/assets/images/bell-curve-linux-distros.webp" alt="Bell curve meme about Linux distros." />
     <figcaption>Don't be the midwit.</figcaption>
 </figure>
@@ -41,7 +180,7 @@
 
 <p>Support is amazing. I can simply Google a problem and find step-by-step instructions specifically for Ubuntu.</p>
 
-<p>A lot of big software offer official native packages for Ubuntu. Since I dislike containerised package formats, previously my only choice was to use the AUR and trust the <code class="language-plaintext highlighter-rouge">-bin</code> package maintainers. Now I can just use official packages! Fun fact, a lot of the <code class="language-plaintext highlighter-rouge">-bin</code> packages in AUR just convert Ubuntu debs to Arch Linux pkgs.</p>
+<p>A lot of big software offer official native packages for Ubuntu. Since I dislike containerised package formats, previously my only choice was to use the AUR and trust the <code>-bin</code> package maintainers. Now I can just use official packages! Fun fact, a lot of the <code>-bin</code> packages in AUR just convert Ubuntu debs to Arch Linux pkgs.</p>
 
 <p>Ubuntu offers full secure boot support, even when using NVIDIA. You can dual-boot with Windows and play your favourite game with kernel-level <del>rootkit</del> anti-cheat!</p>
 
@@ -57,7 +196,7 @@
   <li>ONU</li>
   <li>Router</li>
   <li>VLAN ID</li>
-  <li>PPPoE username (password is always <code class="language-plaintext highlighter-rouge">password</code>)</li>
+  <li>PPPoE username (password is always <code>password</code>)</li>
 </ul>
 
 <p>The ONU must be TEC-certified. A list of TEC-certified products can be found at the <a href="https://www.mtcte.tec.gov.in/certified_equipments">MTCTE Portal</a>. If you really don’t want to go that route, you can spoof your MAC address to match a TEC-certified ONU. I had a BSNL-provided combo device, so I spoofed my MAC to that. You can also use a TEC-certified combo device with another router by using bridge mode. You can find instructions in <a href="https://www.reddit.com/r/bsnl/comments/ht37q4/guide_for_bsnl_ftth/">this Reddit post</a>.</p>
@@ -72,24 +211,24 @@
   <tbody>
     <tr>
       <td>IP Address</td>
-      <td><code class="language-plaintext highlighter-rouge">192.168.1.100</code></td>
+      <td><code>192.168.1.100</code></td>
     </tr>
     <tr>
       <td>Subnet Mask</td>
-      <td><code class="language-plaintext highlighter-rouge">255.255.255.0</code></td>
+      <td><code>255.255.255.0</code></td>
     </tr>
     <tr>
       <td>Gateway</td>
-      <td><code class="language-plaintext highlighter-rouge">192.168.1.1</code></td>
+      <td><code>192.168.1.1</code></td>
     </tr>
   </tbody>
 </table>
 
-<p>Now go to <a href="http://192.168.1.1">192.168.1.1</a>, set a password for your ONU, and log in. Go to Advanced, Network, and select VLAN Settings. Set “VLAN mode” to “VLAN TAG mode”, enter your VLAN ID, and set “Priority” to <code class="language-plaintext highlighter-rouge">1</code>. You can also turn on the DHCP server if you want easier access to your ONU in the future. You can now disconnect the ethernet and connect your ONU to the router.</p>
+<p>Now go to <a href="http://192.168.1.1">192.168.1.1</a>, set a password for your ONU, and log in. Go to Advanced, Network, and select VLAN Settings. Set “VLAN mode” to “VLAN TAG mode”, enter your VLAN ID, and set “Priority” to <code>1</code>. You can also turn on the DHCP server if you want easier access to your ONU in the future. You can now disconnect the ethernet and connect your ONU to the router.</p>
 
 <h2 id="router-configuration">Router Configuration</h2>
 
-<p>Connect to the router using ethernet or Wi-Fi. TP-Link also has an app to configure routers, you can use it if you like. Go to <a href="http://192.168.0.1">192.168.0.1</a> and go through the setup process. Set your connection type to PPPoE and enter your PPPoE username and password (password is <code class="language-plaintext highlighter-rouge">password</code>). If you’re migrating from another router, you’ll need to change your new router’s MAC address to the old one. Go to Advanced, Network, Internet, set “Router MAC Address” to “Use Custom MAC Address”, then enter your old MAC address. Finally, you need to configure MTU. Go to Advanced, Network, Internet, Advanced Settings, and change your MTU value to <code class="language-plaintext highlighter-rouge">1492</code>. BSNL caps MTU to 1492 across India.</p>
+<p>Connect to the router using ethernet or Wi-Fi. TP-Link also has an app to configure routers, you can use it if you like. Go to <a href="http://192.168.0.1">192.168.0.1</a> and go through the setup process. Set your connection type to PPPoE and enter your PPPoE username and password (password is <code>password</code>). If you’re migrating from another router, you’ll need to change your new router’s MAC address to the old one. Go to Advanced, Network, Internet, set “Router MAC Address” to “Use Custom MAC Address”, then enter your old MAC address. Finally, you need to configure MTU. Go to Advanced, Network, Internet, Advanced Settings, and change your MTU value to <code>1492</code>. BSNL caps MTU to 1492 across India.</p>
 
 <p>Depending on your area, you might get IPv6 support. You can use the same PPPoE credentials for IPv6 as well.</p>
 
@@ -138,29 +277,29 @@
 
 <p><a href="https://addons.mozilla.org/en-US/firefox/addon/no-google-search-translation">No Google Search Translation</a> disables the annoying Google feature that translates all search results.</p>
 
-<p><a href="https://addons.mozilla.org/en-US/firefox/addon/most-recent-tab/">Most Recent Tab</a> adds a shortcut to switch to the, well, most recent tab. After installing, you can go to Manage Extensions, click the settings icon, go to Manage Extension Shortcuts, and set the shortcut to what you want. I have mine set to <code class="language-plaintext highlighter-rouge">Ctrl + Q</code>.</p>
+<p><a href="https://addons.mozilla.org/en-US/firefox/addon/most-recent-tab/">Most Recent Tab</a> adds a shortcut to switch to the, well, most recent tab. After installing, you can go to Manage Extensions, click the settings icon, go to Manage Extension Shortcuts, and set the shortcut to what you want. I have mine set to <code>Ctrl + Q</code>.</p>
 
 <p><a href="https://addons.mozilla.org/en-US/firefox/addon/enforce-browser-fonts/">Enforce Browser Fonts</a> lets you disable web fonts and use the browser configured fonts (<a href="/blog/treat-yourself-to-good-typography#improving-browser-fonts">related blog post</a>). You can change the default mode to whitelist or blacklist in the Manage Extension page.</p>
 
 <h2 id="aboutconfig">about:config</h2>
 
-<p>Setting <code class="language-plaintext highlighter-rouge">accessibility.force_disabled</code> to <code class="language-plaintext highlighter-rouge">1</code> in helps with <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1726887">memory usage and performance</a>.</p>
+<p>Setting <code>accessibility.force_disabled</code> to <code>1</code> in helps with <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1726887">memory usage and performance</a>.</p>
 
-<p>To disable fullscreen fade animations, set <code class="language-plaintext highlighter-rouge">full-screen-api.transition-duration.enter</code> and <code class="language-plaintext highlighter-rouge">full-screen-api.transition-duration.leave</code> to <code class="language-plaintext highlighter-rouge">0 0</code>.</p>
+<p>To disable fullscreen fade animations, set <code>full-screen-api.transition-duration.enter</code> and <code>full-screen-api.transition-duration.leave</code> to <code>0 0</code>.</p>
 
-<p>If you don’t use Pocket, you can disable it by setting <code class="language-plaintext highlighter-rouge">extensions.pocket.enabled</code> to <code class="language-plaintext highlighter-rouge">false</code>.</p>
+<p>If you don’t use Pocket, you can disable it by setting <code>extensions.pocket.enabled</code> to <code>false</code>.</p>
 
-<p>If you want to switch tabs by scrolling on the tab bar, set <code class="language-plaintext highlighter-rouge">toolkit.tabbox.switchByScrolling</code> to <code class="language-plaintext highlighter-rouge">true</code>.</p>
+<p>If you want to switch tabs by scrolling on the tab bar, set <code>toolkit.tabbox.switchByScrolling</code> to <code>true</code>.</p>
 
 <p>If you want to reduce spacing in the UI, <a href="https://support.mozilla.org/en-US/kb/compact-mode-workaround-firefox">enable compact mode</a>.</p>
 
 <h3 id="sync-aboutconfig-tweaks">Sync about:config Tweaks</h3>
 
-<p>Firefox lets you sync custom preferences. Let’s take <code class="language-plaintext highlighter-rouge">accessibility.force_disabled</code> as an example. Prepend the preference with <code class="language-plaintext highlighter-rouge">services.sync.prefs.sync.</code> so that it becomes <code class="language-plaintext highlighter-rouge">services.sync.prefs.sync.accessibility.force_disabled</code>. Paste it in the search box, add it as a <code class="language-plaintext highlighter-rouge">boolean</code>, and set it to <code class="language-plaintext highlighter-rouge">true</code>.</p>
+<p>Firefox lets you sync custom preferences. Let’s take <code>accessibility.force_disabled</code> as an example. Prepend the preference with <code>services.sync.prefs.sync.</code> so that it becomes <code>services.sync.prefs.sync.accessibility.force_disabled</code>. Paste it in the search box, add it as a <code>boolean</code>, and set it to <code>true</code>.</p>
 
 <h2 id="thoughts-on-telemetry">Thoughts on Telemetry</h2>
 
-<p>I’ve left telemetry on, and you should consider the same for FOSS applications. This helps the developers improve their applications. Remember: telemetry is not inherently evil, privacy-invasive telemetry is. You can visit <code class="language-plaintext highlighter-rouge">about:telemetry</code> in Firefox to view all the telemetry being sent.</p>
+<p>I’ve left telemetry on, and you should consider the same for FOSS applications. This helps the developers improve their applications. Remember: telemetry is not inherently evil, privacy-invasive telemetry is. You can visit <code>about:telemetry</code> in Firefox to view all the telemetry being sent.</p>
 
 <h2 id="footnotes">Footnotes</h2>
 
@@ -170,7 +309,7 @@
       <p>I use this to open M3U files in MPV directly, for <a href="/blog/the-comfiest-streaming-service#streaming-with-mpv">my streaming setup</a>. <a href="#fnref:1" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
     </li>
     <li id="fn:2" role="doc-endnote">
-      <p>I use <a href="https://quad9.net">Quad9</a> (<code class="language-plaintext highlighter-rouge">https://dns.quad9.net/dns-query</code>) as my DNS provider. <a href="#fnref:2" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+      <p>I use <a href="https://quad9.net">Quad9</a> (<code>https://dns.quad9.net/dns-query</code>) as my DNS provider. <a href="#fnref:2" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
     </li>
   </ol>
 </div>]]></content><author><name>Ken Harris</name></author><summary type="html"><![CDATA[A list of extensions and tweaks to improve Firefox without breakage.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://kenhv.com/assets/images/og/posts/setting-up-firefox.png" /><media:content medium="image" url="https://kenhv.com/assets/images/og/posts/setting-up-firefox.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Highlights From Children of Dune</title><link href="https://kenhv.com/blog/highlights-from-children-of-dune" rel="alternate" type="text/html" title="Highlights From Children of Dune" /><published>2024-07-08T00:00:00+05:30</published><updated>2024-07-19T13:55:12+05:30</updated><id>https://kenhv.com/blog/highlights-from-children-of-dune</id><content type="html" xml:base="https://kenhv.com/blog/highlights-from-children-of-dune"><![CDATA[<p>I’ve never highlighted this many passages from a non-philosophy book. Half a century later, the Dune saga is more relevant than ever. A must-read for sure.</p>
@@ -301,17 +440,17 @@
 
 <h2 id="installation">Installation</h2>
 
-<p>If you’re on Linux, you know what to do. Install it through your package manager and skip to the configuration section. If you’re on Windows, read on. Make a folder where you want to install MPV, for example <code class="language-plaintext highlighter-rouge">D:\Programs\MPV</code>. Download the <a href="https://sourceforge.net/projects/mpv-player-windows/files/bootstrapper.zip/download">MPV bootstrapper</a> and extract the contents to the folder. Run <code class="language-plaintext highlighter-rouge">updater.bat</code> as administrator. It will ask you some questions. You can choose the default options for most questions. When it asks you to choose a variant (x86_64 or x86_64-v3), choose x86_64-v3 (press 2), unless your CPU was released over 10 years ago. I also install yt-dlp and FFmpeg.</p>
+<p>If you’re on Linux, you know what to do. Install it through your package manager and skip to the configuration section. If you’re on Windows, read on. Make a folder where you want to install MPV, for example <code>D:\Programs\MPV</code>. Download the <a href="https://sourceforge.net/projects/mpv-player-windows/files/bootstrapper.zip/download">MPV bootstrapper</a> and extract the contents to the folder. Run <code>updater.bat</code> as administrator. It will ask you some questions. You can choose the default options for most questions. When it asks you to choose a variant (x86_64 or x86_64-v3), choose x86_64-v3 (press 2), unless your CPU was released over 10 years ago. I also install yt-dlp and FFmpeg.</p>
 
-<p>Once the script is finished, go to the newly created <code class="language-plaintext highlighter-rouge">installer</code> folder and run <code class="language-plaintext highlighter-rouge">mpv-install.bat</code> as administrator. This will register the application in Windows. Congrats, you have now installed MPV. If you ever want to uninstall MPV, run the uninstall script first and then simply delete the MPV folder. But before you start using it, there’s some essential configuration to be done.</p>
+<p>Once the script is finished, go to the newly created <code>installer</code> folder and run <code>mpv-install.bat</code> as administrator. This will register the application in Windows. Congrats, you have now installed MPV. If you ever want to uninstall MPV, run the uninstall script first and then simply delete the MPV folder. But before you start using it, there’s some essential configuration to be done.</p>
 
 <h2 id="configuration">Configuration</h2>
 
 <p>Almost all configurations you will find on the internet overcomplicate everything. My config is small, simple, fast and makes MPV very user-friendly.</p>
 
-<p>If you’re on Linux, your config folder will be <code class="language-plaintext highlighter-rouge">~/.config/mpv</code>. For Windows, create a folder called <code class="language-plaintext highlighter-rouge">portable_config</code> inside your MPV folder, this will be your config folder. Inside your config folder, create a new file named <code class="language-plaintext highlighter-rouge">mpv.conf</code> with the following contents:</p>
+<p>If you’re on Linux, your config folder will be <code>~/.config/mpv</code>. For Windows, create a folder called <code>portable_config</code> inside your MPV folder, this will be your config folder. Inside your config folder, create a new file named <code>mpv.conf</code> with the following contents:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Essentials
+<pre><code># Essentials
 vo=gpu-next
 gpu-api=auto     
 hwdec=auto-safe
@@ -329,18 +468,18 @@ autofit-larger=80%x80%
 # UOSC
 osd-bar=no
 border=no
-</code></pre></div></div>
+</code></pre>
 
 <p>Next up, we’re gonna install <a href="https://github.com/tomasklaen/uosc">UOSC</a>. UOSC is a custom GUI for MPV; the default GUI is extremely bare-bones. On Windows, go to your MPV installation folder (the folder should have mpv.exe in it), right click and open a terminal. Now run the following commands:</p>
 
-<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">Set-ExecutionPolicy</span><span class="w"> </span><span class="nx">RemoteSigned</span><span class="w"> </span><span class="nt">-Scope</span><span class="w"> </span><span class="nx">CurrentUser</span><span class="w">
-</span><span class="n">irm</span><span class="w"> </span><span class="nx">https://raw.githubusercontent.com/tomasklaen/uosc/HEAD/installers/windows.ps1</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">iex</span><span class="w">
-</span></code></pre></div></div>
+<pre><code class="language-powershell">Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+irm https://raw.githubusercontent.com/tomasklaen/uosc/HEAD/installers/windows.ps1 | iex
+</code></pre>
 
 <p>Linux users, run the following command:</p>
 
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/bin/bash <span class="nt">-c</span> <span class="s2">"</span><span class="si">$(</span>curl <span class="nt">-fsSL</span> https://raw.githubusercontent.com/tomasklaen/uosc/HEAD/installers/unix.sh<span class="si">)</span><span class="s2">"</span>
-</code></pre></div></div>
+<pre><code class="language-bash">/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/tomasklaen/uosc/HEAD/installers/unix.sh)"
+</code></pre>
 
 <p>And that’s it! You can now start using MPV like any other media player. Really, that’s all you <strong>need</strong>.</p>
 
@@ -350,15 +489,15 @@ border=no
 
 <h3 id="audio-compressor">Audio Compressor</h3>
 
-<p>An audio compressor turns down the loudest parts and turns up the quietest parts. To install an audio compressor, download the script from <a href="https://github.com/mpv-player/mpv/blob/master/TOOLS/lua/acompressor.lua">here</a> and add it to the <code class="language-plaintext highlighter-rouge">scripts</code> folder inside your config directory. You can press “n” to toggle the compressor. If you want to enable it by default, open the script with a text editor and change <code class="language-plaintext highlighter-rouge">default_enable = false</code> to <code class="language-plaintext highlighter-rouge">true</code>.</p>
+<p>An audio compressor turns down the loudest parts and turns up the quietest parts. To install an audio compressor, download the script from <a href="https://github.com/mpv-player/mpv/blob/master/TOOLS/lua/acompressor.lua">here</a> and add it to the <code>scripts</code> folder inside your config directory. You can press “n” to toggle the compressor. If you want to enable it by default, open the script with a text editor and change <code>default_enable = false</code> to <code>true</code>.</p>
 
 <h2 id="troubleshooting">Troubleshooting</h2>
 
-<p>If MPV lags when you play media that doesn’t match your display resolution (such as 720p or 2160p on a 1080p screen), add <code class="language-plaintext highlighter-rouge">profile=fast</code> to your <code class="language-plaintext highlighter-rouge">mpv.conf</code> file. This disables MPV’s upscaling and downscaling algorithms. If that doesn’t fix it, remove the smoothmotion section.</p>
+<p>If MPV lags when you play media that doesn’t match your display resolution (such as 720p or 2160p on a 1080p screen), add <code>profile=fast</code> to your <code>mpv.conf</code> file. This disables MPV’s upscaling and downscaling algorithms. If that doesn’t fix it, remove the smoothmotion section.</p>
 
 <p>If MPV lags when you play media that matches your display resolution, try removing the smoothmotion section from the config.</p>
 
-<p>If you face crashes or weird glitches, set <code class="language-plaintext highlighter-rouge">vo=gpu</code> in your config file.</p>]]></content><author><name>Ken Harris</name></author><summary type="html"><![CDATA[The media player you use sucks. Switch to MPV.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://kenhv.com/assets/images/og/posts/setting-up-mpv.png" /><media:content medium="image" url="https://kenhv.com/assets/images/og/posts/setting-up-mpv.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Treat Yourself to Good Typography</title><link href="https://kenhv.com/blog/treat-yourself-to-good-typography" rel="alternate" type="text/html" title="Treat Yourself to Good Typography" /><published>2024-06-02T00:00:00+05:30</published><updated>2024-07-25T17:56:56+05:30</updated><id>https://kenhv.com/blog/treat-yourself-to-good-typography</id><content type="html" xml:base="https://kenhv.com/blog/treat-yourself-to-good-typography"><![CDATA[<p>Ah, typography, the cornerstone of great design. Optimising your fonts and typography settings will go a long way in improving readability, especially if you’re someone who reads a lot. Here’s how I setup my devices.</p>
+<p>If you face crashes or weird glitches, set <code>vo=gpu</code> in your config file.</p>]]></content><author><name>Ken Harris</name></author><summary type="html"><![CDATA[The media player you use sucks. Switch to MPV.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://kenhv.com/assets/images/og/posts/setting-up-mpv.png" /><media:content medium="image" url="https://kenhv.com/assets/images/og/posts/setting-up-mpv.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Treat Yourself to Good Typography</title><link href="https://kenhv.com/blog/treat-yourself-to-good-typography" rel="alternate" type="text/html" title="Treat Yourself to Good Typography" /><published>2024-06-02T00:00:00+05:30</published><updated>2024-07-25T17:56:56+05:30</updated><id>https://kenhv.com/blog/treat-yourself-to-good-typography</id><content type="html" xml:base="https://kenhv.com/blog/treat-yourself-to-good-typography"><![CDATA[<p>Ah, typography, the cornerstone of great design. Optimising your fonts and typography settings will go a long way in improving readability, especially if you’re someone who reads a lot. Here’s how I setup my devices.</p>
 
 <h2 id="windows-vs-mac">Windows vs Mac</h2>
 
@@ -398,33 +537,33 @@ border=no
 
 <h2 id="basics">Basics</h2>
 
-<p>Go through the <a href="https://wiki.archlinux.org/title/Installation_guide">Arch installation guide</a>. If you have an SSD and plan on wiping your drive, do a <a href="https://wiki.archlinux.org/title/Solid_state_drive/Memory_cell_clearing#NVMe_drive">memory cell clearing</a> to <a href="https://www.anandtech.com/show/2738/8">restore factory write speeds</a>. I go with Ext4 for my partitions. Refer to the <a href="https://wiki.archlinux.org/title/Ext4#Bytes-per-inode_ratio">bytes-per-inode ratio</a> and <a href="https://wiki.archlinux.org/title/Ext4#Reserved_blocks">reserved block</a> sections before creating your Ext4 partition. As for the kernel, just use <code class="language-plaintext highlighter-rouge">linux-zen</code>. Don’t bother with all those fancy-sounding custom kernels you find out there. Go through the <a href="https://wiki.archlinux.org/title/General_recommendations">general recommendations</a>. Except for security, because protection is no fun.</p>
+<p>Go through the <a href="https://wiki.archlinux.org/title/Installation_guide">Arch installation guide</a>. If you have an SSD and plan on wiping your drive, do a <a href="https://wiki.archlinux.org/title/Solid_state_drive/Memory_cell_clearing#NVMe_drive">memory cell clearing</a> to <a href="https://www.anandtech.com/show/2738/8">restore factory write speeds</a>. I go with Ext4 for my partitions. Refer to the <a href="https://wiki.archlinux.org/title/Ext4#Bytes-per-inode_ratio">bytes-per-inode ratio</a> and <a href="https://wiki.archlinux.org/title/Ext4#Reserved_blocks">reserved block</a> sections before creating your Ext4 partition. As for the kernel, just use <code>linux-zen</code>. Don’t bother with all those fancy-sounding custom kernels you find out there. Go through the <a href="https://wiki.archlinux.org/title/General_recommendations">general recommendations</a>. Except for security, because protection is no fun.</p>
 
 <h2 id="desktop-environment">Desktop Environment</h2>
 
-<p>GNOME AND XFCE are both solid options for a desktop environment. I prefer GNOME. Installing <code class="language-plaintext highlighter-rouge">gnome-shell-performance</code> and <code class="language-plaintext highlighter-rouge">mutter-performance</code> from the AUR will greatly improve your experience. If your PC is extremely slow, you can use XFCE with it’s compositor disabled for more performance. <a href="https://wiki.archlinux.org/title/intel_graphics#Tearing">Enable TearFree</a> to eliminate screen tearing when the compositor is off.</p>
+<p>GNOME AND XFCE are both solid options for a desktop environment. I prefer GNOME. Installing <code>gnome-shell-performance</code> and <code>mutter-performance</code> from the AUR will greatly improve your experience. If your PC is extremely slow, you can use XFCE with it’s compositor disabled for more performance. <a href="https://wiki.archlinux.org/title/intel_graphics#Tearing">Enable TearFree</a> to eliminate screen tearing when the compositor is off.</p>
 
 <h2 id="graphics">Graphics</h2>
 
-<p>Set up your GPU drivers. I use <a href="https://github.com/bayasdev/envycontrol">EnvyControl</a> to manage <a href="https://wiki.archlinux.org/title/NVIDIA_Optimus">NVIDIA Optimus</a>. I keep my dGPU disabled unless I need it for gaming. Go through <a href="https://wiki.archlinux.org/title/intel_graphics">Intel graphics</a> for Intel. Take a look at <a href="https://wiki.archlinux.org/title/intel_graphics#Enable_GuC_/_HuC_firmware_loading">GuC/HuC firmware loading</a>, <a href="https://wiki.archlinux.org/title/intel_graphics#Framebuffer_compression_(enable_fbc)">framebuffer compression</a>in particular. I would also suggest turning off GPU mitigations (<code class="language-plaintext highlighter-rouge">i915.mitigations=off</code>).</p>
+<p>Set up your GPU drivers. I use <a href="https://github.com/bayasdev/envycontrol">EnvyControl</a> to manage <a href="https://wiki.archlinux.org/title/NVIDIA_Optimus">NVIDIA Optimus</a>. I keep my dGPU disabled unless I need it for gaming. Go through <a href="https://wiki.archlinux.org/title/intel_graphics">Intel graphics</a> for Intel. Take a look at <a href="https://wiki.archlinux.org/title/intel_graphics#Enable_GuC_/_HuC_firmware_loading">GuC/HuC firmware loading</a>, <a href="https://wiki.archlinux.org/title/intel_graphics#Framebuffer_compression_(enable_fbc)">framebuffer compression</a>in particular. I would also suggest turning off GPU mitigations (<code>i915.mitigations=off</code>).</p>
 
-<p>Install appropriate drivers and verify <a href="https://wiki.archlinux.org/title/Hardware_video_acceleration">hardware video acceleration</a>. Set appropriate values for <code class="language-plaintext highlighter-rouge">LIBVA_DRIVER_NAME</code> and <code class="language-plaintext highlighter-rouge">VDPAU_DRIVER</code> by adding <code class="language-plaintext highlighter-rouge">export</code> commands to <code class="language-plaintext highlighter-rouge">/etc/profile.d/env.sh</code>. Adding them to <code class="language-plaintext highlighter-rouge">bashrc</code> won’t work, these environment variables must be set in the login shell.</p>
+<p>Install appropriate drivers and verify <a href="https://wiki.archlinux.org/title/Hardware_video_acceleration">hardware video acceleration</a>. Set appropriate values for <code>LIBVA_DRIVER_NAME</code> and <code>VDPAU_DRIVER</code> by adding <code>export</code> commands to <code>/etc/profile.d/env.sh</code>. Adding them to <code>bashrc</code> won’t work, these environment variables must be set in the login shell.</p>
 
 <p>If you game, install and use <a href="https://github.com/FeralInteractive/gamemode">gamemode</a> to improve performance. I don’t game anymore, so I don’t keep up with gaming optimisations in particular.</p>
 
 <h2 id="browser">Browser</h2>
 
-<p>For Firefox, refer to the <a href="https://wiki.archlinux.org/title/Firefox#Hardware_video_acceleration">hardware acceleration</a> section. Check out <a href="https://wiki.archlinux.org/title/Firefox#Touchscreen_gestures_and_pixel-perfect_trackpad_scrolling">touchscreen gestures and pixel-perfect trackpad scrolling</a>. Export them from <code class="language-plaintext highlighter-rouge">env.sh</code>.</p>
+<p>For Firefox, refer to the <a href="https://wiki.archlinux.org/title/Firefox#Hardware_video_acceleration">hardware acceleration</a> section. Check out <a href="https://wiki.archlinux.org/title/Firefox#Touchscreen_gestures_and_pixel-perfect_trackpad_scrolling">touchscreen gestures and pixel-perfect trackpad scrolling</a>. Export them from <code>env.sh</code>.</p>
 
-<p>For Chromium and Chromium-based browsers, refer to the <a href="https://wiki.archlinux.org/title/Chromium#Hardware_video_acceleration">hardware acceleration</a> and <a href="https://wiki.archlinux.org/title/Chromium#Force_GPU_acceleration">force GPU acceleration</a> sections. You can verify it at <code class="language-plaintext highlighter-rouge">chrome://gpu</code>. Video decoding information is at the bottom of the page. You can <a href="https://wiki.archlinux.org/title/Chromium#Touchpad_Gestures_for_Navigation">enable touchpad gestures</a> on Chromium too. To enable middle mouse button scrolling, add the following flags: <code class="language-plaintext highlighter-rouge">--test-type --enable-blink-features=MiddleClickAutoscroll</code>.</p>
+<p>For Chromium and Chromium-based browsers, refer to the <a href="https://wiki.archlinux.org/title/Chromium#Hardware_video_acceleration">hardware acceleration</a> and <a href="https://wiki.archlinux.org/title/Chromium#Force_GPU_acceleration">force GPU acceleration</a> sections. You can verify it at <code>chrome://gpu</code>. Video decoding information is at the bottom of the page. You can <a href="https://wiki.archlinux.org/title/Chromium#Touchpad_Gestures_for_Navigation">enable touchpad gestures</a> on Chromium too. To enable middle mouse button scrolling, add the following flags: <code>--test-type --enable-blink-features=MiddleClickAutoscroll</code>.</p>
 
 <p><a href="https://wiki.archlinux.org/title/Profile-sync-daemon">Profile-sync-daemon</a> can help speed up your browser performance by storing your browser profiles in tmpfs. You can also store your browser cache in tmpfs, Arch has instructions for both <a href="https://wiki.archlinux.org/title/Firefox/Tweaks#Move_disk_cache_to_RAM">Firefox</a> and <a href="https://wiki.archlinux.org/title/Chromium#Cache_in_tmpfs">Chromium</a>, although I only use PSD.</p>
 
 <h2 id="power-management">Power Management</h2>
 
-<p>Now onto power management. I use a script by <a href="https://kerneltoast.com">kerneltoast</a> that enables runtime power management for all devices (except USB). Create <code class="language-plaintext highlighter-rouge">/etc/systemd/system/powersave.service</code> with the following contents and enable it by <code class="language-plaintext highlighter-rouge">sudo systemctl enable --now powersave.service</code>.</p>
+<p>Now onto power management. I use a script by <a href="https://kerneltoast.com">kerneltoast</a> that enables runtime power management for all devices (except USB). Create <code>/etc/systemd/system/powersave.service</code> with the following contents and enable it by <code>sudo systemctl enable --now powersave.service</code>.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[Unit]
+<pre><code>[Unit]
 Description=Powersave auto tune
 After=suspend.target
 After=hibernate.target
@@ -439,7 +578,7 @@ WantedBy=suspend.target
 WantedBy=hibernate.target
 WantedBy=hybrid-sleep.target
 WantedBy=multi-user.target
-</code></pre></div></div>
+</code></pre>
 
 <p>For CPU frequency scaling, you have two options. You can let the kernel do the heavy lifting by installing <a href="https://gitlab.freedesktop.org/upower/power-profiles-daemon">power-profiles-daemon</a>. Or, you can install <a href="https://github.com/AdnanHodzic/auto-cpufreq">auto-cpufreq</a>, which is a userspace daemon that does the work. Try both and see what works best for you. <a href="https://github.com/AdnanHodzic/auto-cpufreq#troubleshooting">Disable pstate drivers</a> if you’re using auto-cpufreq. Install <a href="https://wiki.archlinux.org/title/CPU_frequency_scaling#thermald">thermald</a> along with either of the programs. Do not touch TLP, it’s a dumpster fire.</p>
 
@@ -447,11 +586,11 @@ WantedBy=multi-user.target
 
 <h2 id="memory-management">Memory Management</h2>
 
-<p>Don’t use swapfiles or swap partitions, use <a href="https://wiki.archlinux.org/title/Zram">zram</a> instead. As we’re not swapping to disk, make sure to disable <a href="https://wiki.archlinux.org/title/Zswap">zswap</a> by adding the <code class="language-plaintext highlighter-rouge">zswap.enabled=0</code> kernel parameter. My machine has plenty of RAM, so I don’t use zram and also disable zswap.</p>
+<p>Don’t use swapfiles or swap partitions, use <a href="https://wiki.archlinux.org/title/Zram">zram</a> instead. As we’re not swapping to disk, make sure to disable <a href="https://wiki.archlinux.org/title/Zswap">zswap</a> by adding the <code>zswap.enabled=0</code> kernel parameter. My machine has plenty of RAM, so I don’t use zram and also disable zswap.</p>
 
 <h2 id="misc-tweaks">Misc. Tweaks</h2>
 
-<p>Linux has had official NTFS drivers since 5.15, but there are no official userspace utilities for NTFS3. Install <code class="language-plaintext highlighter-rouge">ntfsprogs-ntfs3</code> from the AUR. This lets you use all the NTFS-3G utilities but with NTFS3 instead.</p>
+<p>Linux has had official NTFS drivers since 5.15, but there are no official userspace utilities for NTFS3. Install <code>ntfsprogs-ntfs3</code> from the AUR. This lets you use all the NTFS-3G utilities but with NTFS3 instead.</p>
 
 <p>Other tweaks that I perform:</p>
 
@@ -469,14 +608,14 @@ WantedBy=multi-user.target
 
 <p><a href="https://launchpad.net/~arter97/+archive/ubuntu/zlib-ng/">Install zlib-ng</a>, the instructions are provided in the link.</p>
 
-<p>Disable swap by removing the <code class="language-plaintext highlighter-rouge">swap.img</code> line in <code class="language-plaintext highlighter-rouge">/etc/fstab</code> and running <code class="language-plaintext highlighter-rouge">sudo swapoff -a</code>. You can delete <code class="language-plaintext highlighter-rouge">/swap.img</code> to reclaim the disk space. Setup zram if needed. To setup zram, install <code class="language-plaintext highlighter-rouge">zram-tools</code> and run <code class="language-plaintext highlighter-rouge">sudo systemctl enable --now zramswap</code>. You can configure zram settings at <code class="language-plaintext highlighter-rouge">/etc/default/zramswap</code>.</p>
+<p>Disable swap by removing the <code>swap.img</code> line in <code>/etc/fstab</code> and running <code>sudo swapoff -a</code>. You can delete <code>/swap.img</code> to reclaim the disk space. Setup zram if needed. To setup zram, install <code>zram-tools</code> and run <code>sudo systemctl enable --now zramswap</code>. You can configure zram settings at <code>/etc/default/zramswap</code>.</p>
 
-<p>Disable AppArmor by adding <code class="language-plaintext highlighter-rouge">apparmor=0</code> to your kernel args and running <code class="language-plaintext highlighter-rouge">sudo systemctl disable --now apparmor</code>.</p>
+<p>Disable AppArmor by adding <code>apparmor=0</code> to your kernel args and running <code>sudo systemctl disable --now apparmor</code>.</p>
 
 <p><a href="https://liquorix.net">Liquiorix kernel</a> is the Ubuntu equivalent of Zen on Arch Linux. Install Liquorix kernel by running the following script:</p>
 
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="nt">-s</span> <span class="s1">'https://liquorix.net/install-liquorix.sh'</span> | <span class="nb">sudo </span>bash
-</code></pre></div></div>]]></content><author><name>Ken Harris</name></author><summary type="html"><![CDATA[A repository of tweaks for desktop Linux.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://kenhv.com/assets/images/og/posts/linux-tweaks.png" /><media:content medium="image" url="https://kenhv.com/assets/images/og/posts/linux-tweaks.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Smartphone Privacy For Everyone</title><link href="https://kenhv.com/blog/smartphone-privacy-for-everyone" rel="alternate" type="text/html" title="Smartphone Privacy For Everyone" /><published>2021-05-23T00:00:00+05:30</published><updated>2024-07-18T17:21:37+05:30</updated><id>https://kenhv.com/blog/smartphone-privacy-for-everyone</id><content type="html" xml:base="https://kenhv.com/blog/smartphone-privacy-for-everyone"><![CDATA[<p>Smartphones are a crucial part of the modern-day. There’s a 70% chance you’re reading this from your smartphone. We use it for everything, from the simplest of tasks to computations that would be deemed impossible just a few years ago. In an ideal world, we would own the data that is on our phones. Unfortunately, we aren’t living in a perfect world. Every single month, we hear about some new controversy regarding digital privacy. Yet we are stuck with using privacy-invasive platforms such as Facebook or YouTube. The reality is, there are simply no alternatives that have a userbase or content anywhere close to them.</p>
+<pre><code class="language-bash">curl -s 'https://liquorix.net/install-liquorix.sh' | sudo bash
+</code></pre>]]></content><author><name>Ken Harris</name></author><summary type="html"><![CDATA[A repository of tweaks for desktop Linux.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://kenhv.com/assets/images/og/posts/linux-tweaks.png" /><media:content medium="image" url="https://kenhv.com/assets/images/og/posts/linux-tweaks.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Smartphone Privacy For Everyone</title><link href="https://kenhv.com/blog/smartphone-privacy-for-everyone" rel="alternate" type="text/html" title="Smartphone Privacy For Everyone" /><published>2021-05-23T00:00:00+05:30</published><updated>2024-07-18T17:21:37+05:30</updated><id>https://kenhv.com/blog/smartphone-privacy-for-everyone</id><content type="html" xml:base="https://kenhv.com/blog/smartphone-privacy-for-everyone"><![CDATA[<p>Smartphones are a crucial part of the modern-day. There’s a 70% chance you’re reading this from your smartphone. We use it for everything, from the simplest of tasks to computations that would be deemed impossible just a few years ago. In an ideal world, we would own the data that is on our phones. Unfortunately, we aren’t living in a perfect world. Every single month, we hear about some new controversy regarding digital privacy. Yet we are stuck with using privacy-invasive platforms such as Facebook or YouTube. The reality is, there are simply no alternatives that have a userbase or content anywhere close to them.</p>
 
 <p>Privacy and convenience are regarded to be inversely proportional; you generally have to sacrifice one for the other. But there exists a threshold where you can enjoy both. What we tech nerds find simple can really be rocket science for people outside the tech bubble. This article is for the common person coming from a non-tech background, looking to enhance their digital privacy in simple yet effective ways. Learn how to keep your data safer while using these spyware apps and platforms.</p>
 
@@ -502,7 +641,7 @@ WantedBy=multi-user.target
 
 <p>This is the easiest step you can take to enhancing your online privacy. Blocking ads is not just beneficial to your privacy, but it also improves your experience with tech as a whole. Ads are annoying, and they bring trackers with them. Trackers, as the name implies, track all your moves online to serve you more relevant ads. While it’s not possible to block ads from apps such as Spotify or YouTube with this method, it will block in-app ads and ads on the internet.</p>
 
-<p>To block ads on Android, go to your Settings app and search for DNS. An option called Private DNS will show up. Tap it, select “Private DNS provider hostname” and enter the following address: <code class="language-plaintext highlighter-rouge">dns.adguard-dns.com</code>. It’s that simple. To disable it, you can set the Private DNS setting back to Automatic.</p>
+<p>To block ads on Android, go to your Settings app and search for DNS. An option called Private DNS will show up. Tap it, select “Private DNS provider hostname” and enter the following address: <code>dns.adguard-dns.com</code>. It’s that simple. To disable it, you can set the Private DNS setting back to Automatic.</p>
 
 <p>For iOS, click <a href="https://github.com/paulmillr/encrypted-dns/raw/master/signed/adguard-default-https.mobileconfig">here</a> to add the AdGuard DNS profile to your mobile. Select Allow when the installation pop-up shows up. Then, go to Settings, click on the new “Profile Downloaded” option, select Install at the top, enter your PIN, and select Install again. Your iPhone will now start blocking ads. To disable it, go to Settings, General, VPN &amp; Device Management, DNS, and set it to automatic. System-wide ad blocking is offered as a paid functionality by the AdGuard app, but this is the same thing for free and is also officially provided by AdGuard.</p>
 

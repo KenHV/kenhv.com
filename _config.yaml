@@ -9,7 +9,8 @@ defaults:
     values:
       toc: true
 
-destination: public/
+destination: public
+highlighter: none
 sass:
   style: compressed
 
