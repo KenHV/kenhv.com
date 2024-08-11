@@ -2,6 +2,8 @@
 layout: post
 title: "Fail2Ban With Nginx and Cloudflare Free (With IPv6 Support)"
 description: "A guide to set up Fail2Ban with Nginx and Cloudflare free plan with IPv6 support. Includes instructions to restore original visitor IP in Nginx."
+seo:
+  date_modified: 2024-08-11
 ---
 
 This post will teach you how to set up Fail2Ban actions for services reverse-proxied by Nginx and proxied by Cloudflare. I'll be using Vaultwarden as an example. I have Nginx and Fail2Ban installed natively, and Vaultwarden in a Docker container. You can adjust it to work with Nginx and/or Fail2Ban running in Docker containers.
@@ -148,8 +150,10 @@ map $remote_addr $ip_blacklisted { include blacklisted-sessions.map; }
 Add the following line to the `server` block of services you're reverse-proxying:
 
 ```
-if ($ip_blacklisted) { return 403; }
+if ($ip_blacklisted) { return 444; }
 ```
+
+The non-standard return code 444 closes a connection without sending a response header. You can also return 403 if you like.
 
 ## Test Your Config
 
