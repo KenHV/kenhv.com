@@ -38,7 +38,7 @@ For Chromium and Chromium-based browsers, refer to the [hardware acceleration](h
 
 Now onto power management. I use a script by [kerneltoast](https://kerneltoast.com) that enables runtime power management for all devices (except USB). Create `/etc/systemd/system/powersave.service` with the following contents and enable it by `sudo systemctl enable --now powersave.service`.
 
-```
+```systemd
 [Unit]
 Description=Powersave auto tune
 After=suspend.target

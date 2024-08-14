@@ -10,7 +10,6 @@ defaults:
       toc: true
 
 destination: public
-highlighter: none
 sass:
   style: compressed
 

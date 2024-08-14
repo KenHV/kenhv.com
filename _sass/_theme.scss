@@ -23,8 +23,8 @@ $link-dark: #46a2ff;
         background-color: $secondary;
     }
 
-    pre {
-        background-color: $secondary;
+    pre, pre code {
+        background-color: $secondary-dark;
     }
 
     blockquote {
@@ -51,7 +51,7 @@ $link-dark: #46a2ff;
         background-color: $secondary-dark;
     }
 
-    pre {
+    pre, pre code {
         background-color: $secondary-dark;
     }
 

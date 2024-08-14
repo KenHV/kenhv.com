@@ -29,11 +29,13 @@ for ipv4 in $(echo "$cf_ips" | jq -r '.result.ipv4_cidrs[]//""' | sort); do
     echo "set_real_ip_from $ipv4;" >> $CLOUDFLARE_FILE_PATH
 done
 echo "" >> $CLOUDFLARE_FILE_PATH
+
 echo "# - IPv6" >> $CLOUDFLARE_FILE_PATH
 for ipv6 in $(echo "$cf_ips" | jq -r '.result.ipv6_cidrs[]//""' | sort); do
     echo "set_real_ip_from $ipv6;" >> $CLOUDFLARE_FILE_PATH
 done
 echo "" >> $CLOUDFLARE_FILE_PATH
+
 echo "real_ip_header CF-Connecting-IP;" >> $CLOUDFLARE_FILE_PATH
 
 nginx -t && systemctl reload nginx
@@ -78,7 +80,7 @@ Make sure `jp` is installed in your system.
 
 The action we're going to be using is from [@sebres](https://gist.github.com/Xunnamius/6057a660d06bcf13cc1f478af9131423?permalink_comment_id=5049552#gistcomment-5049552). This supports both IPv4 and IPv6 addresses. Create `/etc/fail2ban/action.d/cloudflare-list.conf` with the following contents:
 
-```
+```conf
 [Definition]
 actionban = curl -s -o /dev/null -X POST <_cf_api_prms> \
                  -d '[{"ip":"'"<cfip>"'","comment":"Created by fail2ban <name>"}]' \
@@ -102,7 +104,7 @@ cfip = $(fail2ban-python -c 'import sys; from fail2ban.server.ipdns import IPAdd
 
 Now create `/etc/fail2ban/action.d/cloudflare-list.local` with the following contents:
 
-```
+```conf
 [Init]
 cfapitoken = <api-token>
 cfaccountid = <account-id>

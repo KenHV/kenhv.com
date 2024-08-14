@@ -18,7 +18,7 @@ Almost all configurations you will find on the internet overcomplicate everythin
 
 If you’re on Linux, your config folder will be `~/.config/mpv`. For Windows, create a folder called `portable_config` inside your MPV folder, this will be your config folder. Inside your config folder, create a new file named `mpv.conf` with the following contents:
 
-```
+```conf
 # Essentials
 vo=gpu-next
 gpu-api=auto     
