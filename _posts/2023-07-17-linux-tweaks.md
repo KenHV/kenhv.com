@@ -3,7 +3,7 @@ layout: post
 title: "Supercharge Your Linux System"
 description: "A repository of tweaks for desktop Linux."
 seo:
-  date_modified: 2024-08-11
+  date_modified: 2024-08-15
 ---
 
 This post started out as a repository of tweaks for Arch Linux, although you can apply most of it to any distro. To ensure this post stays relevant, I've linked to Arch Wiki sections when possible. AMD-specific optimisations are not covered. [Ubuntu-specific optimisations](#ubuntu-specific-optimisations) can be found at the end of the post.
@@ -86,7 +86,7 @@ Disable swap by removing the `swap.img` line in `/etc/fstab` and running `sudo s
 
 Disable AppArmor by adding `apparmor=0` to your kernel args and running `sudo systemctl disable --now apparmor`.
 
-[Liquiorix kernel](https://liquorix.net) is the Ubuntu equivalent of Zen on Arch Linux. If you want to install it, run the following command:
+[Liquiorix kernel](https://liquorix.net) is the Ubuntu equivalent of Zen on Arch Linux. I use the default kernel. If you want to install it, run the following command:
 
 ```bash
 curl -s 'https://liquorix.net/install-liquorix.sh' | sudo bash

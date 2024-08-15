@@ -80,7 +80,7 @@ Make sure `jp` is installed in your system.
 
 The action we're going to be using is from [@sebres](https://gist.github.com/Xunnamius/6057a660d06bcf13cc1f478af9131423?permalink_comment_id=5049552#gistcomment-5049552). This supports both IPv4 and IPv6 addresses. Create `/etc/fail2ban/action.d/cloudflare-list.conf` with the following contents:
 
-```conf
+```toml
 [Definition]
 actionban = curl -s -o /dev/null -X POST <_cf_api_prms> \
                  -d '[{"ip":"'"<cfip>"'","comment":"Created by fail2ban <name>"}]' \
@@ -104,7 +104,7 @@ cfip = $(fail2ban-python -c 'import sys; from fail2ban.server.ipdns import IPAdd
 
 Now create `/etc/fail2ban/action.d/cloudflare-list.local` with the following contents:
 
-```conf
+```toml
 [Init]
 cfapitoken = <api-token>
 cfaccountid = <account-id>
@@ -115,7 +115,7 @@ Fill in the details, and **make sure** you set the file's permissions to `640` (
 
 Let's configure Fail2Ban for Vaultwarden. [Enable logging](https://github.com/dani-garcia/vaultwarden/wiki/Logging) in Vaultwarden. Create `/etc/fail2ban/filter.d/vaultwarden.local` with the following contents:
 
-```
+```toml
 [INCLUDES]
 before = common.conf
 
@@ -126,7 +126,7 @@ ignoreregex =
 
 Now create `/etc/fail2ban/jail.d/vaultwarden.local` with the following contents:
 
-```
+```toml
 [vaultwarden]
 enabled = true
 filter = vaultwarden

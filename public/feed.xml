@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.3">Jekyll</generator><link href="https://kenhv.com/feed.xml" rel="self" type="application/atom+xml" /><link href="https://kenhv.com/" rel="alternate" type="text/html" /><updated>2024-08-15T00:08:19+05:30</updated><id>https://kenhv.com/feed.xml</id><title type="html">Ken Harris</title><subtitle>Tech enthusiast. Occasional doer of stuff. @KenHV</subtitle><author><name>Ken Harris</name></author><entry><title type="html">Fail2Ban With Nginx and Cloudflare Free (With IPv6 Support)</title><link href="https://kenhv.com/blog/fail2ban-with-nginx-and-cloudflare-ipv6" rel="alternate" type="text/html" title="Fail2Ban With Nginx and Cloudflare Free (With IPv6 Support)" /><published>2024-08-04T00:00:00+05:30</published><updated>2024-08-11T13:19:47+05:30</updated><id>https://kenhv.com/blog/fail2ban-with-nginx-and-cloudflare-ipv6</id><content type="html" xml:base="https://kenhv.com/blog/fail2ban-with-nginx-and-cloudflare-ipv6"><![CDATA[<p>This post will teach you how to set up Fail2Ban actions for services reverse-proxied by Nginx and proxied by Cloudflare. I’ll be using Vaultwarden as an example. I have Nginx and Fail2Ban installed natively, and Vaultwarden in a Docker container. You can adjust it to work with Nginx and/or Fail2Ban running in Docker containers.</p>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.3">Jekyll</generator><link href="https://kenhv.com/feed.xml" rel="self" type="application/atom+xml" /><link href="https://kenhv.com/" rel="alternate" type="text/html" /><updated>2024-08-15T20:07:20+05:30</updated><id>https://kenhv.com/feed.xml</id><title type="html">Ken Harris</title><subtitle>Tech enthusiast. Occasional doer of stuff. @KenHV</subtitle><author><name>Ken Harris</name></author><entry><title type="html">Fail2Ban With Nginx and Cloudflare Free (With IPv6 Support)</title><link href="https://kenhv.com/blog/fail2ban-with-nginx-and-cloudflare-ipv6" rel="alternate" type="text/html" title="Fail2Ban With Nginx and Cloudflare Free (With IPv6 Support)" /><published>2024-08-04T00:00:00+05:30</published><updated>2024-08-15T00:08:43+05:30</updated><id>https://kenhv.com/blog/fail2ban-with-nginx-and-cloudflare-ipv6</id><content type="html" xml:base="https://kenhv.com/blog/fail2ban-with-nginx-and-cloudflare-ipv6"><![CDATA[<p>This post will teach you how to set up Fail2Ban actions for services reverse-proxied by Nginx and proxied by Cloudflare. I’ll be using Vaultwarden as an example. I have Nginx and Fail2Ban installed natively, and Vaultwarden in a Docker container. You can adjust it to work with Nginx and/or Fail2Ban running in Docker containers.</p>
 
 <h2 id="unmask-visitor-ip-in-nginx">Unmask Visitor IP in Nginx</h2>
 
@@ -68,59 +68,59 @@ nginx <span class="nt">-t</span> <span class="o">&amp;&amp;</span> systemctl rel
 
 <p>The action we’re going to be using is from <a href="https://gist.github.com/Xunnamius/6057a660d06bcf13cc1f478af9131423?permalink_comment_id=5049552#gistcomment-5049552">@sebres</a>. This supports both IPv4 and IPv6 addresses. Create <code class="language-plaintext highlighter-rouge">/etc/fail2ban/action.d/cloudflare-list.conf</code> with the following contents:</p>
 
-<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[<span class="n">Definition</span>]
-<span class="n">actionban</span> = <span class="n">curl</span> -<span class="n">s</span> -<span class="n">o</span> /<span class="n">dev</span>/<span class="n">null</span> -<span class="n">X</span> <span class="n">POST</span> &lt;<span class="err">_</span><span class="n">cf_api_prms</span>&gt; \
-                 -<span class="n">d</span> <span class="s1">'[{"ip":"'</span><span class="s2">"&lt;cfip&gt;"</span><span class="s1">'","comment":"Created by fail2ban &lt;name&gt;"}]'</span> \
-                 &lt;<span class="err">_</span><span class="n">cf_api_url</span>&gt;
-<span class="n">actionunban</span> = <span class="n">id</span>=$(<span class="n">curl</span> -<span class="n">s</span> -<span class="n">X</span> <span class="n">GET</span> &lt;<span class="err">_</span><span class="n">cf_api_prms</span>&gt; \
-                   <span class="s2">"&lt;_cf_api_url&gt;?search=&lt;cfip&gt;&amp;per_page=1"</span> \
-                   | { <span class="n">jp</span> --<span class="n">unquoted</span> <span class="s1">'result[0].id | not_null(@, `""`)'</span> <span class="m">2</span>&gt;/<span class="n">dev</span>/<span class="n">null</span>; })
-              <span class="n">if</span> [ -<span class="n">z</span> <span class="s2">"$id"</span> ]; <span class="n">then</span> <span class="n">echo</span> <span class="s2">"&lt;name&gt;: id for &lt;ip&gt; cannot be found"</span>; <span class="n">exit</span> <span class="m">0</span>; <span class="n">fi</span>;
-              <span class="n">curl</span> -<span class="n">s</span> -<span class="n">o</span> /<span class="n">dev</span>/<span class="n">null</span> -<span class="n">X</span> <span class="n">DELETE</span> &lt;<span class="err">_</span><span class="n">cf_api_prms</span>&gt; \
-                   -<span class="n">d</span> <span class="s1">'{"items":[{"id":"'</span><span class="s2">"$id"</span><span class="s1">'"}]}'</span> \
-                   &lt;<span class="err">_</span><span class="n">cf_api_url</span>&gt;
-<span class="err">_</span><span class="n">cf_api_url</span> = <span class="n">https</span>://<span class="n">api</span>.<span class="n">cloudflare</span>.<span class="n">com</span>/<span class="n">client</span>/<span class="n">v4</span>/<span class="n">accounts</span>/&lt;<span class="n">cfaccountid</span>&gt;/<span class="n">rules</span>/<span class="n">lists</span>/&lt;<span class="n">cfbanlistid</span>&gt;/<span class="n">items</span>
-<span class="err">_</span><span class="n">cf_api_prms</span> = -<span class="n">H</span> <span class="s1">'Authorization: bearer &lt;cfapitoken&gt;'</span> -<span class="n">H</span> <span class="s1">'Content-Type: application/json'</span>
+<div class="language-toml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">[Definition]</span>
+<span class="py">actionban</span> <span class="p">=</span> <span class="err">curl</span> <span class="err">-s</span> <span class="err">-o</span> <span class="err">/dev/null</span> <span class="err">-X</span> <span class="err">POST</span> <span class="err">&lt;_cf_api_prms&gt;</span> <span class="se">\
+</span>                 <span class="err">-d</span> <span class="s">'[{"ip":"'"&lt;cfip&gt;"'","comment":"Created by fail2ban &lt;name&gt;"}]'</span> <span class="se">\
+</span>                 <span class="err">&lt;_cf_api_url&gt;</span>
+<span class="py">actionunban</span> <span class="p">=</span> <span class="py">id</span><span class="p">=</span><span class="err">$(curl</span> <span class="err">-s</span> <span class="err">-X</span> <span class="err">GET</span> <span class="err">&lt;_cf_api_prms&gt;</span> <span class="se">\
+</span>                   <span class="py">"&lt;_cf_api_url&gt;?search=&lt;cfip&gt;&amp;per_page</span><span class="p">=</span><span class="mi">1</span><span class="s">" </span><span class="se">\
+</span><span class="s">                   | { jp --unquoted 'result[0].id | not_null(@, `""`)' 2&gt;/dev/null; })</span><span class="err">
+</span>              <span class="err">if</span> <span class="p">[</span> <span class="err">-z</span> <span class="s">"$id"</span> <span class="p">]</span><span class="err">;</span> <span class="err">then</span> <span class="err">echo</span> <span class="s">"&lt;name&gt;: id for &lt;ip&gt; cannot be found"</span><span class="err">;</span> <span class="err">exit</span> <span class="mi">0</span><span class="err">;</span> <span class="err">fi;</span>
+              <span class="err">curl</span> <span class="err">-s</span> <span class="err">-o</span> <span class="err">/dev/null</span> <span class="err">-X</span> <span class="err">DELETE</span> <span class="err">&lt;_cf_api_prms&gt;</span> <span class="err">\</span>
+                   <span class="err">-d</span> <span class="err">'{"items":</span><span class="nn">[{"id":"'"$id"'"}]</span><span class="err">}'</span> <span class="err">\</span>
+                   <span class="err">&lt;_cf_api_url&gt;</span>
+<span class="py">_cf_api_url</span> <span class="p">=</span> <span class="err">https://api.cloudflare.com/client/v</span><span class="mi">4</span><span class="err">/accounts/&lt;cfaccountid&gt;/rules/lists/&lt;cfbanlistid&gt;/items</span>
+<span class="py">_cf_api_prms</span> <span class="p">=</span> <span class="err">-H</span> <span class="s">'Authorization: bearer &lt;cfapitoken&gt;'</span> <span class="err">-H</span> <span class="s">'Content-Type: application/json'</span>
 
-[<span class="n">Init</span>]
-<span class="n">cfip</span> = &lt;<span class="n">ip</span>&gt;
+<span class="nn">[Init]</span>
+<span class="py">cfip</span> <span class="p">=</span> <span class="err">&lt;ip&gt;</span>
 
-[<span class="n">Init</span>?<span class="n">family</span>=<span class="n">inet6</span>]
-<span class="n">cfip</span> = $(<span class="n">fail2ban</span>-<span class="n">python</span> -<span class="n">c</span> <span class="s1">'import sys; from fail2ban.server.ipdns import IPAddr; a = IPAddr(sys.argv[1]+"/"+sys.argv[2]); print(str(a))'</span> <span class="s2">"&lt;ip&gt;"</span> <span class="m">64</span>)
+<span class="nn">[Init?family=inet6]</span>
+<span class="py">cfip</span> <span class="p">=</span> <span class="err">$(fail</span><span class="mi">2</span><span class="err">ban-python</span> <span class="err">-c</span> <span class="s">'import sys; from fail2ban.server.ipdns import IPAddr; a = IPAddr(sys.argv[1]+"/"+sys.argv[2]); print(str(a))'</span> <span class="s">"&lt;ip&gt;"</span> <span class="mi">64</span><span class="err">)</span>
 </code></pre></div></div>
 
 <p>Now create <code class="language-plaintext highlighter-rouge">/etc/fail2ban/action.d/cloudflare-list.local</code> with the following contents:</p>
 
-<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[<span class="n">Init</span>]
-<span class="n">cfapitoken</span> = &lt;<span class="n">api</span>-<span class="n">token</span>&gt;
-<span class="n">cfaccountid</span> = &lt;<span class="n">account</span>-<span class="n">id</span>&gt;
-<span class="n">cfbanlistid</span> = &lt;<span class="n">list</span>-<span class="n">id</span>&gt;
+<div class="language-toml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">[Init]</span>
+<span class="py">cfapitoken</span> <span class="p">=</span> <span class="err">&lt;api-token&gt;</span>
+<span class="py">cfaccountid</span> <span class="p">=</span> <span class="err">&lt;account-id&gt;</span>
+<span class="py">cfbanlistid</span> <span class="p">=</span> <span class="err">&lt;list-id&gt;</span>
 </code></pre></div></div>
 
 <p>Fill in the details, and <strong>make sure</strong> you set the file’s permissions to <code class="language-plaintext highlighter-rouge">640</code> (<code class="language-plaintext highlighter-rouge">sudo chmod 640 /etc/fail2ban/action.d/cloudflare-list.local</code>) to ensure only <em>root</em> can read this file.</p>
 
 <p>Let’s configure Fail2Ban for Vaultwarden. <a href="https://github.com/dani-garcia/vaultwarden/wiki/Logging">Enable logging</a> in Vaultwarden. Create <code class="language-plaintext highlighter-rouge">/etc/fail2ban/filter.d/vaultwarden.local</code> with the following contents:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[INCLUDES]
-before = common.conf
+<div class="language-toml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">[INCLUDES]</span>
+<span class="py">before</span> <span class="p">=</span> <span class="err">common.conf</span>
 
-[Definition]
-failregex = ^.*?Username or password is incorrect\. Try again\. IP: &lt;ADDR&gt;\. Username:.*$
-ignoreregex =
+<span class="nn">[Definition]</span>
+<span class="py">failregex</span> <span class="p">=</span> <span class="err">^.*?Username</span> <span class="err">or</span> <span class="err">password</span> <span class="err">is</span> <span class="err">incorrect\.</span> <span class="err">Try</span> <span class="err">again\.</span> <span class="err">IP:</span> <span class="err">&lt;ADDR&gt;\.</span> <span class="err">Username:.*$</span>
+<span class="py">ignoreregex</span> <span class="p">=</span>
 </code></pre></div></div>
 
 <p>Now create <code class="language-plaintext highlighter-rouge">/etc/fail2ban/jail.d/vaultwarden.local</code> with the following contents:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[vaultwarden]
-enabled = true
-filter = vaultwarden
-backend = auto
-logpath = &lt;path/to/vaultwarden.log&gt;
-action = cloudflare-list
-         nginx-block-map
-maxretry = 3
-bantime = 1d
-findtime = 15m
+<div class="language-toml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">[vaultwarden]</span>
+<span class="py">enabled</span> <span class="p">=</span> <span class="kc">true</span>
+<span class="py">filter</span> <span class="p">=</span> <span class="err">vaultwarden</span>
+<span class="py">backend</span> <span class="p">=</span> <span class="err">auto</span>
+<span class="py">logpath</span> <span class="p">=</span> <span class="err">&lt;path/to/vaultwarden.log&gt;</span>
+<span class="py">action</span> <span class="p">=</span> <span class="err">cloudflare-list</span>
+         <span class="err">nginx-block-map</span>
+<span class="py">maxretry</span> <span class="p">=</span> <span class="mi">3</span>
+<span class="py">bantime</span> <span class="p">=</span> <span class="mi">1</span><span class="err">d</span>
+<span class="py">findtime</span> <span class="p">=</span> <span class="mi">15</span><span class="err">m</span>
 </code></pre></div></div>
 
 <p>Depending on your config, you might want to set <a href="https://github.com/dani-garcia/vaultwarden/wiki/Fail2Ban-Setup#note-for-docker-users">chain = FORWARD</a>. Note that we’re not banning the IP using firewall rules, because we’ll be receiving requests from Cloudflare’s IPs.</p>
@@ -440,7 +440,7 @@ findtime = 15m
 
 <p>I pay for music streaming because it’s convenient. It has everything I want to listen to in one place and has recommendations, curated playlists, statistics; everything I need. There is simply no movie streaming service that’s convenient. Every service has a limited and different catalogue, they don’t have all the editions of a movie, and quite a lot of content is simply not available on any service. I made a fully automated media server years ago, but that isn’t as convenient as this setup is either. Like Gabe said, it’s not a problem of pricing. I am willing to pay for convenience. It’s just that there’s nothing convenient about the streaming services available today.</p>
 
-<p>Oh and of course, all this information is purely for educational purposes, I am not responsible, blah blah. Have a good day.</p>]]></content><author><name>Ken Harris</name></author><summary type="html"><![CDATA[The $3 streaming service that beats everything on the market combined.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://kenhv.com/assets/images/og/posts/the-comfiest-streaming-service.png" /><media:content medium="image" url="https://kenhv.com/assets/images/og/posts/the-comfiest-streaming-service.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Setting up MPV - The Supreme Media Player</title><link href="https://kenhv.com/blog/setting-up-mpv" rel="alternate" type="text/html" title="Setting up MPV - The Supreme Media Player" /><published>2024-06-09T00:00:00+05:30</published><updated>2024-07-16T12:05:48+05:30</updated><id>https://kenhv.com/blog/setting-up-mpv</id><content type="html" xml:base="https://kenhv.com/blog/setting-up-mpv"><![CDATA[<p>The media player you use sucks. Switch to MPV.</p>
+<p>Oh and of course, all this information is purely for educational purposes, I am not responsible, blah blah. Have a good day.</p>]]></content><author><name>Ken Harris</name></author><summary type="html"><![CDATA[The $3 streaming service that beats everything on the market combined.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://kenhv.com/assets/images/og/posts/the-comfiest-streaming-service.png" /><media:content medium="image" url="https://kenhv.com/assets/images/og/posts/the-comfiest-streaming-service.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Setting up MPV - The Supreme Media Player</title><link href="https://kenhv.com/blog/setting-up-mpv" rel="alternate" type="text/html" title="Setting up MPV - The Supreme Media Player" /><published>2024-06-09T00:00:00+05:30</published><updated>2024-08-15T00:08:43+05:30</updated><id>https://kenhv.com/blog/setting-up-mpv</id><content type="html" xml:base="https://kenhv.com/blog/setting-up-mpv"><![CDATA[<p>The media player you use sucks. Switch to MPV.</p>
 
 <h2 id="installation">Installation</h2>
 
@@ -535,7 +535,7 @@ findtime = 15m
 
 <h2 id="the-end">The End</h2>
 
-<p>If you made it all the way here, you might want to look into getting a shiny new high DPI monitor. If you have any suggestions, feel free to mail me.</p>]]></content><author><name>Ken Harris</name></author><summary type="html"><![CDATA[A guide to improve font rendering on all devices and browsers.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://kenhv.com/assets/images/og/posts/treat-yourself-to-good-typography.png" /><media:content medium="image" url="https://kenhv.com/assets/images/og/posts/treat-yourself-to-good-typography.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Supercharge Your Linux System</title><link href="https://kenhv.com/blog/linux-tweaks" rel="alternate" type="text/html" title="Supercharge Your Linux System" /><published>2023-07-17T00:00:00+05:30</published><updated>2024-08-11T13:19:47+05:30</updated><id>https://kenhv.com/blog/linux-tweaks</id><content type="html" xml:base="https://kenhv.com/blog/linux-tweaks"><![CDATA[<p>This post started out as a repository of tweaks for Arch Linux, although you can apply most of it to any distro. To ensure this post stays relevant, I’ve linked to Arch Wiki sections when possible. AMD-specific optimisations are not covered. <a href="#ubuntu-specific-optimisations">Ubuntu-specific optimisations</a> can be found at the end of the post.</p>
+<p>If you made it all the way here, you might want to look into getting a shiny new high DPI monitor. If you have any suggestions, feel free to mail me.</p>]]></content><author><name>Ken Harris</name></author><summary type="html"><![CDATA[A guide to improve font rendering on all devices and browsers.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://kenhv.com/assets/images/og/posts/treat-yourself-to-good-typography.png" /><media:content medium="image" url="https://kenhv.com/assets/images/og/posts/treat-yourself-to-good-typography.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Supercharge Your Linux System</title><link href="https://kenhv.com/blog/linux-tweaks" rel="alternate" type="text/html" title="Supercharge Your Linux System" /><published>2023-07-17T00:00:00+05:30</published><updated>2024-08-15T00:08:43+05:30</updated><id>https://kenhv.com/blog/linux-tweaks</id><content type="html" xml:base="https://kenhv.com/blog/linux-tweaks"><![CDATA[<p>This post started out as a repository of tweaks for Arch Linux, although you can apply most of it to any distro. To ensure this post stays relevant, I’ve linked to Arch Wiki sections when possible. AMD-specific optimisations are not covered. <a href="#ubuntu-specific-optimisations">Ubuntu-specific optimisations</a> can be found at the end of the post.</p>
 
 <p>I update this post regularly. If you have any suggestions, feel free to <a href="mailto:ken@kenhv.com">mail me</a>!</p>
 
@@ -616,7 +616,7 @@ findtime = 15m
 
 <p>Disable AppArmor by adding <code class="language-plaintext highlighter-rouge">apparmor=0</code> to your kernel args and running <code class="language-plaintext highlighter-rouge">sudo systemctl disable --now apparmor</code>.</p>
 
-<p><a href="https://liquorix.net">Liquiorix kernel</a> is the Ubuntu equivalent of Zen on Arch Linux. If you want to install it, run the following command:</p>
+<p><a href="https://liquorix.net">Liquiorix kernel</a> is the Ubuntu equivalent of Zen on Arch Linux. I use the default kernel. If you want to install it, run the following command:</p>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="nt">-s</span> <span class="s1">'https://liquorix.net/install-liquorix.sh'</span> | <span class="nb">sudo </span>bash
 </code></pre></div></div>
