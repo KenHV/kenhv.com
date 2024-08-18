@@ -3,7 +3,7 @@ layout: post
 title: "Setting Up Firefox"
 description: "A list of extensions and tweaks to improve Firefox without breakage."
 seo:
-  date_modified: 2024-08-02
+  date_modified: 2024-08-18
 ---
 
 Google is [killing Manifest v2](https://blog.chromium.org/2024/05/manifest-v2-phase-out-begins.html) in an attempt to kill ad blockers. This change will affect not only Chrome, but browsers based on Chromium such as Edge. It's a good time to switch to Firefox. Everything just works; I've faced zero breakage on any site, even with some additional privacy protection settings turned on.
@@ -37,7 +37,7 @@ Most Firefox guides out there recommend using [hardened configs](https://github.
 
 [Dark Reader](https://addons.mozilla.org/en-US/firefox/addon/darkreader) adds a dark mode to every website. After installing it, open the extension menu, go to "Dev Tools", "Advanced", and click "Preview new design".
 
-[Bypass Paywalls Clean](https://github.com/bpc-clone/bpc_updates/releases/download/latest/bypass_paywalls_clean-latest.xpi) lets you bypass most of the popular paywalled sites and sites that need you to login after viewing a page or two (like Quora). After installing it, go to the extension options and enable "Check for update rules at startup". Then go to "Opt-in" and enable everything.
+[Bypass Paywalls Clean](https://gitflic.ru/project/magnolia1234/bpc_uploads/blob/raw?file=bypass_paywalls_clean-latest.xpi&inline=false) lets you bypass most of the popular paywalled sites and sites that need you to login after viewing a page or two (like Quora). After installing it, go to the extension options and enable "Check for update rules at startup". Then go to "Opt-in" and enable everything.
 
 [Violentmonkey](https://addons.mozilla.org/en-US/firefox/addon/violentmonkey) is a userscript manager, which I use to install the following userscripts. [Bypass All Shortlinks Debloated](https://codeberg.org/Amm0ni4/bypass-all-shortlinks-debloated/raw/branch/main/Bypass_All_Shortlinks.user.js) automatically skips a lot of link shorteners that make you wait or require CAPTCHAs.
 
