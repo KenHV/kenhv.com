@@ -1,4 +1,172 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.3">Jekyll</generator><link href="https://kenhv.com/feed.xml" rel="self" type="application/atom+xml" /><link href="https://kenhv.com/" rel="alternate" type="text/html" /><updated>2024-08-18T19:16:08+05:30</updated><id>https://kenhv.com/feed.xml</id><title type="html">Ken Harris</title><subtitle>Tech enthusiast. Occasional doer of stuff. @KenHV</subtitle><author><name>Ken Harris</name></author><entry><title type="html">Fail2Ban With Nginx and Cloudflare Free (With IPv6 Support)</title><link href="https://kenhv.com/blog/fail2ban-with-nginx-and-cloudflare-ipv6" rel="alternate" type="text/html" title="Fail2Ban With Nginx and Cloudflare Free (With IPv6 Support)" /><published>2024-08-04T00:00:00+05:30</published><updated>2024-08-15T20:07:54+05:30</updated><id>https://kenhv.com/blog/fail2ban-with-nginx-and-cloudflare-ipv6</id><content type="html" xml:base="https://kenhv.com/blog/fail2ban-with-nginx-and-cloudflare-ipv6"><![CDATA[<p>This post will teach you how to set up Fail2Ban actions for services reverse-proxied by Nginx and proxied by Cloudflare. I’ll be using Vaultwarden as an example. I have Nginx and Fail2Ban installed natively, and Vaultwarden in a Docker container. You can adjust it to work with Nginx and/or Fail2Ban running in Docker containers.</p>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.3">Jekyll</generator><link href="https://kenhv.com/feed.xml" rel="self" type="application/atom+xml" /><link href="https://kenhv.com/" rel="alternate" type="text/html" /><updated>2024-08-28T23:29:01+05:30</updated><id>https://kenhv.com/feed.xml</id><title type="html">Ken Harris</title><subtitle>Tech enthusiast. Occasional doer of stuff. @KenHV</subtitle><author><name>Ken Harris</name></author><entry><title type="html">Securing A Linux Server</title><link href="https://kenhv.com/blog/securing-a-linux-server" rel="alternate" type="text/html" title="Securing A Linux Server" /><published>2024-08-28T00:00:00+05:30</published><updated>2024-08-28T23:28:50+05:30</updated><id>https://kenhv.com/blog/securing-a-linux-server</id><content type="html" xml:base="https://kenhv.com/blog/securing-a-linux-server"><![CDATA[<h2 id="ssh">SSH</h2>
+
+<p>Follow the <a href="https://ssh-audit.com/hardening_guides.html">SSH Hardening Guide</a> for both the client and the server. This is something you should be doing on all your machines. You can skip the “connection rate throttling” section.</p>
+
+<p>Generate an Ed25519 key:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssh-keygen <span class="nt">-t</span> ed25519
+</code></pre></div></div>
+
+<p>Copy the key to your server:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssh-copy-id <span class="nt">-i</span> &lt;path-to-key&gt; &lt;user&gt;@&lt;ip&gt;
+</code></pre></div></div>
+
+<p>Paste the following at the end of <code class="language-plaintext highlighter-rouge">/etc/ssh/sshd_config</code> on your server:</p>
+
+<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">MaxAuthTries</span> <span class="m">3</span>
+<span class="n">PermitRootLogin</span> <span class="n">no</span>
+<span class="n">PasswordAuthentication</span> <span class="n">no</span>
+<span class="n">PubkeyAuthentication</span> <span class="n">yes</span>
+<span class="n">AuthenticationMethods</span> <span class="n">publickey</span>
+<span class="n">KbdInteractiveAuthentication</span> <span class="n">no</span>
+<span class="n">X11Forwarding</span> <span class="n">no</span>
+</code></pre></div></div>
+
+<p>You can change the SSH port to a random number in the same file. Finally, run the following command to restart the SSH daemon:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>systemctl restart ssh
+</code></pre></div></div>
+
+<h2 id="firewall">Firewall</h2>
+
+<p>Make sure the required packages are installed:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>apt <span class="nb">install </span>iptables ipset ufw cron curl wget <span class="nt">-y</span>
+</code></pre></div></div>
+
+<p>Allow the SSH port and enable UFW:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>ufw allow &lt;port&gt;/tcp comment <span class="s2">"OpenSSH"</span>
+<span class="nb">sudo </span>ufw <span class="nb">enable</span>
+</code></pre></div></div>
+
+<p>I also like to disable UFW logging. <strong>Do not</strong> do this unless you know what you’re doing: <code class="language-plaintext highlighter-rouge">sudo ufw logging off</code>.</p>
+
+<p>Next up, we’ll be blocking known bad IPs using a script and a cronjob. We’ll be using <a href="https://github.com/stamparm/ipsum">IPsum</a>, a regularly updated list. The script we’ll be using is from <a href="https://gist.github.com/arter97/2b71e193700ab002c75d1e5a0e7da6dc">arter97</a>.</p>
+
+<p>Download the script and run it once:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>wget https://gist.githubusercontent.com/arter97/2b71e193700ab002c75d1e5a0e7da6dc/raw/firewall.sh <span class="nt">-O</span> /opt/firewall.sh
+<span class="nb">sudo chmod </span>755 /opt/firewall.sh
+<span class="nb">sudo</span> /opt/firewall.sh
+</code></pre></div></div>
+
+<p>Check the output of <code class="language-plaintext highlighter-rouge">sudo dmesg</code> to verify that everything is working. Add a cronjob by running <code class="language-plaintext highlighter-rouge">sudo crontab -e</code> and paste the following:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>@reboot /opt/firewall.sh
+0 5 <span class="k">*</span> <span class="k">*</span> <span class="k">*</span> /opt/firewall.sh
+</code></pre></div></div>
+
+<h2 id="nginx">Nginx</h2>
+
+<p>Nginx is my preferred reverse-proxy. There are a few things you can configure to improve security.</p>
+
+<p>Add the following lines to your <code class="language-plaintext highlighter-rouge">server</code> blocks:</p>
+
+<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">add_header</span> <span class="n">X</span>-<span class="n">Content</span>-<span class="n">Type</span>-<span class="n">Options</span> <span class="s2">"nosniff"</span>;
+<span class="n">add_header</span> <span class="n">X</span>-<span class="n">XSS</span>-<span class="n">Protection</span> <span class="s2">"1; mode=block"</span>;
+<span class="n">add_header</span> <span class="n">X</span>-<span class="n">Frame</span>-<span class="n">Options</span> <span class="s2">"SAMEORIGIN"</span>;
+</code></pre></div></div>
+
+<p>To implement Nginx Proxy Manager’s (not to be confused with Nginx) “block common exploits” functionality, do the following. Download the config file:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>wget https://raw.githubusercontent.com/NginxProxyManager/nginx-proxy-manager/develop/docker/rootfs/etc/nginx/conf.d/include/block-exploits.conf <span class="nt">-O</span> /etc/nginx/block-exploits.conf
+</code></pre></div></div>
+
+<p>Then add the following line to your <code class="language-plaintext highlighter-rouge">server</code> blocks:</p>
+
+<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">include</span> <span class="n">block</span>-<span class="n">exploits</span>.<span class="n">conf</span>
+</code></pre></div></div>
+
+<p>To avoid getting indexed by search engines, add the following lines to your <code class="language-plaintext highlighter-rouge">server</code> blocks:</p>
+
+<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">add_header</span> <span class="n">X</span>-<span class="n">Robots</span>-<span class="n">Tag</span> <span class="s2">"noindex, nofollow, nosnippet, noarchive"</span>;
+<span class="n">location</span> /<span class="n">robots</span>.<span class="n">txt</span> { <span class="n">return</span> <span class="m">200</span> <span class="s2">"User-agent: *\nDisallow: /\n"</span>; }
+</code></pre></div></div>
+
+<p>Keep in mind that inheritance works differently in Nginx for array directives such as <code class="language-plaintext highlighter-rouge">add_header</code> and <code class="language-plaintext highlighter-rouge">proxy_set_header</code>. If you have any array directives in the block above, you need to <strong>re-add</strong> them in the current block.</p>
+
+<p>Incorrect config:</p>
+
+<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Incorrect
+</span><span class="n">http</span> {
+  <span class="n">add_header</span> <span class="n">X</span>-<span class="n">Header</span>-<span class="m">1</span> <span class="s2">""</span>;
+
+  <span class="n">server</span> {
+    <span class="n">add_header</span> <span class="n">X</span>-<span class="n">Header</span>-<span class="m">2</span> <span class="s2">""</span>;
+
+    <span class="n">location</span> / {
+      <span class="n">proxy_pass</span> <span class="n">http</span>://<span class="n">localhost</span>:<span class="m">8080</span>/;
+      <span class="n">add_header</span> <span class="n">X</span>-<span class="n">Header</span>-<span class="m">3</span> <span class="s2">""</span>;
+    }
+  }
+}
+</code></pre></div></div>
+
+<p>Correct config:</p>
+
+<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Correct
+</span><span class="n">http</span> {
+  <span class="n">add_header</span> <span class="n">X</span>-<span class="n">Header</span>-<span class="m">1</span> <span class="s2">""</span>;
+
+  <span class="n">server</span> {
+    <span class="n">add_header</span> <span class="n">X</span>-<span class="n">Header</span>-<span class="m">1</span> <span class="s2">""</span>;
+    <span class="n">add_header</span> <span class="n">X</span>-<span class="n">Header</span>-<span class="m">2</span> <span class="s2">""</span>;
+
+    <span class="n">location</span> / {
+      <span class="n">proxy_pass</span> <span class="n">http</span>://<span class="n">localhost</span>:<span class="m">8080</span>/;
+      <span class="n">add_header</span> <span class="n">X</span>-<span class="n">Header</span>-<span class="m">1</span> <span class="s2">""</span>;
+      <span class="n">add_header</span> <span class="n">X</span>-<span class="n">Header</span>-<span class="m">2</span> <span class="s2">""</span>;
+      <span class="n">add_header</span> <span class="n">X</span>-<span class="n">Header</span>-<span class="m">3</span> <span class="s2">""</span>;
+    }
+  }
+}
+</code></pre></div></div>
+
+<h2 id="fail2ban">Fail2Ban</h2>
+
+<p>Install Fail2Ban:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>apt <span class="nb">install </span>fail2ban <span class="nt">-y</span>
+</code></pre></div></div>
+
+<p><strong>Do not</strong> copy <code class="language-plaintext highlighter-rouge">/etc/fail2ban/jail.conf</code> to <code class="language-plaintext highlighter-rouge">/etc/fail2ban/jail.local</code>. Most guides I’ve seen suggest doing this, but this <a href="https://github.com/fail2ban/fail2ban/wiki/Proper-fail2ban-configuration">isn’t the right way</a>. Create <code class="language-plaintext highlighter-rouge">/etc/fail2ban/jail.local</code> with the following contents:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[DEFAULT]
+bantime = 1d
+findtime = 15m
+maxretry = 3
+backend = auto
+
+[sshd]
+port = &lt;port&gt;
+</code></pre></div></div>
+
+<p>SSH is the only jail enabled by default, so we just need to give it the correct port.</p>
+
+<p>Fail2Ban ships with some pre-configured jails for Nginx, which you can enable by adding the following to <code class="language-plaintext highlighter-rouge">/etc/fail2ban/jail.local</code>:</p>
+
+<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[<span class="n">nginx</span>-<span class="n">http</span>-<span class="n">auth</span>]
+<span class="n">enabled</span> = <span class="n">true</span>
+
+[<span class="n">nginx</span>-<span class="n">bad</span>-<span class="n">request</span>]
+<span class="n">enabled</span> = <span class="n">true</span>
+
+[<span class="n">nginx</span>-<span class="n">botsearch</span>]
+<span class="n">enabled</span>  = <span class="n">true</span>
+</code></pre></div></div>
+
+<p>Just make sure all your Nginx <code class="language-plaintext highlighter-rouge">location</code> blocks have the following lines to ban the correct IPs:</p>
+
+<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">include</span> <span class="n">proxy_params</span>;
+</code></pre></div></div>
+
+<p>If you’re using Cloudflare proxy, we need to do a bit more so that Fail2Ban bans the end user’s IP and not Cloudflare IPs. Follow my blog post on <a href="https://kenhv.com/blog/fail2ban-with-nginx-and-cloudflare-ipv6">setting up Fail2Ban With Nginx and Cloudflare Free</a>.</p>
+
+<p>That pretty much covers it. Just make sure you’re using strong and random passwords/passphrases for everything.</p>
+
+<p>If you have any comments or suggestions, feel free to <a href="mailto:ken@kenhv.com">mail me</a>!</p>]]></content><author><name>Ken Harris</name></author><summary type="html"><![CDATA[A guide to secure and harden a Linux server install.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://kenhv.com/assets/images/og/posts/securing-a-linux-server.png" /><media:content medium="image" url="https://kenhv.com/assets/images/og/posts/securing-a-linux-server.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Fail2Ban With Nginx and Cloudflare Free (With IPv6 Support)</title><link href="https://kenhv.com/blog/fail2ban-with-nginx-and-cloudflare-ipv6" rel="alternate" type="text/html" title="Fail2Ban With Nginx and Cloudflare Free (With IPv6 Support)" /><published>2024-08-04T00:00:00+05:30</published><updated>2024-08-15T20:07:54+05:30</updated><id>https://kenhv.com/blog/fail2ban-with-nginx-and-cloudflare-ipv6</id><content type="html" xml:base="https://kenhv.com/blog/fail2ban-with-nginx-and-cloudflare-ipv6"><![CDATA[<p>This post will teach you how to set up Fail2Ban actions for services reverse-proxied by Nginx and proxied by Cloudflare. I’ll be using Vaultwarden as an example. I have Nginx and Fail2Ban installed natively, and Vaultwarden in a Docker container. You can adjust it to work with Nginx and/or Fail2Ban running in Docker containers.</p>
 
 <h2 id="unmask-visitor-ip-in-nginx">Unmask Visitor IP in Nginx</h2>
 
@@ -192,7 +360,7 @@ nginx <span class="nt">-t</span> <span class="o">&amp;&amp;</span> systemctl rel
 
 <h2 id="the-end">The End</h2>
 
-<p>There is value in the default experience. And I believe that Ubuntu does it the best among all Linux distros. If you’re suggesting Linux for casual users, suggest Linux Mint or Ubuntu. Don’t overwhelm people with the paradox of choice.</p>]]></content><author><name>Ken Harris</name></author><summary type="html"><![CDATA[An essay on why you should be using (and recommending) Ubuntu.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://kenhv.com/assets/images/bell-curve-linux-distros.webp" /><media:content medium="image" url="https://kenhv.com/assets/images/bell-curve-linux-distros.webp" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Configuring BSNL FTTH</title><link href="https://kenhv.com/blog/configuring-bsnl-ftth" rel="alternate" type="text/html" title="Configuring BSNL FTTH" /><published>2024-07-25T00:00:00+05:30</published><updated>2024-08-02T17:57:19+05:30</updated><id>https://kenhv.com/blog/configuring-bsnl-ftth</id><content type="html" xml:base="https://kenhv.com/blog/configuring-bsnl-ftth"><![CDATA[<p>BSNL-provided routers are bad. They are horribly slow, have poor range, and are not very secure. Their routers cost ₹3,000. For the same price, you can get much better hardware. Here’s how to set up BSNL FTTH with your own hardware.</p>
+<p>There is value in the default experience. And I believe that Ubuntu does it the best among all Linux distros. If you’re suggesting Linux for casual users, suggest Linux Mint or Ubuntu. Don’t overwhelm people with the paradox of choice.</p>]]></content><author><name>Ken Harris</name></author><summary type="html"><![CDATA[An essay on why you should be using (and recommending) Ubuntu.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://kenhv.com/assets/images/bell-curve-linux-distros.webp" /><media:content medium="image" url="https://kenhv.com/assets/images/bell-curve-linux-distros.webp" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Configuring BSNL FTTH</title><link href="https://kenhv.com/blog/configuring-bsnl-ftth" rel="alternate" type="text/html" title="Configuring BSNL FTTH" /><published>2024-07-25T00:00:00+05:30</published><updated>2024-08-18T19:16:23+05:30</updated><id>https://kenhv.com/blog/configuring-bsnl-ftth</id><content type="html" xml:base="https://kenhv.com/blog/configuring-bsnl-ftth"><![CDATA[<p>BSNL-provided routers are bad. They are horribly slow, have poor range, and are not very secure. Their routers cost ₹3,000. For the same price, you can get much better hardware. Here’s how to set up BSNL FTTH with your own hardware.</p>
 
 <h2 id="requirements">Requirements</h2>
 
@@ -242,7 +410,7 @@ nginx <span class="nt">-t</span> <span class="o">&amp;&amp;</span> systemctl rel
 
 <h2 id="support">Support</h2>
 
-<p>If you have any problems or questions, check out the <a href="https://broadband.forum/forums/bsnl-broadband/">India Broadband Forum</a> or the <a href="https://t.me/BSNLTelegram">BSNL Telegram group</a>.</p>]]></content><author><name>Ken Harris</name></author><summary type="html"><![CDATA[A guide to set up BSNL FTTH with third-party routers and modems.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://kenhv.com/assets/images/og/posts/configuring-bsnl-ftth.png" /><media:content medium="image" url="https://kenhv.com/assets/images/og/posts/configuring-bsnl-ftth.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Setting Up Firefox</title><link href="https://kenhv.com/blog/setting-up-firefox" rel="alternate" type="text/html" title="Setting Up Firefox" /><published>2024-07-11T00:00:00+05:30</published><updated>2024-08-02T17:57:19+05:30</updated><id>https://kenhv.com/blog/setting-up-firefox</id><content type="html" xml:base="https://kenhv.com/blog/setting-up-firefox"><![CDATA[<p>Google is <a href="https://blog.chromium.org/2024/05/manifest-v2-phase-out-begins.html">killing Manifest v2</a> in an attempt to kill ad blockers. This change will affect not only Chrome, but browsers based on Chromium such as Edge. It’s a good time to switch to Firefox. Everything just works; I’ve faced zero breakage on any site, even with some additional privacy protection settings turned on.</p>
+<p>If you have any problems or questions, check out the <a href="https://broadband.forum/forums/bsnl-broadband/">India Broadband Forum</a> or the <a href="https://t.me/BSNLTelegram">BSNL Telegram group</a>.</p>]]></content><author><name>Ken Harris</name></author><summary type="html"><![CDATA[A guide to set up BSNL FTTH with third-party routers and modems.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://kenhv.com/assets/images/og/posts/configuring-bsnl-ftth.png" /><media:content medium="image" url="https://kenhv.com/assets/images/og/posts/configuring-bsnl-ftth.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Setting Up Firefox</title><link href="https://kenhv.com/blog/setting-up-firefox" rel="alternate" type="text/html" title="Setting Up Firefox" /><published>2024-07-11T00:00:00+05:30</published><updated>2024-08-18T19:16:23+05:30</updated><id>https://kenhv.com/blog/setting-up-firefox</id><content type="html" xml:base="https://kenhv.com/blog/setting-up-firefox"><![CDATA[<p>Google is <a href="https://blog.chromium.org/2024/05/manifest-v2-phase-out-begins.html">killing Manifest v2</a> in an attempt to kill ad blockers. This change will affect not only Chrome, but browsers based on Chromium such as Edge. It’s a good time to switch to Firefox. Everything just works; I’ve faced zero breakage on any site, even with some additional privacy protection settings turned on.</p>
 
 <p>Most Firefox guides out there recommend using <a href="https://github.com/arkenfox/user.js">hardened configs</a> or <a href="https://librewolf.net">forks</a>. The only thing they harden is your life. I want to get shit done, not fumble around with my settings trying to unbreak a site every 30 seconds. My configuration is the middle ground, where your browser protects your privacy <em>and</em> your sanity.</p>
 
@@ -323,71 +491,85 @@ nginx <span class="nt">-t</span> <span class="o">&amp;&amp;</span> systemctl rel
 </div>]]></content><author><name>Ken Harris</name></author><summary type="html"><![CDATA[A list of extensions and tweaks to improve Firefox without breakage.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://kenhv.com/assets/images/og/posts/setting-up-firefox.png" /><media:content medium="image" url="https://kenhv.com/assets/images/og/posts/setting-up-firefox.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Highlights From Children of Dune</title><link href="https://kenhv.com/blog/highlights-from-children-of-dune" rel="alternate" type="text/html" title="Highlights From Children of Dune" /><published>2024-07-08T00:00:00+05:30</published><updated>2024-07-19T13:55:12+05:30</updated><id>https://kenhv.com/blog/highlights-from-children-of-dune</id><content type="html" xml:base="https://kenhv.com/blog/highlights-from-children-of-dune"><![CDATA[<p>I’ve never highlighted this many passages from a non-philosophy book. Half a century later, the Dune saga is more relevant than ever. A must-read for sure.</p>
 
 <h4 id="page-154">Page 154</h4>
+
 <blockquote>
   <p>Paul had always said that stasis was the most dangerous of those things which were not natural. The only permanence was fluid. Change was all that mattered.</p>
 </blockquote>
 
 <h4 id="page-158">Page 158</h4>
+
 <blockquote>
   <p>“A large populace held in check by a small but powerful force is quite a common situation in our universe. And we know the major conditions wherein this large populace may turn upon its keepers— “One: When they find a leader. This is the most volatile threat to the powerful; they must retain control of leaders. “Two: When the populace recognizes its chains. Keep the populace blind and unquestioning. “Three: When the populace perceives a hope of escape from bondage. They must never even believe that escape is possible!”</p>
 </blockquote>
 
 <h4 id="page-171">Page 171</h4>
+
 <blockquote>
   <p>“The past may show the right way to behave if you live in the past, Stil, but circumstances change.”</p>
 </blockquote>
 
 <h4 id="page-198">Page 198</h4>
+
 <blockquote>
   <p>“To suspect your own mortality is to know the beginning of terror; to learn irrefutably that you are mortal is to know the end of terror.”</p>
 </blockquote>
 
 <h4 id="page-247">Page 247</h4>
+
 <blockquote>
   <p>When I am weaker than you, I ask you for freedom because that is according to your principles; when I am stronger than you, I take away your freedom because that is according to my principles.</p>
 </blockquote>
 
 <h4 id="page-267">Page 267</h4>
+
 <blockquote>
   <p>The universe is just there; that’s the only way a Fedaykin can view it and remain the master of his senses. The universe neither threatens nor promises. It holds things beyond our sway: the fall of a meteor, the eruption of a spiceblow, growing old and dying. These are the realities of this universe and they must be faced regardless of how you feel about them. You cannot fend off such realities with words. They will come at you in their own wordless way and then, then you will understand what is meant by “life and death.” Understanding this, you will be filled with joy.</p>
 </blockquote>
 
 <h4 id="page-284">Page 284</h4>
+
 <blockquote>
   <p>Governments, if they endure, always tend increasingly toward aristocratic forms. No government in history has been known to evade this pattern. And as the aristocracy develops, government tends more and more to act exclusively in the interests of the ruling class—whether that class be hereditary royalty, oligarchs of financial empires, or entrenched bureaucracy.</p>
 </blockquote>
 
 <h4 id="page-295">Page 295</h4>
+
 <blockquote>
   <p>He was a mind-slaver and his enslaving process could be understood with extreme simplicity: he transferred technical knowledge without a transfer of values.</p>
 </blockquote>
 
 <h4 id="page-365">Page 365</h4>
+
 <blockquote>
   <p>If you believe certain words, you believe their hidden arguments. When you believe something is right or wrong, true or false, you believe the assumptions in the words which express the arguments. Such assumptions are often full of holes, but remain most precious to the convinced.</p>
 </blockquote>
 
 <h4 id="page-402">Page 402</h4>
+
 <blockquote>
   <p>There’s no mystery about a human life. It’s not a problem to be solved, but a reality to be experienced.</p>
 </blockquote>
 
 <h4 id="page-457">Page 457</h4>
+
 <blockquote>
   <p>The patterns could guide and they could trap. One had to remember that patterns change.</p>
 </blockquote>
 
 <h4 id="page-568">Page 568</h4>
+
 <blockquote>
   <p>The child who refuses to travel in the father’s harness, this is the symbol of man’s most unique capability. “I do not have to be what my father was. I do not have to obey my father’s rules or even believe everything he believed. It is my strength as a human that I can make my own choices of what to believe and what not to believe, of what to be and what not to be.”</p>
 </blockquote>
 
 <h4 id="page-596">Page 596</h4>
+
 <blockquote>
   <p>I command you to carry it always next to your heart as a reminder that all humans are prone to error and all leaders are human.</p>
 </blockquote>
 
 <h4 id="page-599">Page 599</h4>
+
 <blockquote>
   <p>“There’s always a prevailing mystique in any civilization,” Leto said. “It builds itself as a barrier against change, and that always leaves future generations unprepared for the universe’s treachery. All mystiques are the same in building these barriers—the religious mystique, the hero-leader mystique, the messiah mystique, the mystique of science/technology, and the mystique of nature itself. We live in an Imperium which such a mystique has shaped, and now that Imperium is falling apart because most people don’t distinguish between mystique and their universe. You see, the mystique is like demon possession; it tends to take over the consciousness, becoming all things to the observer.”</p>
 </blockquote>]]></content><author><name>Ken Harris</name></author><summary type="html"><![CDATA[A collection of my highlights from Frank Herbert's Children of Dune.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://kenhv.com/assets/images/og/posts/highlights-from-children-of-dune.png" /><media:content medium="image" url="https://kenhv.com/assets/images/og/posts/highlights-from-children-of-dune.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">The Comfiest Streaming Service</title><link href="https://kenhv.com/blog/the-comfiest-streaming-service" rel="alternate" type="text/html" title="The Comfiest Streaming Service" /><published>2024-06-30T00:00:00+05:30</published><updated>2024-07-16T12:05:48+05:30</updated><id>https://kenhv.com/blog/the-comfiest-streaming-service</id><content type="html" xml:base="https://kenhv.com/blog/the-comfiest-streaming-service"><![CDATA[<p>What if I told you there’s a streaming service that</p>
@@ -460,7 +642,7 @@ nginx <span class="nt">-t</span> <span class="o">&amp;&amp;</span> systemctl rel
 
 <div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Essentials
 </span><span class="n">vo</span>=<span class="n">gpu</span>-<span class="n">next</span>
-<span class="n">gpu</span>-<span class="n">api</span>=<span class="n">auto</span>     
+<span class="n">gpu</span>-<span class="n">api</span>=<span class="n">auto</span>
 <span class="n">hwdec</span>=<span class="n">auto</span>-<span class="n">safe</span>
 
 <span class="c"># Smoothmotion
@@ -625,92 +807,4 @@ nginx <span class="nt">-t</span> <span class="o">&amp;&amp;</span> systemctl rel
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="nt">-s</span> <span class="s1">'https://liquorix.net/install-liquorix.sh'</span> | <span class="nb">sudo </span>bash
 </code></pre></div></div>
 
-<p>Ubuntu 24.04 added several low-latency tunables to their default kernel, explained in <a href="https://discourse.ubuntu.com/t/fine-tuning-the-ubuntu-24-04-kernel-for-low-latency-throughput-and-power-efficiency/44834">this post</a>. I use the following: <code class="language-plaintext highlighter-rouge">preempt=full rcu_nocbs=all rcutree.enable_rcu_lazy=1</code></p>]]></content><author><name>Ken Harris</name></author><summary type="html"><![CDATA[A repository of tweaks for desktop Linux.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://kenhv.com/assets/images/og/posts/linux-tweaks.png" /><media:content medium="image" url="https://kenhv.com/assets/images/og/posts/linux-tweaks.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Smartphone Privacy For Everyone</title><link href="https://kenhv.com/blog/smartphone-privacy-for-everyone" rel="alternate" type="text/html" title="Smartphone Privacy For Everyone" /><published>2021-05-23T00:00:00+05:30</published><updated>2024-07-18T17:21:37+05:30</updated><id>https://kenhv.com/blog/smartphone-privacy-for-everyone</id><content type="html" xml:base="https://kenhv.com/blog/smartphone-privacy-for-everyone"><![CDATA[<p>Smartphones are a crucial part of the modern-day. There’s a 70% chance you’re reading this from your smartphone. We use it for everything, from the simplest of tasks to computations that would be deemed impossible just a few years ago. In an ideal world, we would own the data that is on our phones. Unfortunately, we aren’t living in a perfect world. Every single month, we hear about some new controversy regarding digital privacy. Yet we are stuck with using privacy-invasive platforms such as Facebook or YouTube. The reality is, there are simply no alternatives that have a userbase or content anywhere close to them.</p>
-
-<p>Privacy and convenience are regarded to be inversely proportional; you generally have to sacrifice one for the other. But there exists a threshold where you can enjoy both. What we tech nerds find simple can really be rocket science for people outside the tech bubble. This article is for the common person coming from a non-tech background, looking to enhance their digital privacy in simple yet effective ways. Learn how to keep your data safer while using these spyware apps and platforms.</p>
-
-<p>All apps linked to in this article are not links to their Play Store or App Store listings. I’ve instead linked to their websites (if not, their GitHub link) so you can install it on whichever smartphone you use, using whichever method you prefer (elaborated in the <a href="#app-store">App Store section</a>). Feel free to skip to any section you want.</p>
-
-<h2 id="free-and-non-free-software">“Free” and “Non-Free” Software</h2>
-
-<p>The word free in the context of software implies “freedom” (free as in freedom, not free of cost). Free and open-source software (FOSS) or free software gives the user freedom to access, study, modify and share. The software that does not provide these freedoms to users is called proprietary (closed source) software. Most services we take for granted, such as WhatsApp, Instagram, YouTube, are all proprietary software that is also free to use. These are also called freeware.</p>
-
-<p>Open-source software is almost always free software, but there are some <a href="https://www.gnu.org/philosophy/open-source-misses-the-point.en.html">exceptions</a>. Software that’s both free and open-source are called FOSS - Free and Open-Source Software. The apps that I’ll be talking about are all FOSS.</p>
-
-<h2 id="platforms-and-clients">Platforms and Clients</h2>
-
-<p>To understand how you can better safeguard yourself when using data-collecting platforms, you must first understand what a platform and a client is.</p>
-
-<p>Say you have two phones, one running Android and one running iOS. These two phones are running entirely different operating systems. Yet, if you switch your SIM cards between them, you can still take calls and messages sent to that SIM. In this case, the phone acts as a client, and your SIM provider is the platform.</p>
-
-<p>More often than not, a significant chunk of the tracking happens within the client/app. By switching to FOSS clients for such platforms, we can enhance our privacy a lot and still access the same media. You can view all the content that your friends post on the forum, post content, send and receive messages, etc., from a different client. Like using two apps to manage SMS, for example. More often than not, you get the added benefit of additional features that aren’t available in the official clients.</p>
-
-<p>Using privacy-invasive platforms is the issue in the first place. While switching to FOSS clients may minimize data collection, this isn’t the proper solution. All the content that we post on the invasive platform will still be tracked. Switching to alternative platforms is the only way to be really free. I will provide both solutions in this article.</p>
-
-<h2 id="blocking-ads">Blocking Ads</h2>
-
-<p>This is the easiest step you can take to enhancing your online privacy. Blocking ads is not just beneficial to your privacy, but it also improves your experience with tech as a whole. Ads are annoying, and they bring trackers with them. Trackers, as the name implies, track all your moves online to serve you more relevant ads. While it’s not possible to block ads from apps such as Spotify or YouTube with this method, it will block in-app ads and ads on the internet.</p>
-
-<p>To block ads on Android, go to your Settings app and search for DNS. An option called Private DNS will show up. Tap it, select “Private DNS provider hostname” and enter the following address: <code class="language-plaintext highlighter-rouge">dns.adguard-dns.com</code>. It’s that simple. To disable it, you can set the Private DNS setting back to Automatic.</p>
-
-<p>For iOS, click <a href="https://github.com/paulmillr/encrypted-dns/raw/master/signed/adguard-default-https.mobileconfig">here</a> to add the AdGuard DNS profile to your mobile. Select Allow when the installation pop-up shows up. Then, go to Settings, click on the new “Profile Downloaded” option, select Install at the top, enter your PIN, and select Install again. Your iPhone will now start blocking ads. To disable it, go to Settings, General, VPN &amp; Device Management, DNS, and set it to automatic. System-wide ad blocking is offered as a paid functionality by the AdGuard app, but this is the same thing for free and is also officially provided by AdGuard.</p>
-
-<h2 id="app-store">App Store</h2>
-
-<p>Let’s start with the App Store itself. On Android, we use Play Store to install, update and manage all our apps. There’s an alternative called <a href="https://auroraoss.com/download/">Aurora Store</a>, which is a FOSS (Free and Open-Source) client for the Play Store service. You can do everything you do on Play Store with Aurora Store. It allows you to download older version of apps as well. There are also other app stores than Google’s Play Store, such as F-Droid. F-Droid is a repository of FOSS applications only. You can access this store by using their <a href="https://f-droid.org/">official client</a> or by <a href="https://auroraoss.com/download/">Aurora Droid</a>, a better looking client. All the apps listed in this article will be available via F-Droid.</p>
-
-<p>On iOS, you are stuck with Apple’s App Store. Contrary to popular belief, Apple does allow sideloading, even outside the EU. But there is a lot of catches and is much more complicated than sideloading on Android, so I will just point you in the right direction. Check out <a href="https://sidestore.io/">SideStore</a>. Even for tech-savvy people, this is usually not worth it, but it is there if you need it.</p>
-
-<h2 id="basic-functionality">Basic Functionality</h2>
-
-<p>Fossify (<a href="https://play.google.com/store/apps/dev?id=7297838378654322558">Play Store</a>) (<a href="https://search.f-droid.org/?q=fossify">F-Droid</a>) is a set of open-source Android apps that can replace most of the pre-installed apps. These apps include Calendar, Clock, Contacts, File Manager, Gallery, Music Player, Notes, Phone, SMS Messaging, Voice Recorder and more.</p>
-
-<p>These apps don’t require any additional permissions, they have customizable widgets, and theme options are linked across their apps. Switching to Fossify apps will be a significant step in moving away from non-free software.</p>
-
-<p>On iOS, you are stuck with the default apps for almost all basic functionality.</p>
-
-<p><strong>Update:</strong> Simple Mobile Tools was <a href="https://www.androidauthority.com/simple-mobile-tools-acquisition-3391041/">sold to a scummy company</a>, please switch to Fossify.</p>
-
-<h2 id="web-browser">Web Browser</h2>
-
-<p>Browsers are a crucial part of our digital life. Chrome is the browser that comes pre-installed on all Android devices, and it’s notorious for being a privacy nightmare. Chrome tracks your every tap and scroll on the internet. Chrome itself is proprietary, but it’s based on an open-source project called Chromium. Safari is the default browser on iOS. It’s much better than Chrome for privacy, but is still a non-free and closed-source browser.</p>
-
-<p><a href="https://www.mozilla.org/en-US/firefox/mobile">Firefox</a> is a browser that’s developed by a non-profit organization called Mozilla Foundation. Aside from being open-source, it has a plethora of features and additional extensions that you can install.</p>
-
-<p><a href="https://github.com/uazo/cromite">Cromite</a> is a browser that’s based on Chromium with inbuilt ad blockers and privacy hardening. It looks and functions exactly like Chrome with the added benefits of an ad-free web experience and no browser-level tracking.</p>
-
-<p>It must be noted that while iOS does have a lot of third-party browsers, Apple restricts them to use only the WebKit engine. So every browser is pretty much just Safari with some additional features.</p>
-
-<h2 id="social-media-and-entertainment">Social Media and Entertainment</h2>
-
-<p>One of the most significant selling points of smartphones is getting our daily dose of entertainment anywhere. We consume a lot of content in apps such as Instagram, Facebook, YouTube, etc. While the services themselves are non-free, you can still maintain privacy by using open-source clients for these services.</p>
-
-<p><a href="https://github.com/rignaneseleo/SlimSocial-for-Facebook">SlimSocial for Facebook</a> is a third-party client for <strong>Facebook</strong>. It’s much lighter than the notoriously bloated official client and has several features.</p>
-
-<p><strong>Twitter</strong> has paywalled all its APIs. Despite this, <a href="https://github.com/j-fbriere/squawker">Squawker</a> manages to provide a feature-rich Twitter experience.</p>
-
-<p><a href="https://newpipe.net/">NewPipe</a> and <a href="https://libretube.dev/">LibreTube</a> are lightweight clients for <strong>YouTube</strong>. Despite being lightweight, they are feature-packed. They can do everything that the official YouTube app can do and much more. You can download videos to your storage, set the default video quality, play videos in picture-in-picture or the background, play only audio, which essentially makes YouTube a music streaming service, and much more. To top it all off, they block all ads on YouTube so you can enjoy your favorite content without interruption. <a href="https://invidious.io/">Invidious</a> is another great option; it’s a web-based client and as such, a viable solution for iOS.</p>
-
-<p><strong>Reddit</strong> <a href="https://arstechnica.com/gadgets/2024/02/exploring-reddits-third-party-app-environment-7-months-after-the-apicalypse/">paywalled their APIs</a> like Twitter, killing a lot of third-party clients. There are some good third-party clients such as <a href="https://github.com/Docile-Alligator/Infinity-For-Reddit">Infinity</a> that still exist, but they require a paid subscription. Fortunately, there is a way to get around this by using the official Reddit client’s API keys on third-party apps. Follow <a href="https://github.com/KobeW50/ReVanced-Documentation/blob/main/Reddit-Client-ID-Guide.md">ReVanced’s guide</a>. Alternatively, you can use Reddit as a PWA. On iOS, you can use the website with <a href="https://apps.apple.com/us/app/yesterday-for-old-reddit/id1603279883">Yesterday For Old Reddit</a> or <a href="https://apps.apple.com/us/app/sink-it-for-reddit/id6449873635">Sink It for Reddit</a>.</p>
-
-<p>I would also like to mention a few alternative platforms for social media. <a href="https://joinmastodon.org/">Mastodon</a> is a decentralized platform similar to Facebook and Twitter. <a href="https://join-lemmy.org/">Lemmy</a> is an alternative for Reddit. <a href="https://pixelfed.org/">Pixelfed</a> is an image sharing platform similar to Instagram.</p>
-
-<h3 id="progressive-web-apps">Progressive Web Apps</h3>
-
-<p>All the platforms mentioned above (and more, like Instagram) have a Progressive Web App (PWA), which you can install by accessing the social media’s website through your browser. This is usually your only option on iOS. When you visit a website that offers a PWA, your browser should show a pop-up asking whether you want to add it to your home screen. You can also add to the home screen from your browser’s menu (share menu in Safari). This will install the PWA on your device, which has several benefits such as taking up no space on your device.</p>
-
-<h2 id="email">Email</h2>
-
-<p><a href="https://email.faircode.eu/">FairEmail</a> is a FOSS email client that can manage your Gmail, Yahoo Mail, Outlook, and just about every email provider. All your email accounts can be managed from a single app, as you can add unlimited accounts in one unified inbox, making your email experience not only private but also productive.</p>
-
-<p><a href="https://proton.me/mail">Proton Mail</a>, another offering from Proton, provides free privacy-respecting email accounts to everyone. Proton also offers several private services such as cloud storage (alternative to Google Drive and iCloud), do <a href="https://proton.me">check them out</a>.</p>
-
-<h2 id="closing-thoughts">Closing Thoughts</h2>
-
-<p>The original version of this article focussed only on Android and was not as user-friendly as it is now. If you have any suggestions, feel free to <a href="mailto:ken@kenhv.com">mail me</a>.</p>
-
-<blockquote>
-  <p>Arguing that you don’t care about the right to privacy because you have nothing to hide is no different than saying you don’t care about free speech because you have nothing to say.</p>
-
-  <p>— Edward Snowden</p>
-</blockquote>]]></content><author><name>Ken Harris</name></author><summary type="html"><![CDATA[A guide to protect your privacy while using privacy-invasive platforms.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://kenhv.com/assets/images/og/posts/smartphone-privacy-for-everyone.png" /><media:content medium="image" url="https://kenhv.com/assets/images/og/posts/smartphone-privacy-for-everyone.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>
+<p>Ubuntu 24.04 added several low-latency tunables to their default kernel, explained in <a href="https://discourse.ubuntu.com/t/fine-tuning-the-ubuntu-24-04-kernel-for-low-latency-throughput-and-power-efficiency/44834">this post</a>. I use the following: <code class="language-plaintext highlighter-rouge">preempt=full rcu_nocbs=all rcutree.enable_rcu_lazy=1</code></p>]]></content><author><name>Ken Harris</name></author><summary type="html"><![CDATA[A repository of tweaks for desktop Linux.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://kenhv.com/assets/images/og/posts/linux-tweaks.png" /><media:content medium="image" url="https://kenhv.com/assets/images/og/posts/linux-tweaks.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>

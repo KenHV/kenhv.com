@@ -20,9 +20,9 @@ After years of using Arch Linux, I’ve settled on Ubuntu. And I think you shoul
 
 ## How I Ended Up on Ubuntu
 
-I’m tired of going to the Arch Wiki every time I need something. It was fun to tinker with my OS all day long when I was younger, but now I need something that works out of the box. I want my OS to get out of the way, and Arch got in my way one too many times. I moved to Windows 11 for 6 months and gave up after it started slowing down and heating up (as always). I decided to go back to Linux, but I needed something that *just works*.
+I’m tired of going to the Arch Wiki every time I need something. It was fun to tinker with my OS all day long when I was younger, but now I need something that works out of the box. I want my OS to get out of the way, and Arch got in my way one too many times. I moved to Windows 11 for 6 months and gave up after it started slowing down and heating up (as always). I decided to go back to Linux, but I needed something that _just works_.
 
-Arch and derivatives (the only good one is EndeavourOS) were out of the question immediately. I also decided not to use niche distros like openSUSE for the same reason. My first choice was Fedora. DNF is terrible but I still considered it, right up until I learnt that hardware acceleration is not a thing anymore *OOTB*. Instant pass. Pop!_OS has been focused on COSMIC for a while, so that’s a no-go for now. Linux Mint is great, but I wanted newer packages and a modern DE that supports Wayland (GNOME). I have a multi-monitor setup with different refresh rates, and Wayland handles it well.
+Arch and derivatives (the only good one is EndeavourOS) were out of the question immediately. I also decided not to use niche distros like openSUSE for the same reason. My first choice was Fedora. DNF is terrible but I still considered it, right up until I learnt that hardware acceleration is not a thing anymore _OOTB_. Instant pass. Pop!\_OS has been focused on COSMIC for a while, so that’s a no-go for now. Linux Mint is great, but I wanted newer packages and a modern DE that supports Wayland (GNOME). I have a multi-monitor setup with different refresh rates, and Wayland handles it well.
 
 Then I remembered Ubuntu existed. The last time I used Ubuntu was when Canonical sent free CDs. I read about snaps being bad all the time, but apart from that, I didn’t remember any other criticism. Might as well give it a try, right? Surely it can’t be that bad. And boy oh boy, it was much better than I was expecting.
 
@@ -40,7 +40,7 @@ What can I say? It’s fast, it just works, and it’s widely supported. It’s 
 
 First off, I strongly believe Ubuntu gets hated on so much because of how popular it is. The other arguments are just excuses. I’ll get to the other issues but I’ll address this first. This is a trend I’ve seen with GnOo/LinUx users, they feel the need to use increasingly niche tools just to feel better about themselves. Using Gentoo with an obscure window manager and Neovim won’t improve the quality of your work whatsoever. The tools you use don’t make you stand out, the work you do with them does.
 
-The next big reason is *muh bloat*. Ubuntu offers several spins, and all of them have a minimal install option that comes with only the necessary programs. A minimal install of Ubuntu 24.04 takes up less than 800MB of RAM; Xubuntu 24.04, less than 500MB. Ubuntu is on par with, if not lighter than Linux Mint. It’s 2024, 8GB RAM has become the norm. Stop obsessing over saving a couple hundred megabytes of RAM. Unused RAM is wasted RAM. And honestly, CPU usage at idle is a much more important metric if you want to measure “bloat”.
+The next big reason is _muh bloat_. Ubuntu offers several spins, and all of them have a minimal install option that comes with only the necessary programs. A minimal install of Ubuntu 24.04 takes up less than 800MB of RAM; Xubuntu 24.04, less than 500MB. Ubuntu is on par with, if not lighter than Linux Mint. It’s 2024, 8GB RAM has become the norm. Stop obsessing over saving a couple hundred megabytes of RAM. Unused RAM is wasted RAM. And honestly, CPU usage at idle is a much more important metric if you want to measure “bloat”.
 
 “But snaps are slow and horrible!” If you don’t want snaps on your system, you can just remove it in a minute. It’s that easy. I removed it as well, not because I hate snaps in particular, but because I don’t like containerised package formats in general. Installing Flatpak is also trivial if you need it, but if your main complaint about snaps is its speed, stick to native packages.
 
@@ -58,7 +58,7 @@ A lot of big software offer official native packages for Ubuntu. Since I dislike
 
 Ubuntu offers full secure boot support, even when using NVIDIA. You can dual-boot with Windows and play your favourite game with kernel-level ~~rootkit~~ anti-cheat!
 
-I'd much rather go with Ubuntu and *remove* one or two components I don't like, than go with some other distro and spend hours *fixing* missing/misconfigured basic functionality. 
+I'd much rather go with Ubuntu and _remove_ one or two components I don't like, than go with some other distro and spend hours _fixing_ missing/misconfigured basic functionality.
 
 ## The End
 

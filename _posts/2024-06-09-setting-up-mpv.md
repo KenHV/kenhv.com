@@ -21,7 +21,7 @@ If you’re on Linux, your config folder will be `~/.config/mpv`. For Windows, c
 ```conf
 # Essentials
 vo=gpu-next
-gpu-api=auto     
+gpu-api=auto
 hwdec=auto-safe
 
 # Smoothmotion
@@ -52,7 +52,7 @@ Linux users, run the following command:
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/tomasklaen/uosc/HEAD/installers/unix.sh)"
 ```
 
-And that’s it! You can now start using MPV like any other media player. Really, that’s all you **need**.  
+And that’s it! You can now start using MPV like any other media player. Really, that’s all you **need**.
 
 ## Beyond the Basics
 

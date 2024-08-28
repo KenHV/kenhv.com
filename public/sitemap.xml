@@ -26,11 +26,11 @@
 </url>
 <url>
 <loc>https://kenhv.com/blog/setting-up-firefox</loc>
-<lastmod>2024-08-02T17:57:19+05:30</lastmod>
+<lastmod>2024-08-18T19:16:23+05:30</lastmod>
 </url>
 <url>
 <loc>https://kenhv.com/blog/configuring-bsnl-ftth</loc>
-<lastmod>2024-08-02T17:57:19+05:30</lastmod>
+<lastmod>2024-08-18T19:16:23+05:30</lastmod>
 </url>
 <url>
 <loc>https://kenhv.com/blog/i-switched-to-ubuntu-and-you-should-too</loc>
@@ -39,6 +39,10 @@
 <url>
 <loc>https://kenhv.com/blog/fail2ban-with-nginx-and-cloudflare-ipv6</loc>
 <lastmod>2024-08-15T20:07:54+05:30</lastmod>
+</url>
+<url>
+<loc>https://kenhv.com/blog/securing-a-linux-server</loc>
+<lastmod>2024-08-28T23:28:50+05:30</lastmod>
 </url>
 <url>
 <loc>https://kenhv.com/blog</loc>

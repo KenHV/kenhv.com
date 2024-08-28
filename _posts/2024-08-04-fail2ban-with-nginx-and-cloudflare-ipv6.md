@@ -12,7 +12,7 @@ This post will teach you how to set up Fail2Ban actions for services reverse-pro
 
 Nginx needs to know the visitor's real IP for the ban to work. Without this step, Nginx will simply see Cloudflare IPs and let it through. Even if you're not going to use Fail2Ban, you should set this up.
 
-Make sure `jq` and `crontab` are installed in your system. We'll be using a cronjob to fetch Cloudflare IPs and Nginx's [ngx_http_realip_module](https://nginx.org/en/docs/http/ngx_http_realip_module.html) to unmask the IPs. The script we're using is from [this GitHub repo](https://github.com/jaapmarcus/nginx-cloudflare-real-ip/tree/use-api-instead). 
+Make sure `jq` and `crontab` are installed in your system. We'll be using a cronjob to fetch Cloudflare IPs and Nginx's [ngx_http_realip_module](https://nginx.org/en/docs/http/ngx_http_realip_module.html) to unmask the IPs. The script we're using is from [this GitHub repo](https://github.com/jaapmarcus/nginx-cloudflare-real-ip/tree/use-api-instead).
 
 Place the script somewhere on your system. I have it in `/opt/scripts/cloudflare.sh`.
 
@@ -111,7 +111,7 @@ cfaccountid = <account-id>
 cfbanlistid = <list-id>
 ```
 
-Fill in the details, and **make sure** you set the file's permissions to `640` (`sudo chmod 640 /etc/fail2ban/action.d/cloudflare-list.local`) to ensure only *root* can read this file.
+Fill in the details, and **make sure** you set the file's permissions to `640` (`sudo chmod 640 /etc/fail2ban/action.d/cloudflare-list.local`) to ensure only _root_ can read this file.
 
 Let's configure Fail2Ban for Vaultwarden. [Enable logging](https://github.com/dani-garcia/vaultwarden/wiki/Logging) in Vaultwarden. Create `/etc/fail2ban/filter.d/vaultwarden.local` with the following contents:
 

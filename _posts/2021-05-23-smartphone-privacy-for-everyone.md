@@ -44,7 +44,7 @@ On iOS, you are stuck with Apple's App Store. Contrary to popular belief, Apple 
 
 ## Basic Functionality
 
-Fossify ([Play Store](https://play.google.com/store/apps/dev?id=7297838378654322558)) ([F-Droid](https://search.f-droid.org/?q=fossify)) is a set of open-source Android apps that can replace most of the pre-installed apps. These apps include Calendar, Clock, Contacts, File Manager, Gallery, Music Player, Notes, Phone, SMS Messaging, Voice Recorder and more. 
+Fossify ([Play Store](https://play.google.com/store/apps/dev?id=7297838378654322558)) ([F-Droid](https://search.f-droid.org/?q=fossify)) is a set of open-source Android apps that can replace most of the pre-installed apps. These apps include Calendar, Clock, Contacts, File Manager, Gallery, Music Player, Notes, Phone, SMS Messaging, Voice Recorder and more.
 
 These apps don't require any additional permissions, they have customizable widgets, and theme options are linked across their apps. Switching to Fossify apps will be a significant step in moving away from non-free software.
 
@@ -91,5 +91,5 @@ All the platforms mentioned above (and more, like Instagram) have a Progressive 
 The original version of this article focussed only on Android and was not as user-friendly as it is now. If you have any suggestions, feel free to [mail me](mailto:ken@kenhv.com).
 
 > Arguing that you don't care about the right to privacy because you have nothing to hide is no different than saying you don't care about free speech because you have nothing to say.
-> 
+>
 > — Edward Snowden

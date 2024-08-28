@@ -10,7 +10,7 @@ BSNL-provided routers are bad. They are horribly slow, have poor range, and are 
 
 ## Requirements
 
-- ONU 
+- ONU
 - Router
 - VLAN ID
 - PPPoE username (password is always `password`)
@@ -25,9 +25,9 @@ I have a [TP-Link XZ000-G7 XPON ONU](https://www.amazon.in/dp/B0CYQDZ8NC) and a 
 
 Connect to your ONU using an ethernet cable. The TP-Link ONU doesn't have a DHCP server by default, so you'll have to configure IP assignment manually. Follow these [instructions for Windows](https://support.microsoft.com/en-us/windows/change-tcp-ip-settings-bd0a07af-15f5-cd6a-363f-ca2b6f391ace). On Linux, you can do this from NetworkManager settings.
 
-| IP Address  | `192.168.1.100` |
+| IP Address | `192.168.1.100` |
 | Subnet Mask | `255.255.255.0` |
-| Gateway     | `192.168.1.1`   |
+| Gateway | `192.168.1.1` |
 
 Now go to [192.168.1.1](http://192.168.1.1), set a password for your ONU, and log in. Go to Advanced, Network, and select VLAN Settings. Set "VLAN mode" to "VLAN TAG mode", enter your VLAN ID, and set "Priority" to `1`. You can also turn on the DHCP server if you want easier access to your ONU in the future. You can now disconnect the ethernet and connect your ONU to the router.
 

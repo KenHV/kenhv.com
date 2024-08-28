@@ -20,7 +20,7 @@ GNOME AND XFCE are both solid options for a desktop environment. I prefer GNOME.
 
 ## Graphics
 
-Set up your GPU drivers. I use [EnvyControl](https://github.com/bayasdev/envycontrol) to manage [NVIDIA Optimus](https://wiki.archlinux.org/title/NVIDIA_Optimus). I keep my dGPU disabled unless I need it for gaming. Go through [Intel graphics](https://wiki.archlinux.org/title/intel_graphics) for Intel. Take a look at [GuC/HuC firmware loading](https://wiki.archlinux.org/title/intel_graphics#Enable_GuC_/_HuC_firmware_loading), [framebuffer compression](https://wiki.archlinux.org/title/intel_graphics#Framebuffer_compression_(enable_fbc))in particular. I would also suggest turning off GPU mitigations (`i915.mitigations=off`).
+Set up your GPU drivers. I use [EnvyControl](https://github.com/bayasdev/envycontrol) to manage [NVIDIA Optimus](https://wiki.archlinux.org/title/NVIDIA_Optimus). I keep my dGPU disabled unless I need it for gaming. Go through [Intel graphics](https://wiki.archlinux.org/title/intel_graphics) for Intel. Take a look at [GuC/HuC firmware loading](https://wiki.archlinux.org/title/intel_graphics#Enable_GuC_/_HuC_firmware_loading), [framebuffer compression](<https://wiki.archlinux.org/title/intel_graphics#Framebuffer_compression_(enable_fbc)>)in particular. I would also suggest turning off GPU mitigations (`i915.mitigations=off`).
 
 Install appropriate drivers and verify [hardware video acceleration](https://wiki.archlinux.org/title/Hardware_video_acceleration). Set appropriate values for `LIBVA_DRIVER_NAME` and `VDPAU_DRIVER` by adding `export` commands to `/etc/profile.d/env.sh`. Adding them to `bashrc` won't work, these environment variables must be set in the login shell.
 

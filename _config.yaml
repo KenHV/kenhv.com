@@ -49,7 +49,7 @@ og_image:
   content:
     font_family: "Inter, Bold"
     color: "#121212"
-  image: /assets/images/og-logo.jpg
+  image: /assets/images/avatar-square.jpg
 
 # Target Blank
 target-blank:

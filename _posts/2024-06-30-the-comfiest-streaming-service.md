@@ -49,7 +49,7 @@ I prefer the web version, as I don't have to install the Stremio app on my compu
 ## Thoughts on Piracy
 
 > Piracy is almost always a service problem and not a pricing problem.
-> 
+>
 > — Gabe Newell
 
 I pay for music streaming because it's convenient. It has everything I want to listen to in one place and has recommendations, curated playlists, statistics; everything I need. There is simply no movie streaming service that's convenient. Every service has a limited and different catalogue, they don't have all the editions of a movie, and quite a lot of content is simply not available on any service. I made a fully automated media server years ago, but that isn't as convenient as this setup is either. Like Gabe said, it's not a problem of pricing. I am willing to pay for convenience. It's just that there's nothing convenient about the streaming services available today.
