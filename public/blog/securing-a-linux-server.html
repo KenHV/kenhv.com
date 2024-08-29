@@ -1,299 +1,97 @@
-<!DOCTYPE html>
-<html lang="en" prefix="og: http://ogp.me/ns#">
-
-<head><meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Securing A Linux Server</title>
-
-<link rel="preload" as="font" href="/assets/fonts/inter.woff2" crossorigin>
-
-
-<link rel="stylesheet" href="/assets/css/style.css?v=0364f34ca9bd710c9cf7a76d190ffebe">
-
-<link rel="stylesheet" href="/assets/css/syntax.css?v=ed3aa5230aa0e6e4086d50a418c5d647">
-
-
-<script async data-goatcounter="https://stats.kenhv.com/gc" src="/assets/js/gc.js"></script>
-
-<link rel="icon" type="image/x-icon" sizes="16x16 24x24 32x32 48x48" href="/favicon.ico?v=2">
-<link rel="icon" type="image/png" sizes="192x192" href="/favicon.png?v=2">
-<link rel="apple-touch-icon" sizes="192x192" href="/favicon.png?v=2"><!-- Begin Jekyll SEO tag v2.8.0 -->
-<meta name="generator" content="Jekyll v4.3.3" />
-<meta property="og:title" content="Securing A Linux Server" />
-<meta name="author" content="Ken Harris" />
-<meta property="og:locale" content="en_US" />
-<meta name="description" content="A guide to secure and harden a Linux server install." />
-<meta property="og:description" content="A guide to secure and harden a Linux server install." />
-<link rel="canonical" href="https://kenhv.com/blog/securing-a-linux-server" />
-<meta property="og:url" content="https://kenhv.com/blog/securing-a-linux-server" />
-<meta property="og:site_name" content="Ken Harris" />
-<meta property="og:image" content="https://kenhv.com/assets/images/og/posts/securing-a-linux-server.png" />
-<meta property="og:image:height" content="600" />
-<meta property="og:image:width" content="1200" />
-<meta property="og:image:alt" content="Securing A Linux Server" />
-<meta property="og:type" content="article" />
-<meta property="article:published_time" content="2024-08-28T00:00:00+05:30" />
-<meta name="twitter:card" content="summary_large_image" />
-<meta property="twitter:image" content="https://kenhv.com/assets/images/og/posts/securing-a-linux-server.png" />
-<meta name="twitter:image:alt" content="Securing A Linux Server" />
-<meta property="twitter:title" content="Securing A Linux Server" />
-<meta name="twitter:site" content="@KensurHV" />
-<meta name="twitter:creator" content="@KensurHV" />
-<script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Ken Harris","url":"https://kenhv.com"},"dateModified":"2024-08-28T23:28:50+05:30","datePublished":"2024-08-28T00:00:00+05:30","description":"A guide to secure and harden a Linux server install.","headline":"Securing A Linux Server","image":{"width":1200,"height":600,"alt":"Securing A Linux Server","url":"https://kenhv.com/assets/images/og/posts/securing-a-linux-server.png","@type":"imageObject"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://kenhv.com/blog/securing-a-linux-server"},"url":"https://kenhv.com/blog/securing-a-linux-server"}</script>
-<!-- End Jekyll SEO tag -->
-<link rel="alternate" type="application/atom+xml" title="Feed" href="https://kenhv.com/feed.xml"></head>
-
-<body><header>
-    <nav>
-        <span>
-            <a href="/">Ken Harris</a>
-        </span>
-        <span>
-            <a href="/blog">Blog</a>
-            <svg xmlns="http://www.w3.org/2000/svg" class="dark-mode-button" id="dark-mode-on" width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="#121212" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M16.8 11.2c.8-.9 1.2-2 1.2-3.2a6 6 0 0 0-9.3-5M2 2l20 20M6.3 6.3a4.67 4.67 0 0 0 1.2 5.2c.7.7 1.3 1.5 1.5 2.5m0 4h6m-5 4h4"></path>
-            </svg>
-            <svg xmlns="http://www.w3.org/2000/svg" class="dark-mode-button" id="dark-mode-off" width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5m0 4h6m-5 4h4"></path>
-            </svg>
-        </span>
-    </nav>
-    <hr>
-</header><main aria-label="Content">
-        <hgroup>
-  <h1>Securing A Linux Server</h1>
-  <p class="post-date">
-    <time datetime="2024-08-28T00:00:00+05:30">
-      28 August 2024</time>
-    
-  </p>
-</hgroup>
-
-<details>
-  <summary>Table of Contents</summary>
-  <ul id="toc" class="section-nav">
-<li class="toc-entry toc-h2"><a href="#ssh">SSH</a></li>
-<li class="toc-entry toc-h2"><a href="#firewall">Firewall</a></li>
-<li class="toc-entry toc-h2"><a href="#nginx">Nginx</a></li>
-<li class="toc-entry toc-h2"><a href="#fail2ban">Fail2Ban</a></li>
-</ul>
-</details>
-
-
-<article>
-  <h2 id="ssh">
-  
-  
-    SSH <a href="#ssh" class="anchor" aria-hidden="true" tabindex="-1">#</a>
-  
-  
-</h2>
-    
-
-<p>Follow the <a href="https://ssh-audit.com/hardening_guides.html" target="_blank" rel="noopener">SSH Hardening Guide</a> for both the client and the server. This is something you should be doing on all your machines. You can skip the “connection rate throttling” section.</p>
-
-<p>Generate an Ed25519 key:</p>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssh-keygen <span class="nt">-t</span> ed25519
-</code></pre></div></div>
-
-<p>Copy the key to your server:</p>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssh-copy-id <span class="nt">-i</span> &lt;path-to-key&gt; &lt;user&gt;@&lt;ip&gt;
-</code></pre></div></div>
-
-<p>Paste the following at the end of <code class="language-plaintext highlighter-rouge">/etc/ssh/sshd_config</code> on your server:</p>
-
-<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">MaxAuthTries</span> <span class="m">3</span>
+<!doctype html><html lang="en" prefix="og: http://ogp.me/ns#"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Securing A Linux Server</title><link rel="preload" as="font" href="/assets/fonts/inter.woff2" crossorigin><link rel="stylesheet" href="/assets/css/style.css?v=a03c7534218b69f1bcea2a27753993ee"><link rel="stylesheet" href="/assets/css/syntax.css?v=ed3aa5230aa0e6e4086d50a418c5d647"><script async data-goatcounter="https://stats.kenhv.com/gc" src="/assets/js/gc.js"></script><link rel="icon" type="image/x-icon" sizes="16x16 24x24 32x32 48x48" href="/favicon.ico?v=2"><link rel="icon" type="image/png" sizes="192x192" href="/favicon.png?v=2"><link rel="apple-touch-icon" sizes="192x192" href="/favicon.png?v=2"><meta name="generator" content="Jekyll v4.3.3"/><meta property="og:title" content="Securing A Linux Server"/><meta name="author" content="Ken Harris"/><meta property="og:locale" content="en_US"/><meta name="description" content="A guide to secure and harden a Linux server install."/><meta property="og:description" content="A guide to secure and harden a Linux server install."/><link rel="canonical" href="https://kenhv.com/blog/securing-a-linux-server"/><meta property="og:url" content="https://kenhv.com/blog/securing-a-linux-server"/><meta property="og:site_name" content="Ken Harris"/><meta property="og:image" content="https://kenhv.com/assets/images/og/posts/securing-a-linux-server.png"/><meta property="og:image:height" content="600"/><meta property="og:image:width" content="1200"/><meta property="og:image:alt" content="Securing A Linux Server"/><meta property="og:type" content="article"/><meta property="article:published_time" content="2024-08-28T00:00:00+05:30"/><meta name="twitter:card" content="summary_large_image"/><meta property="twitter:image" content="https://kenhv.com/assets/images/og/posts/securing-a-linux-server.png"/><meta name="twitter:image:alt" content="Securing A Linux Server"/><meta property="twitter:title" content="Securing A Linux Server"/><meta name="twitter:site" content="@KensurHV"/><meta name="twitter:creator" content="@KensurHV"/><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Ken Harris","url":"https://kenhv.com"},"dateModified":"2024-08-29T00:00:00+05:30","datePublished":"2024-08-28T00:00:00+05:30","description":"A guide to secure and harden a Linux server install.","headline":"Securing A Linux Server","image":{"width":1200,"height":600,"alt":"Securing A Linux Server","url":"https://kenhv.com/assets/images/og/posts/securing-a-linux-server.png","@type":"imageObject"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://kenhv.com/blog/securing-a-linux-server"},"url":"https://kenhv.com/blog/securing-a-linux-server"}</script><meta property="article:modified_time" content="2024-08-29T00:00:00+05:30"/><link rel="alternate" type="application/atom+xml" title="Feed" href="https://kenhv.com/feed.xml"></head><body><header><nav><span><a href="/">Ken Harris</a> </span><span><a href="/blog">Blog</a> <svg xmlns="http://www.w3.org/2000/svg" class="dark-mode-button" id="dark-mode-on" width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="#121212" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16.8 11.2c.8-.9 1.2-2 1.2-3.2a6 6 0 0 0-9.3-5M2 2l20 20M6.3 6.3a4.67 4.67 0 0 0 1.2 5.2c.7.7 1.3 1.5 1.5 2.5m0 4h6m-5 4h4"></path></svg> <svg xmlns="http://www.w3.org/2000/svg" class="dark-mode-button" id="dark-mode-off" width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5m0 4h6m-5 4h4"></path></svg></span></nav><hr></header><main aria-label="Content"><hgroup><h1>Securing A Linux Server</h1><p class="post-date"><time datetime="2024-08-28T00:00:00+05:30">28 August 2024</time> / Updated on <time datetime="2024-08-29T00:00:00+05:30">29 August 2024</time></p></hgroup><details><summary>Table of Contents</summary><ul id="toc" class="section-nav"><li class="toc-entry toc-h2"><a href="#non-root-user">Non-Root User</a></li><li class="toc-entry toc-h2"><a href="#ssh">SSH</a></li><li class="toc-entry toc-h2"><a href="#firewall">Firewall</a></li><li class="toc-entry toc-h2"><a href="#nginx">Nginx</a></li><li class="toc-entry toc-h2"><a href="#fail2ban">Fail2Ban</a></li><li class="toc-entry toc-h2"><a href="#cloudflare">Cloudflare</a></li></ul></details><article><p>This post goes over the following: adding a non-root user, securing SSH, setting up a firewall (UFW), blocking known bad IPs with a script, hardening Nginx reverse-proxy configs, implementing Nginx Proxy Manager’s “block common exploits” functionality, setting up Fail2Ban, and implementing LinuxServer’s SWAG’s Fail2Ban jails. Additional instructions for Cloudflare proxy are provided as well.</p><h2 id="non-root-user">Non-Root User <a href="#non-root-user" class="anchor" aria-hidden="true" tabindex="-1">#</a></h2><p>If you’re using a VPS, the default user will be <code class="language-plaintext highlighter-rouge">root</code>. We need to set up a non-root user first.</p><p>To add a new non-root user, run the following command as <code class="language-plaintext highlighter-rouge">root</code>:</p><div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>adduser &lt;user>
+</code></pre></div></div><p>You can leave all the information empty. I recommend using a randomly generated passphrase, as it’s easier to remember and type.</p><p>To give the new user rights to use <code class="language-plaintext highlighter-rouge">sudo</code>, run the following command as <code class="language-plaintext highlighter-rouge">root</code>:</p><div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>usermod <span class="nt">--append</span> <span class="nt">--groups</span> <span class="nb">sudo</span> &lt;user>
+</code></pre></div></div><p>You can now logout and log back in as the new user.</p><h2 id="ssh">SSH <a href="#ssh" class="anchor" aria-hidden="true" tabindex="-1">#</a></h2><p>Follow the <a href="https://ssh-audit.com/hardening_guides.html" target="_blank" rel="noopener">SSH Hardening Guide</a>. It ensures that only strong algorithms are used for encryption. I do this on all my machines, both clients and servers. You can skip the “connection rate throttling” section, we’ll be setting up Fail2Ban to handle that.</p><p>Generate an Ed25519 key:</p><div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssh-keygen <span class="nt">-t</span> ed25519
+</code></pre></div></div><p>Copy the key to your server:</p><div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssh-copy-id <span class="nt">-i</span> &lt;path-to-key> &lt;user>@&lt;ip>
+</code></pre></div></div><p>Paste the following at the end of <code class="language-plaintext highlighter-rouge">/etc/ssh/sshd_config</code> on your server:</p><div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">Protocol</span> <span class="m">2</span>
+<span class="n">MaxAuthTries</span> <span class="m">3</span>
 <span class="n">PermitRootLogin</span> <span class="n">no</span>
 <span class="n">PasswordAuthentication</span> <span class="n">no</span>
 <span class="n">PubkeyAuthentication</span> <span class="n">yes</span>
 <span class="n">AuthenticationMethods</span> <span class="n">publickey</span>
 <span class="n">KbdInteractiveAuthentication</span> <span class="n">no</span>
 <span class="n">X11Forwarding</span> <span class="n">no</span>
-</code></pre></div></div>
-
-<p>You can change the SSH port to a random number in the same file. Finally, run the following command to restart the SSH daemon:</p>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>systemctl restart ssh
-</code></pre></div></div>
-<h2 id="firewall">
-  
-  
-    Firewall <a href="#firewall" class="anchor" aria-hidden="true" tabindex="-1">#</a>
-  
-  
-</h2>
-    
-
-<p>Make sure the required packages are installed:</p>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>apt <span class="nb">install </span>iptables ipset ufw cron curl wget <span class="nt">-y</span>
-</code></pre></div></div>
-
-<p>Allow the SSH port and enable UFW:</p>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>ufw allow &lt;port&gt;/tcp comment <span class="s2">"OpenSSH"</span>
+</code></pre></div></div><p>You can change the SSH port to a random number in the same file. Finally, run the following command to restart the SSH daemon:</p><div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>systemctl restart ssh
+</code></pre></div></div><h2 id="firewall">Firewall <a href="#firewall" class="anchor" aria-hidden="true" tabindex="-1">#</a></h2><p>Make sure the required packages are installed:</p><div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>apt <span class="nb">install </span>iptables ipset ufw cron curl wget <span class="nt">-y</span>
+</code></pre></div></div><p>Allow the SSH port and enable UFW:</p><div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>ufw allow &lt;port>/tcp comment <span class="s2">"OpenSSH"</span>
 <span class="nb">sudo </span>ufw <span class="nb">enable</span>
-</code></pre></div></div>
-
-<p>I also like to disable UFW logging. <strong>Do not</strong> do this unless you know what you’re doing: <code class="language-plaintext highlighter-rouge">sudo ufw logging off</code>.</p>
-
-<p>Next up, we’ll be blocking known bad IPs using a script and a cronjob. We’ll be using <a href="https://github.com/stamparm/ipsum" target="_blank" rel="noopener">IPsum</a>, a regularly updated list. The script we’ll be using is from <a href="https://gist.github.com/arter97/2b71e193700ab002c75d1e5a0e7da6dc" target="_blank" rel="noopener">arter97</a>.</p>
-
-<p>Download the script and run it once:</p>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>wget https://gist.githubusercontent.com/arter97/2b71e193700ab002c75d1e5a0e7da6dc/raw/firewall.sh <span class="nt">-O</span> /opt/firewall.sh
+</code></pre></div></div><p>I also like to disable UFW logging. <strong>Do not</strong> do this unless you know what you’re doing: <code class="language-plaintext highlighter-rouge">sudo ufw logging off</code>.</p><p>Next up, we’ll be blocking known bad IPs. <a href="https://www.crowdsec.net/" target="_blank" rel="noopener">CrowdSec</a> is complicated to set up, wastes resources, requires an account, and in my opinion, overkill. Instead, we’ll just stick to a simple bash script and a cronjob.</p><p><a href="https://github.com/stamparm/ipsum" target="_blank" rel="noopener">IPsum</a> is a regularly updated list of malicious IPs, this is what we’re going to use. The script we’ll be using is from <a href="https://gist.github.com/arter97/2b71e193700ab002c75d1e5a0e7da6dc" target="_blank" rel="noopener">arter97</a>.</p><p>Download the script and run it once:</p><div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>wget https://gist.githubusercontent.com/arter97/2b71e193700ab002c75d1e5a0e7da6dc/raw/firewall.sh <span class="nt">-O</span> /opt/firewall.sh
 <span class="nb">sudo chmod </span>755 /opt/firewall.sh
 <span class="nb">sudo</span> /opt/firewall.sh
-</code></pre></div></div>
-
-<p>Check the output of <code class="language-plaintext highlighter-rouge">sudo dmesg</code> to verify that everything is working. Add a cronjob by running <code class="language-plaintext highlighter-rouge">sudo crontab -e</code> and paste the following:</p>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>@reboot /opt/firewall.sh
+</code></pre></div></div><p>Check the output of <code class="language-plaintext highlighter-rouge">sudo dmesg</code> to verify that everything is working. Add a cronjob by running <code class="language-plaintext highlighter-rouge">sudo crontab -e</code> and paste the following:</p><div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>@reboot /opt/firewall.sh
 0 5 <span class="k">*</span> <span class="k">*</span> <span class="k">*</span> /opt/firewall.sh
-</code></pre></div></div>
-<h2 id="nginx">
-  
-  
-    Nginx <a href="#nginx" class="anchor" aria-hidden="true" tabindex="-1">#</a>
-  
-  
-</h2>
-    
+</code></pre></div></div><h2 id="nginx">Nginx <a href="#nginx" class="anchor" aria-hidden="true" tabindex="-1">#</a></h2><p>Nginx is my preferred reverse-proxy. There are a few things you can configure to improve security.</p><p>Add the following lines to your <code class="language-plaintext highlighter-rouge">server</code> blocks:</p><div class="language-nginx highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">add_header</span> <span class="s">X-Content-Type-Options</span> <span class="s">"nosniff"</span><span class="p">;</span>
+<span class="k">add_header</span> <span class="s">X-XSS-Protection</span> <span class="s">"1</span><span class="p">;</span> <span class="k">mode=block"</span><span class="p">;</span>
+<span class="k">add_header</span> <span class="s">X-Frame-Options</span> <span class="s">"SAMEORIGIN"</span><span class="p">;</span>
+</code></pre></div></div><p>To implement Nginx Proxy Manager’s (not to be confused with Nginx) “block common exploits” functionality, do the following. Download the config file:</p><div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>wget https://raw.githubusercontent.com/NginxProxyManager/nginx-proxy-manager/develop/docker/rootfs/etc/nginx/conf.d/include/block-exploits.conf <span class="nt">-O</span> /etc/nginx/block-exploits.conf
+</code></pre></div></div><p>Then add the following line to your <code class="language-plaintext highlighter-rouge">server</code> blocks:</p><div class="language-nginx highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">include</span> <span class="n">block-exploits.conf</span>
+</code></pre></div></div><p>To avoid getting indexed by search engines, add the following lines to your <code class="language-plaintext highlighter-rouge">server</code> blocks:</p><div class="language-nginx highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">add_header</span> <span class="s">X-Robots-Tag</span> <span class="s">"noindex,</span> <span class="s">nofollow,</span> <span class="s">nosnippet,</span> <span class="s">noarchive"</span><span class="p">;</span>
+<span class="k">location</span> <span class="n">/robots.txt</span> <span class="p">{</span> <span class="kn">return</span> <span class="mi">200</span> <span class="s">"User-agent:</span> <span class="s">*</span><span class="err">\</span><span class="s">nDisallow:</span> <span class="n">/\n"</span><span class="p">;</span> <span class="p">}</span>
+</code></pre></div></div><p>Keep in mind that inheritance works differently in Nginx for array directives such as <code class="language-plaintext highlighter-rouge">add_header</code> and <code class="language-plaintext highlighter-rouge">proxy_set_header</code>. If you have any array directives in the block above, you <strong>need to re-add</strong> them in the current block.</p><p>Incorrect config:</p><div class="language-nginx highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Incorrect</span>
+<span class="k">http</span> <span class="p">{</span>
+  <span class="kn">add_header</span> <span class="s">X-Header-1</span> <span class="s">""</span><span class="p">;</span>
 
-<p>Nginx is my preferred reverse-proxy. There are a few things you can configure to improve security.</p>
+  <span class="kn">server</span> <span class="p">{</span>
+    <span class="kn">add_header</span> <span class="s">X-Header-2</span> <span class="s">""</span><span class="p">;</span>
 
-<p>Add the following lines to your <code class="language-plaintext highlighter-rouge">server</code> blocks:</p>
+    <span class="kn">location</span> <span class="n">/</span> <span class="p">{</span>
+      <span class="kn">proxy_pass</span> <span class="s">http://localhost:8080/</span><span class="p">;</span>
+      <span class="kn">add_header</span> <span class="s">X-Header-3</span> <span class="s">""</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div><p>Correct config:</p><div class="language-nginx highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Correct</span>
+<span class="k">http</span> <span class="p">{</span>
+  <span class="kn">add_header</span> <span class="s">X-Header-1</span> <span class="s">""</span><span class="p">;</span>
 
-<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">add_header</span> <span class="n">X</span>-<span class="n">Content</span>-<span class="n">Type</span>-<span class="n">Options</span> <span class="s2">"nosniff"</span>;
-<span class="n">add_header</span> <span class="n">X</span>-<span class="n">XSS</span>-<span class="n">Protection</span> <span class="s2">"1; mode=block"</span>;
-<span class="n">add_header</span> <span class="n">X</span>-<span class="n">Frame</span>-<span class="n">Options</span> <span class="s2">"SAMEORIGIN"</span>;
-</code></pre></div></div>
+  <span class="kn">server</span> <span class="p">{</span>
+    <span class="kn">add_header</span> <span class="s">X-Header-1</span> <span class="s">""</span><span class="p">;</span>
+    <span class="kn">add_header</span> <span class="s">X-Header-2</span> <span class="s">""</span><span class="p">;</span>
 
-<p>To implement Nginx Proxy Manager’s (not to be confused with Nginx) “block common exploits” functionality, do the following. Download the config file:</p>
+    <span class="kn">location</span> <span class="n">/</span> <span class="p">{</span>
+      <span class="kn">proxy_pass</span> <span class="s">http://localhost:8080/</span><span class="p">;</span>
+      <span class="kn">add_header</span> <span class="s">X-Header-1</span> <span class="s">""</span><span class="p">;</span>
+      <span class="kn">add_header</span> <span class="s">X-Header-2</span> <span class="s">""</span><span class="p">;</span>
+      <span class="kn">add_header</span> <span class="s">X-Header-3</span> <span class="s">""</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div><h2 id="fail2ban">Fail2Ban <a href="#fail2ban" class="anchor" aria-hidden="true" tabindex="-1">#</a></h2><p>Install Fail2Ban:</p><div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>apt <span class="nb">install </span>fail2ban <span class="nt">-y</span>
+</code></pre></div></div><p><strong>Do not</strong> copy <code class="language-plaintext highlighter-rouge">/etc/fail2ban/jail.conf</code> to <code class="language-plaintext highlighter-rouge">/etc/fail2ban/jail.local</code>. Most guides I’ve seen suggest doing this, but this <a href="https://github.com/fail2ban/fail2ban/wiki/Proper-fail2ban-configuration" target="_blank" rel="noopener">isn’t the right way</a>. Create <code class="language-plaintext highlighter-rouge">/etc/fail2ban/jail.local</code> with the following contents:</p><div class="language-toml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">[DEFAULT]</span>
+<span class="py">bantime</span> <span class="p">=</span> <span class="mi">1</span><span class="err">d</span>
+<span class="py">findtime</span> <span class="p">=</span> <span class="mi">15</span><span class="err">m</span>
+<span class="py">maxretry</span> <span class="p">=</span> <span class="mi">3</span>
+<span class="py">backend</span> <span class="p">=</span> <span class="err">auto</span>
 
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>wget https://raw.githubusercontent.com/NginxProxyManager/nginx-proxy-manager/develop/docker/rootfs/etc/nginx/conf.d/include/block-exploits.conf <span class="nt">-O</span> /etc/nginx/block-exploits.conf
-</code></pre></div></div>
+<span class="nn">[sshd]</span>
+<span class="py">port</span> <span class="p">=</span> <span class="err">&lt;port></span>
+</code></pre></div></div><p>SSH is the only jail enabled by default, so we just need to give it the correct port.</p><p>Fail2Ban ships with some pre-configured jails for Nginx, which you can enable by adding the following to <code class="language-plaintext highlighter-rouge">/etc/fail2ban/jail.local</code>:</p><div class="language-toml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">[nginx-http-auth]</span>
+<span class="py">enabled</span> <span class="p">=</span> <span class="kc">true</span>
+<span class="py">mode</span>    <span class="p">=</span> <span class="err">aggressive</span>
 
-<p>Then add the following line to your <code class="language-plaintext highlighter-rouge">server</code> blocks:</p>
+<span class="nn">[nginx-bad-request]</span>
+<span class="py">enabled</span> <span class="p">=</span> <span class="kc">true</span>
 
-<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">include</span> <span class="n">block</span>-<span class="n">exploits</span>.<span class="n">conf</span>
-</code></pre></div></div>
+<span class="nn">[nginx-botsearch]</span>
+<span class="py">enabled</span> <span class="p">=</span> <span class="kc">true</span>
+</code></pre></div></div><p>Just make sure all your Nginx <code class="language-plaintext highlighter-rouge">location</code> blocks have the following line:</p><div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">include</span> <span class="n">proxy_params</span>;
+</code></pre></div></div><p>LinuxServer’s SWAG has some additional Fail2Ban configs for Nginx. If you’d like to add those, run the following commands:</p><div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>wget https://raw.githubusercontent.com/linuxserver/docker-swag/master/root/defaults/fail2ban/filter.d/nginx-badbots.conf <span class="nt">-O</span> /etc/fail2ban/filter.d/nginx-badbots.local
+<span class="nb">sudo </span>wget https://raw.githubusercontent.com/linuxserver/docker-swag/master/root/defaults/fail2ban/filter.d/nginx-deny.conf <span class="nt">-O</span> /etc/fail2ban/filter.d/nginx-deny.local
+<span class="nb">sudo </span>wget https://raw.githubusercontent.com/linuxserver/docker-swag/master/root/defaults/fail2ban/filter.d/nginx-unauthorized.conf <span class="nt">-O</span> /etc/fail2ban/filter.d/nginx-unauthorized.local
+</code></pre></div></div><p>Then add the following lines to <code class="language-plaintext highlighter-rouge">/etc/fail2ban/jail.local</code>:</p><div class="language-toml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">[nginx-badbots]</span>
+<span class="py">enabled</span>  <span class="p">=</span> <span class="kc">true</span>
+<span class="py">port</span>     <span class="p">=</span> <span class="err">http</span><span class="p">,</span><span class="err">https</span>
+<span class="py">filter</span>   <span class="p">=</span> <span class="err">nginx-badbots</span>
+<span class="py">logpath</span>  <span class="p">=</span> <span class="err">%(nginx_access_log)s</span>
 
-<p>To avoid getting indexed by search engines, add the following lines to your <code class="language-plaintext highlighter-rouge">server</code> blocks:</p>
+<span class="nn">[nginx-deny]</span>
+<span class="py">enabled</span>  <span class="p">=</span> <span class="kc">true</span>
+<span class="py">port</span>     <span class="p">=</span> <span class="err">http</span><span class="p">,</span><span class="err">https</span>
+<span class="py">filter</span>   <span class="p">=</span> <span class="err">nginx-deny</span>
+<span class="py">logpath</span>  <span class="p">=</span> <span class="err">%(nginx_error_log)s</span>
 
-<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">add_header</span> <span class="n">X</span>-<span class="n">Robots</span>-<span class="n">Tag</span> <span class="s2">"noindex, nofollow, nosnippet, noarchive"</span>;
-<span class="n">location</span> /<span class="n">robots</span>.<span class="n">txt</span> { <span class="n">return</span> <span class="m">200</span> <span class="s2">"User-agent: *\nDisallow: /\n"</span>; }
-</code></pre></div></div>
-
-<p>Keep in mind that inheritance works differently in Nginx for array directives such as <code class="language-plaintext highlighter-rouge">add_header</code> and <code class="language-plaintext highlighter-rouge">proxy_set_header</code>. If you have any array directives in the block above, you need to <strong>re-add</strong> them in the current block.</p>
-
-<p>Incorrect config:</p>
-
-<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Incorrect
-</span><span class="n">http</span> {
-  <span class="n">add_header</span> <span class="n">X</span>-<span class="n">Header</span>-<span class="m">1</span> <span class="s2">""</span>;
-
-  <span class="n">server</span> {
-    <span class="n">add_header</span> <span class="n">X</span>-<span class="n">Header</span>-<span class="m">2</span> <span class="s2">""</span>;
-
-    <span class="n">location</span> / {
-      <span class="n">proxy_pass</span> <span class="n">http</span>://<span class="n">localhost</span>:<span class="m">8080</span>/;
-      <span class="n">add_header</span> <span class="n">X</span>-<span class="n">Header</span>-<span class="m">3</span> <span class="s2">""</span>;
-    }
-  }
-}
-</code></pre></div></div>
-
-<p>Correct config:</p>
-
-<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Correct
-</span><span class="n">http</span> {
-  <span class="n">add_header</span> <span class="n">X</span>-<span class="n">Header</span>-<span class="m">1</span> <span class="s2">""</span>;
-
-  <span class="n">server</span> {
-    <span class="n">add_header</span> <span class="n">X</span>-<span class="n">Header</span>-<span class="m">1</span> <span class="s2">""</span>;
-    <span class="n">add_header</span> <span class="n">X</span>-<span class="n">Header</span>-<span class="m">2</span> <span class="s2">""</span>;
-
-    <span class="n">location</span> / {
-      <span class="n">proxy_pass</span> <span class="n">http</span>://<span class="n">localhost</span>:<span class="m">8080</span>/;
-      <span class="n">add_header</span> <span class="n">X</span>-<span class="n">Header</span>-<span class="m">1</span> <span class="s2">""</span>;
-      <span class="n">add_header</span> <span class="n">X</span>-<span class="n">Header</span>-<span class="m">2</span> <span class="s2">""</span>;
-      <span class="n">add_header</span> <span class="n">X</span>-<span class="n">Header</span>-<span class="m">3</span> <span class="s2">""</span>;
-    }
-  }
-}
-</code></pre></div></div>
-<h2 id="fail2ban">
-  
-  
-    Fail2Ban <a href="#fail2ban" class="anchor" aria-hidden="true" tabindex="-1">#</a>
-  
-  
-</h2>
-    
-
-<p>Install Fail2Ban:</p>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>apt <span class="nb">install </span>fail2ban <span class="nt">-y</span>
-</code></pre></div></div>
-
-<p><strong>Do not</strong> copy <code class="language-plaintext highlighter-rouge">/etc/fail2ban/jail.conf</code> to <code class="language-plaintext highlighter-rouge">/etc/fail2ban/jail.local</code>. Most guides I’ve seen suggest doing this, but this <a href="https://github.com/fail2ban/fail2ban/wiki/Proper-fail2ban-configuration" target="_blank" rel="noopener">isn’t the right way</a>. Create <code class="language-plaintext highlighter-rouge">/etc/fail2ban/jail.local</code> with the following contents:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[DEFAULT]
-bantime = 1d
-findtime = 15m
-maxretry = 3
-backend = auto
-
-[sshd]
-port = &lt;port&gt;
-</code></pre></div></div>
-
-<p>SSH is the only jail enabled by default, so we just need to give it the correct port.</p>
-
-<p>Fail2Ban ships with some pre-configured jails for Nginx, which you can enable by adding the following to <code class="language-plaintext highlighter-rouge">/etc/fail2ban/jail.local</code>:</p>
-
-<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[<span class="n">nginx</span>-<span class="n">http</span>-<span class="n">auth</span>]
-<span class="n">enabled</span> = <span class="n">true</span>
-
-[<span class="n">nginx</span>-<span class="n">bad</span>-<span class="n">request</span>]
-<span class="n">enabled</span> = <span class="n">true</span>
-
-[<span class="n">nginx</span>-<span class="n">botsearch</span>]
-<span class="n">enabled</span>  = <span class="n">true</span>
-</code></pre></div></div>
-
-<p>Just make sure all your Nginx <code class="language-plaintext highlighter-rouge">location</code> blocks have the following lines to ban the correct IPs:</p>
-
-<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">include</span> <span class="n">proxy_params</span>;
-</code></pre></div></div>
-
-<p>If you’re using Cloudflare proxy, we need to do a bit more so that Fail2Ban bans the end user’s IP and not Cloudflare IPs. Follow my blog post on <a href="https://kenhv.com/blog/fail2ban-with-nginx-and-cloudflare-ipv6">setting up Fail2Ban With Nginx and Cloudflare Free</a>.</p>
-
-<p>That pretty much covers it. Just make sure you’re using strong and random passwords/passphrases for everything.</p>
-
-<p>If you have any comments or suggestions, feel free to <a href="mailto:ken@kenhv.com">mail me</a>!</p>
-
-</article>
-    </main><footer>
-    <hr>
-    © 2024 KenHV / Licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0" target="_blank" rel="noopener">CC BY-NC-SA
-        4.0</a>
-</footer><script>
-    const theme = sessionStorage.getItem("theme") ||
-        (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
-    document.body.classList.toggle("dark-mode", theme === "dark");
-
-    ["on", "off"].forEach(mode => {
-        document.getElementById(`dark-mode-${mode}`).addEventListener("click", () => {
-            document.body.classList.toggle("dark-mode", mode === "on");
-            sessionStorage.setItem("theme", mode === "on" ? "dark" : "light");
-        });
-    });
-</script></body>
-
-</html>
+<span class="nn">[nginx-unauthorized]</span>
+<span class="py">enabled</span>  <span class="p">=</span> <span class="kc">true</span>
+<span class="py">port</span>     <span class="p">=</span> <span class="err">http</span><span class="p">,</span><span class="err">https</span>
+<span class="py">filter</span>   <span class="p">=</span> <span class="err">nginx-unauthorized</span>
+<span class="py">logpath</span>  <span class="p">=</span> <span class="err">%(nginx_access_log)s</span>
+</code></pre></div></div><h2 id="cloudflare">Cloudflare <a href="#cloudflare" class="anchor" aria-hidden="true" tabindex="-1">#</a></h2><p>If you’re using Cloudflare proxy, we need to do a bit more so that Fail2Ban bans the end user’s IP and not Cloudflare IPs. Follow my blog post on <a href="https://kenhv.com/blog/fail2ban-with-nginx-and-cloudflare-ipv6">setting up Fail2Ban With Nginx and Cloudflare Free</a>. For all Nginx jails, you should be using the same <code class="language-plaintext highlighter-rouge">action</code> as the ones in that post.</p><p>That pretty much covers it. Just make sure you’re using strong and random passwords/passphrases for everything.</p><p>If you have any comments or suggestions, feel free to <a href="mailto:ken@kenhv.com">mail me</a>!</p></article></main><footer><hr>© 2024 KenHV / Licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a></footer><script>const theme=sessionStorage.getItem("theme")||(window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");document.body.classList.toggle("dark-mode","dark"===theme),["on","off"].forEach((e=>{document.getElementById(`dark-mode-${e}`).addEventListener("click",(()=>{document.body.classList.toggle("dark-mode","on"===e),sessionStorage.setItem("theme","on"===e?"dark":"light")}))}))</script></body></html>

@@ -1,6 +1,26 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.3">Jekyll</generator><link href="https://kenhv.com/feed.xml" rel="self" type="application/atom+xml" /><link href="https://kenhv.com/" rel="alternate" type="text/html" /><updated>2024-08-28T23:29:01+05:30</updated><id>https://kenhv.com/feed.xml</id><title type="html">Ken Harris</title><subtitle>Tech enthusiast. Occasional doer of stuff. @KenHV</subtitle><author><name>Ken Harris</name></author><entry><title type="html">Securing A Linux Server</title><link href="https://kenhv.com/blog/securing-a-linux-server" rel="alternate" type="text/html" title="Securing A Linux Server" /><published>2024-08-28T00:00:00+05:30</published><updated>2024-08-28T23:28:50+05:30</updated><id>https://kenhv.com/blog/securing-a-linux-server</id><content type="html" xml:base="https://kenhv.com/blog/securing-a-linux-server"><![CDATA[<h2 id="ssh">SSH</h2>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.3">Jekyll</generator><link href="https://kenhv.com/feed.xml" rel="self" type="application/atom+xml" /><link href="https://kenhv.com/" rel="alternate" type="text/html" /><updated>2024-08-29T12:38:40+05:30</updated><id>https://kenhv.com/feed.xml</id><title type="html">Ken Harris</title><subtitle>Tech enthusiast. Occasional doer of stuff. @KenHV</subtitle><author><name>Ken Harris</name></author><entry><title type="html">Securing A Linux Server</title><link href="https://kenhv.com/blog/securing-a-linux-server" rel="alternate" type="text/html" title="Securing A Linux Server" /><published>2024-08-28T00:00:00+05:30</published><updated>2024-08-28T23:29:13+05:30</updated><id>https://kenhv.com/blog/securing-a-linux-server</id><content type="html" xml:base="https://kenhv.com/blog/securing-a-linux-server"><![CDATA[<p>This post goes over the following: adding a non-root user, securing SSH, setting up a firewall (UFW), blocking known bad IPs with a script, hardening Nginx reverse-proxy configs, implementing Nginx Proxy Manager’s “block common exploits” functionality, setting up Fail2Ban, and implementing LinuxServer’s SWAG’s Fail2Ban jails. Additional instructions for Cloudflare proxy are provided as well.</p>
 
-<p>Follow the <a href="https://ssh-audit.com/hardening_guides.html">SSH Hardening Guide</a> for both the client and the server. This is something you should be doing on all your machines. You can skip the “connection rate throttling” section.</p>
+<h2 id="non-root-user">Non-Root User</h2>
+
+<p>If you’re using a VPS, the default user will be <code class="language-plaintext highlighter-rouge">root</code>. We need to set up a non-root user first.</p>
+
+<p>To add a new non-root user, run the following command as <code class="language-plaintext highlighter-rouge">root</code>:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>adduser &lt;user&gt;
+</code></pre></div></div>
+
+<p>You can leave all the information empty. I recommend using a randomly generated passphrase, as it’s easier to remember and type.</p>
+
+<p>To give the new user rights to use <code class="language-plaintext highlighter-rouge">sudo</code>, run the following command as <code class="language-plaintext highlighter-rouge">root</code>:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>usermod <span class="nt">--append</span> <span class="nt">--groups</span> <span class="nb">sudo</span> &lt;user&gt;
+</code></pre></div></div>
+
+<p>You can now logout and log back in as the new user.</p>
+
+<h2 id="ssh">SSH</h2>
+
+<p>Follow the <a href="https://ssh-audit.com/hardening_guides.html">SSH Hardening Guide</a>. It ensures that only strong algorithms are used for encryption. I do this on all my machines, both clients and servers. You can skip the “connection rate throttling” section, we’ll be setting up Fail2Ban to handle that.</p>
 
 <p>Generate an Ed25519 key:</p>
 
@@ -14,7 +34,8 @@
 
 <p>Paste the following at the end of <code class="language-plaintext highlighter-rouge">/etc/ssh/sshd_config</code> on your server:</p>
 
-<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">MaxAuthTries</span> <span class="m">3</span>
+<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">Protocol</span> <span class="m">2</span>
+<span class="n">MaxAuthTries</span> <span class="m">3</span>
 <span class="n">PermitRootLogin</span> <span class="n">no</span>
 <span class="n">PasswordAuthentication</span> <span class="n">no</span>
 <span class="n">PubkeyAuthentication</span> <span class="n">yes</span>
@@ -43,7 +64,9 @@
 
 <p>I also like to disable UFW logging. <strong>Do not</strong> do this unless you know what you’re doing: <code class="language-plaintext highlighter-rouge">sudo ufw logging off</code>.</p>
 
-<p>Next up, we’ll be blocking known bad IPs using a script and a cronjob. We’ll be using <a href="https://github.com/stamparm/ipsum">IPsum</a>, a regularly updated list. The script we’ll be using is from <a href="https://gist.github.com/arter97/2b71e193700ab002c75d1e5a0e7da6dc">arter97</a>.</p>
+<p>Next up, we’ll be blocking known bad IPs. <a href="https://www.crowdsec.net/">CrowdSec</a> is complicated to set up, wastes resources, requires an account, and in my opinion, overkill. Instead, we’ll just stick to a simple bash script and a cronjob.</p>
+
+<p><a href="https://github.com/stamparm/ipsum">IPsum</a> is a regularly updated list of malicious IPs, this is what we’re going to use. The script we’ll be using is from <a href="https://gist.github.com/arter97/2b71e193700ab002c75d1e5a0e7da6dc">arter97</a>.</p>
 
 <p>Download the script and run it once:</p>
 
@@ -64,9 +87,9 @@
 
 <p>Add the following lines to your <code class="language-plaintext highlighter-rouge">server</code> blocks:</p>
 
-<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">add_header</span> <span class="n">X</span>-<span class="n">Content</span>-<span class="n">Type</span>-<span class="n">Options</span> <span class="s2">"nosniff"</span>;
-<span class="n">add_header</span> <span class="n">X</span>-<span class="n">XSS</span>-<span class="n">Protection</span> <span class="s2">"1; mode=block"</span>;
-<span class="n">add_header</span> <span class="n">X</span>-<span class="n">Frame</span>-<span class="n">Options</span> <span class="s2">"SAMEORIGIN"</span>;
+<div class="language-nginx highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">add_header</span> <span class="s">X-Content-Type-Options</span> <span class="s">"nosniff"</span><span class="p">;</span>
+<span class="k">add_header</span> <span class="s">X-XSS-Protection</span> <span class="s">"1</span><span class="p">;</span> <span class="k">mode=block"</span><span class="p">;</span>
+<span class="k">add_header</span> <span class="s">X-Frame-Options</span> <span class="s">"SAMEORIGIN"</span><span class="p">;</span>
 </code></pre></div></div>
 
 <p>To implement Nginx Proxy Manager’s (not to be confused with Nginx) “block common exploits” functionality, do the following. Download the config file:</p>
@@ -76,52 +99,52 @@
 
 <p>Then add the following line to your <code class="language-plaintext highlighter-rouge">server</code> blocks:</p>
 
-<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">include</span> <span class="n">block</span>-<span class="n">exploits</span>.<span class="n">conf</span>
+<div class="language-nginx highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">include</span> <span class="n">block-exploits.conf</span>
 </code></pre></div></div>
 
 <p>To avoid getting indexed by search engines, add the following lines to your <code class="language-plaintext highlighter-rouge">server</code> blocks:</p>
 
-<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">add_header</span> <span class="n">X</span>-<span class="n">Robots</span>-<span class="n">Tag</span> <span class="s2">"noindex, nofollow, nosnippet, noarchive"</span>;
-<span class="n">location</span> /<span class="n">robots</span>.<span class="n">txt</span> { <span class="n">return</span> <span class="m">200</span> <span class="s2">"User-agent: *\nDisallow: /\n"</span>; }
+<div class="language-nginx highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">add_header</span> <span class="s">X-Robots-Tag</span> <span class="s">"noindex,</span> <span class="s">nofollow,</span> <span class="s">nosnippet,</span> <span class="s">noarchive"</span><span class="p">;</span>
+<span class="k">location</span> <span class="n">/robots.txt</span> <span class="p">{</span> <span class="kn">return</span> <span class="mi">200</span> <span class="s">"User-agent:</span> <span class="s">*</span><span class="err">\</span><span class="s">nDisallow:</span> <span class="n">/\n"</span><span class="p">;</span> <span class="p">}</span>
 </code></pre></div></div>
 
-<p>Keep in mind that inheritance works differently in Nginx for array directives such as <code class="language-plaintext highlighter-rouge">add_header</code> and <code class="language-plaintext highlighter-rouge">proxy_set_header</code>. If you have any array directives in the block above, you need to <strong>re-add</strong> them in the current block.</p>
+<p>Keep in mind that inheritance works differently in Nginx for array directives such as <code class="language-plaintext highlighter-rouge">add_header</code> and <code class="language-plaintext highlighter-rouge">proxy_set_header</code>. If you have any array directives in the block above, you <strong>need to re-add</strong> them in the current block.</p>
 
 <p>Incorrect config:</p>
 
-<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Incorrect
-</span><span class="n">http</span> {
-  <span class="n">add_header</span> <span class="n">X</span>-<span class="n">Header</span>-<span class="m">1</span> <span class="s2">""</span>;
+<div class="language-nginx highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Incorrect</span>
+<span class="k">http</span> <span class="p">{</span>
+  <span class="kn">add_header</span> <span class="s">X-Header-1</span> <span class="s">""</span><span class="p">;</span>
 
-  <span class="n">server</span> {
-    <span class="n">add_header</span> <span class="n">X</span>-<span class="n">Header</span>-<span class="m">2</span> <span class="s2">""</span>;
+  <span class="kn">server</span> <span class="p">{</span>
+    <span class="kn">add_header</span> <span class="s">X-Header-2</span> <span class="s">""</span><span class="p">;</span>
 
-    <span class="n">location</span> / {
-      <span class="n">proxy_pass</span> <span class="n">http</span>://<span class="n">localhost</span>:<span class="m">8080</span>/;
-      <span class="n">add_header</span> <span class="n">X</span>-<span class="n">Header</span>-<span class="m">3</span> <span class="s2">""</span>;
-    }
-  }
-}
+    <span class="kn">location</span> <span class="n">/</span> <span class="p">{</span>
+      <span class="kn">proxy_pass</span> <span class="s">http://localhost:8080/</span><span class="p">;</span>
+      <span class="kn">add_header</span> <span class="s">X-Header-3</span> <span class="s">""</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div></div>
 
 <p>Correct config:</p>
 
-<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Correct
-</span><span class="n">http</span> {
-  <span class="n">add_header</span> <span class="n">X</span>-<span class="n">Header</span>-<span class="m">1</span> <span class="s2">""</span>;
+<div class="language-nginx highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Correct</span>
+<span class="k">http</span> <span class="p">{</span>
+  <span class="kn">add_header</span> <span class="s">X-Header-1</span> <span class="s">""</span><span class="p">;</span>
 
-  <span class="n">server</span> {
-    <span class="n">add_header</span> <span class="n">X</span>-<span class="n">Header</span>-<span class="m">1</span> <span class="s2">""</span>;
-    <span class="n">add_header</span> <span class="n">X</span>-<span class="n">Header</span>-<span class="m">2</span> <span class="s2">""</span>;
+  <span class="kn">server</span> <span class="p">{</span>
+    <span class="kn">add_header</span> <span class="s">X-Header-1</span> <span class="s">""</span><span class="p">;</span>
+    <span class="kn">add_header</span> <span class="s">X-Header-2</span> <span class="s">""</span><span class="p">;</span>
 
-    <span class="n">location</span> / {
-      <span class="n">proxy_pass</span> <span class="n">http</span>://<span class="n">localhost</span>:<span class="m">8080</span>/;
-      <span class="n">add_header</span> <span class="n">X</span>-<span class="n">Header</span>-<span class="m">1</span> <span class="s2">""</span>;
-      <span class="n">add_header</span> <span class="n">X</span>-<span class="n">Header</span>-<span class="m">2</span> <span class="s2">""</span>;
-      <span class="n">add_header</span> <span class="n">X</span>-<span class="n">Header</span>-<span class="m">3</span> <span class="s2">""</span>;
-    }
-  }
-}
+    <span class="kn">location</span> <span class="n">/</span> <span class="p">{</span>
+      <span class="kn">proxy_pass</span> <span class="s">http://localhost:8080/</span><span class="p">;</span>
+      <span class="kn">add_header</span> <span class="s">X-Header-1</span> <span class="s">""</span><span class="p">;</span>
+      <span class="kn">add_header</span> <span class="s">X-Header-2</span> <span class="s">""</span><span class="p">;</span>
+      <span class="kn">add_header</span> <span class="s">X-Header-3</span> <span class="s">""</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div></div>
 
 <h2 id="fail2ban">Fail2Ban</h2>
@@ -133,40 +156,71 @@
 
 <p><strong>Do not</strong> copy <code class="language-plaintext highlighter-rouge">/etc/fail2ban/jail.conf</code> to <code class="language-plaintext highlighter-rouge">/etc/fail2ban/jail.local</code>. Most guides I’ve seen suggest doing this, but this <a href="https://github.com/fail2ban/fail2ban/wiki/Proper-fail2ban-configuration">isn’t the right way</a>. Create <code class="language-plaintext highlighter-rouge">/etc/fail2ban/jail.local</code> with the following contents:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[DEFAULT]
-bantime = 1d
-findtime = 15m
-maxretry = 3
-backend = auto
+<div class="language-toml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">[DEFAULT]</span>
+<span class="py">bantime</span> <span class="p">=</span> <span class="mi">1</span><span class="err">d</span>
+<span class="py">findtime</span> <span class="p">=</span> <span class="mi">15</span><span class="err">m</span>
+<span class="py">maxretry</span> <span class="p">=</span> <span class="mi">3</span>
+<span class="py">backend</span> <span class="p">=</span> <span class="err">auto</span>
 
-[sshd]
-port = &lt;port&gt;
+<span class="nn">[sshd]</span>
+<span class="py">port</span> <span class="p">=</span> <span class="err">&lt;port&gt;</span>
 </code></pre></div></div>
 
 <p>SSH is the only jail enabled by default, so we just need to give it the correct port.</p>
 
 <p>Fail2Ban ships with some pre-configured jails for Nginx, which you can enable by adding the following to <code class="language-plaintext highlighter-rouge">/etc/fail2ban/jail.local</code>:</p>
 
-<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[<span class="n">nginx</span>-<span class="n">http</span>-<span class="n">auth</span>]
-<span class="n">enabled</span> = <span class="n">true</span>
+<div class="language-toml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">[nginx-http-auth]</span>
+<span class="py">enabled</span> <span class="p">=</span> <span class="kc">true</span>
+<span class="py">mode</span>    <span class="p">=</span> <span class="err">aggressive</span>
 
-[<span class="n">nginx</span>-<span class="n">bad</span>-<span class="n">request</span>]
-<span class="n">enabled</span> = <span class="n">true</span>
+<span class="nn">[nginx-bad-request]</span>
+<span class="py">enabled</span> <span class="p">=</span> <span class="kc">true</span>
 
-[<span class="n">nginx</span>-<span class="n">botsearch</span>]
-<span class="n">enabled</span>  = <span class="n">true</span>
+<span class="nn">[nginx-botsearch]</span>
+<span class="py">enabled</span> <span class="p">=</span> <span class="kc">true</span>
 </code></pre></div></div>
 
-<p>Just make sure all your Nginx <code class="language-plaintext highlighter-rouge">location</code> blocks have the following lines to ban the correct IPs:</p>
+<p>Just make sure all your Nginx <code class="language-plaintext highlighter-rouge">location</code> blocks have the following line:</p>
 
 <div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">include</span> <span class="n">proxy_params</span>;
 </code></pre></div></div>
 
-<p>If you’re using Cloudflare proxy, we need to do a bit more so that Fail2Ban bans the end user’s IP and not Cloudflare IPs. Follow my blog post on <a href="https://kenhv.com/blog/fail2ban-with-nginx-and-cloudflare-ipv6">setting up Fail2Ban With Nginx and Cloudflare Free</a>.</p>
+<p>LinuxServer’s SWAG has some additional Fail2Ban configs for Nginx. If you’d like to add those, run the following commands:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>wget https://raw.githubusercontent.com/linuxserver/docker-swag/master/root/defaults/fail2ban/filter.d/nginx-badbots.conf <span class="nt">-O</span> /etc/fail2ban/filter.d/nginx-badbots.local
+<span class="nb">sudo </span>wget https://raw.githubusercontent.com/linuxserver/docker-swag/master/root/defaults/fail2ban/filter.d/nginx-deny.conf <span class="nt">-O</span> /etc/fail2ban/filter.d/nginx-deny.local
+<span class="nb">sudo </span>wget https://raw.githubusercontent.com/linuxserver/docker-swag/master/root/defaults/fail2ban/filter.d/nginx-unauthorized.conf <span class="nt">-O</span> /etc/fail2ban/filter.d/nginx-unauthorized.local
+</code></pre></div></div>
+
+<p>Then add the following lines to <code class="language-plaintext highlighter-rouge">/etc/fail2ban/jail.local</code>:</p>
+
+<div class="language-toml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">[nginx-badbots]</span>
+<span class="py">enabled</span>  <span class="p">=</span> <span class="kc">true</span>
+<span class="py">port</span>     <span class="p">=</span> <span class="err">http</span><span class="p">,</span><span class="err">https</span>
+<span class="py">filter</span>   <span class="p">=</span> <span class="err">nginx-badbots</span>
+<span class="py">logpath</span>  <span class="p">=</span> <span class="err">%(nginx_access_log)s</span>
+
+<span class="nn">[nginx-deny]</span>
+<span class="py">enabled</span>  <span class="p">=</span> <span class="kc">true</span>
+<span class="py">port</span>     <span class="p">=</span> <span class="err">http</span><span class="p">,</span><span class="err">https</span>
+<span class="py">filter</span>   <span class="p">=</span> <span class="err">nginx-deny</span>
+<span class="py">logpath</span>  <span class="p">=</span> <span class="err">%(nginx_error_log)s</span>
+
+<span class="nn">[nginx-unauthorized]</span>
+<span class="py">enabled</span>  <span class="p">=</span> <span class="kc">true</span>
+<span class="py">port</span>     <span class="p">=</span> <span class="err">http</span><span class="p">,</span><span class="err">https</span>
+<span class="py">filter</span>   <span class="p">=</span> <span class="err">nginx-unauthorized</span>
+<span class="py">logpath</span>  <span class="p">=</span> <span class="err">%(nginx_access_log)s</span>
+</code></pre></div></div>
+
+<h2 id="cloudflare">Cloudflare</h2>
+
+<p>If you’re using Cloudflare proxy, we need to do a bit more so that Fail2Ban bans the end user’s IP and not Cloudflare IPs. Follow my blog post on <a href="https://kenhv.com/blog/fail2ban-with-nginx-and-cloudflare-ipv6">setting up Fail2Ban With Nginx and Cloudflare Free</a>. For all Nginx jails, you should be using the same <code class="language-plaintext highlighter-rouge">action</code> as the ones in that post.</p>
 
 <p>That pretty much covers it. Just make sure you’re using strong and random passwords/passphrases for everything.</p>
 
-<p>If you have any comments or suggestions, feel free to <a href="mailto:ken@kenhv.com">mail me</a>!</p>]]></content><author><name>Ken Harris</name></author><summary type="html"><![CDATA[A guide to secure and harden a Linux server install.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://kenhv.com/assets/images/og/posts/securing-a-linux-server.png" /><media:content medium="image" url="https://kenhv.com/assets/images/og/posts/securing-a-linux-server.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Fail2Ban With Nginx and Cloudflare Free (With IPv6 Support)</title><link href="https://kenhv.com/blog/fail2ban-with-nginx-and-cloudflare-ipv6" rel="alternate" type="text/html" title="Fail2Ban With Nginx and Cloudflare Free (With IPv6 Support)" /><published>2024-08-04T00:00:00+05:30</published><updated>2024-08-15T20:07:54+05:30</updated><id>https://kenhv.com/blog/fail2ban-with-nginx-and-cloudflare-ipv6</id><content type="html" xml:base="https://kenhv.com/blog/fail2ban-with-nginx-and-cloudflare-ipv6"><![CDATA[<p>This post will teach you how to set up Fail2Ban actions for services reverse-proxied by Nginx and proxied by Cloudflare. I’ll be using Vaultwarden as an example. I have Nginx and Fail2Ban installed natively, and Vaultwarden in a Docker container. You can adjust it to work with Nginx and/or Fail2Ban running in Docker containers.</p>
+<p>If you have any comments or suggestions, feel free to <a href="mailto:ken@kenhv.com">mail me</a>!</p>]]></content><author><name>Ken Harris</name></author><summary type="html"><![CDATA[A guide to secure and harden a Linux server install.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://kenhv.com/assets/images/og/posts/securing-a-linux-server.png" /><media:content medium="image" url="https://kenhv.com/assets/images/og/posts/securing-a-linux-server.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Fail2Ban With Nginx and Cloudflare Free (With IPv6 Support)</title><link href="https://kenhv.com/blog/fail2ban-with-nginx-and-cloudflare-ipv6" rel="alternate" type="text/html" title="Fail2Ban With Nginx and Cloudflare Free (With IPv6 Support)" /><published>2024-08-04T00:00:00+05:30</published><updated>2024-08-28T23:29:13+05:30</updated><id>https://kenhv.com/blog/fail2ban-with-nginx-and-cloudflare-ipv6</id><content type="html" xml:base="https://kenhv.com/blog/fail2ban-with-nginx-and-cloudflare-ipv6"><![CDATA[<p>This post will teach you how to set up Fail2Ban actions for services reverse-proxied by Nginx and proxied by Cloudflare. I’ll be using Vaultwarden as an example. I have Nginx and Fail2Ban installed natively, and Vaultwarden in a Docker container. You can adjust it to work with Nginx and/or Fail2Ban running in Docker containers.</p>
 
 <h2 id="unmask-visitor-ip-in-nginx">Unmask Visitor IP in Nginx</h2>
 
@@ -210,12 +264,12 @@ nginx <span class="nt">-t</span> <span class="o">&amp;&amp;</span> systemctl rel
 
 <p>Add this line to the <code class="language-plaintext highlighter-rouge">http</code> block in your Nginx config <code class="language-plaintext highlighter-rouge">/etc/nginx/nginx.conf</code>:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>include /etc/nginx/cloudflare;
+<div class="language-nginx highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">include</span> <span class="n">/etc/nginx/cloudflare</span>;
 </code></pre></div></div>
 
 <p>Now for every service you’re reverse-proxying, add this line inside <code class="language-plaintext highlighter-rouge">location</code> in the <code class="language-plaintext highlighter-rouge">server</code> block:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>include proxy_params;
+<div class="language-nginx highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">include</span> <span class="n">proxy_params</span>;
 </code></pre></div></div>
 
 <p>Run <code class="language-plaintext highlighter-rouge">sudo nginx -t</code> to verify the config, and reload the config using <code class="language-plaintext highlighter-rouge">sudo systemctl reload nginx</code>. Nginx will now unmask the visitors’ real IP coming through Cloudflare proxy.</p>
@@ -297,19 +351,19 @@ nginx <span class="nt">-t</span> <span class="o">&amp;&amp;</span> systemctl rel
 
 <p>Add the following line to the <code class="language-plaintext highlighter-rouge">http</code> block in your main Nginx config (<code class="language-plaintext highlighter-rouge">/etc/nginx/nginx.conf</code>):</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>map $remote_addr $ip_blacklisted { include blacklisted-sessions.map; }
+<div class="language-nginx highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">map</span> <span class="nv">$remote_addr</span> <span class="nv">$ip_blacklisted</span> <span class="p">{</span> <span class="kn">include</span> <span class="s">blacklisted-sessions.map</span><span class="p">;</span> <span class="p">}</span>
 </code></pre></div></div>
 
 <p>Add the following line to the <code class="language-plaintext highlighter-rouge">server</code> block of services you’re reverse-proxying:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>if ($ip_blacklisted) { return 444; }
+<div class="language-nginx highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span> <span class="s">(</span><span class="nv">$ip_blacklisted</span><span class="s">)</span> <span class="p">{</span> <span class="kn">return</span> <span class="mi">444</span><span class="p">;</span> <span class="p">}</span>
 </code></pre></div></div>
 
 <p>The non-standard return code 444 closes a connection without sending a response header. You can also return 403 if you like.</p>
 
 <h2 id="test-your-config">Test Your Config</h2>
 
-<p>To verify if everything is working, go to your Vaultwarden instance and try logging in with incorrect credentials 3 times. Check <code class="language-plaintext highlighter-rouge">/var/log/fail2ban.log</code> (<code class="language-plaintext highlighter-rouge">sudo tail -f /var/log/fail2ban.log</code>), it should say that your IP has been banned. Without reloading your Vaultwarden web vault page, try logging in with the correct credentials. It won’t work, as Nginx will only return 403. If you reload the page, Cloudflare will say you’ve been banned. To unban yourself, run <code class="language-plaintext highlighter-rouge">sudo fail2ban-client set vaultwarden unbanip &lt;banned-ip&gt;</code>. Congrats! You have secured your Vaultwarden instance with two layers of protection using Fail2Ban.</p>]]></content><author><name>Ken Harris</name></author><summary type="html"><![CDATA[A guide to set up Fail2Ban with Nginx and Cloudflare free plan with IPv6 support. Includes instructions to restore original visitor IP in Nginx.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://kenhv.com/assets/images/og/posts/fail2ban-with-nginx-and-cloudflare-ipv6.png" /><media:content medium="image" url="https://kenhv.com/assets/images/og/posts/fail2ban-with-nginx-and-cloudflare-ipv6.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">I Switched to Ubuntu and You Should Too</title><link href="https://kenhv.com/blog/i-switched-to-ubuntu-and-you-should-too" rel="alternate" type="text/html" title="I Switched to Ubuntu and You Should Too" /><published>2024-08-02T00:00:00+05:30</published><updated>2024-08-02T21:13:18+05:30</updated><id>https://kenhv.com/blog/i-switched-to-ubuntu-and-you-should-too</id><content type="html" xml:base="https://kenhv.com/blog/i-switched-to-ubuntu-and-you-should-too"><![CDATA[<figure>
+<p>To verify if everything is working, go to your Vaultwarden instance and try logging in with incorrect credentials 3 times. Check <code class="language-plaintext highlighter-rouge">/var/log/fail2ban.log</code> (<code class="language-plaintext highlighter-rouge">sudo tail -f /var/log/fail2ban.log</code>), it should say that your IP has been banned. Without reloading your Vaultwarden web vault page, try logging in with the correct credentials. It won’t work, as Nginx will only return 403. If you reload the page, Cloudflare will say you’ve been banned. To unban yourself, run <code class="language-plaintext highlighter-rouge">sudo fail2ban-client set vaultwarden unbanip &lt;banned-ip&gt;</code>. Congrats! You have secured your Vaultwarden instance with two layers of protection using Fail2Ban.</p>]]></content><author><name>Ken Harris</name></author><summary type="html"><![CDATA[A guide to set up Fail2Ban with Nginx and Cloudflare free plan with IPv6 support. Includes instructions to restore original visitor IP in Nginx.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://kenhv.com/assets/images/og/posts/fail2ban-with-nginx-and-cloudflare-ipv6.png" /><media:content medium="image" url="https://kenhv.com/assets/images/og/posts/fail2ban-with-nginx-and-cloudflare-ipv6.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">I Switched to Ubuntu and You Should Too</title><link href="https://kenhv.com/blog/i-switched-to-ubuntu-and-you-should-too" rel="alternate" type="text/html" title="I Switched to Ubuntu and You Should Too" /><published>2024-08-02T00:00:00+05:30</published><updated>2024-08-28T23:29:13+05:30</updated><id>https://kenhv.com/blog/i-switched-to-ubuntu-and-you-should-too</id><content type="html" xml:base="https://kenhv.com/blog/i-switched-to-ubuntu-and-you-should-too"><![CDATA[<figure>
     <img decoding="async" fetchpriority="high" style="aspect-ratio:16/9" width="650" src="/assets/images/bell-curve-linux-distros.webp" alt="Bell curve meme about Linux distros." />
     <figcaption>Don't be the midwit.</figcaption>
 </figure>
@@ -360,7 +414,7 @@ nginx <span class="nt">-t</span> <span class="o">&amp;&amp;</span> systemctl rel
 
 <h2 id="the-end">The End</h2>
 
-<p>There is value in the default experience. And I believe that Ubuntu does it the best among all Linux distros. If you’re suggesting Linux for casual users, suggest Linux Mint or Ubuntu. Don’t overwhelm people with the paradox of choice.</p>]]></content><author><name>Ken Harris</name></author><summary type="html"><![CDATA[An essay on why you should be using (and recommending) Ubuntu.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://kenhv.com/assets/images/bell-curve-linux-distros.webp" /><media:content medium="image" url="https://kenhv.com/assets/images/bell-curve-linux-distros.webp" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Configuring BSNL FTTH</title><link href="https://kenhv.com/blog/configuring-bsnl-ftth" rel="alternate" type="text/html" title="Configuring BSNL FTTH" /><published>2024-07-25T00:00:00+05:30</published><updated>2024-08-18T19:16:23+05:30</updated><id>https://kenhv.com/blog/configuring-bsnl-ftth</id><content type="html" xml:base="https://kenhv.com/blog/configuring-bsnl-ftth"><![CDATA[<p>BSNL-provided routers are bad. They are horribly slow, have poor range, and are not very secure. Their routers cost ₹3,000. For the same price, you can get much better hardware. Here’s how to set up BSNL FTTH with your own hardware.</p>
+<p>There is value in the default experience. And I believe that Ubuntu does it the best among all Linux distros. If you’re suggesting Linux for casual users, suggest Linux Mint or Ubuntu. Don’t overwhelm people with the paradox of choice.</p>]]></content><author><name>Ken Harris</name></author><summary type="html"><![CDATA[An essay on why you should be using (and recommending) Ubuntu.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://kenhv.com/assets/images/bell-curve-linux-distros.webp" /><media:content medium="image" url="https://kenhv.com/assets/images/bell-curve-linux-distros.webp" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Configuring BSNL FTTH</title><link href="https://kenhv.com/blog/configuring-bsnl-ftth" rel="alternate" type="text/html" title="Configuring BSNL FTTH" /><published>2024-07-25T00:00:00+05:30</published><updated>2024-08-28T23:29:13+05:30</updated><id>https://kenhv.com/blog/configuring-bsnl-ftth</id><content type="html" xml:base="https://kenhv.com/blog/configuring-bsnl-ftth"><![CDATA[<p>BSNL-provided routers are bad. They are horribly slow, have poor range, and are not very secure. Their routers cost ₹3,000. For the same price, you can get much better hardware. Here’s how to set up BSNL FTTH with your own hardware.</p>
 
 <h2 id="requirements">Requirements</h2>
 
@@ -410,7 +464,7 @@ nginx <span class="nt">-t</span> <span class="o">&amp;&amp;</span> systemctl rel
 
 <h2 id="support">Support</h2>
 
-<p>If you have any problems or questions, check out the <a href="https://broadband.forum/forums/bsnl-broadband/">India Broadband Forum</a> or the <a href="https://t.me/BSNLTelegram">BSNL Telegram group</a>.</p>]]></content><author><name>Ken Harris</name></author><summary type="html"><![CDATA[A guide to set up BSNL FTTH with third-party routers and modems.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://kenhv.com/assets/images/og/posts/configuring-bsnl-ftth.png" /><media:content medium="image" url="https://kenhv.com/assets/images/og/posts/configuring-bsnl-ftth.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Setting Up Firefox</title><link href="https://kenhv.com/blog/setting-up-firefox" rel="alternate" type="text/html" title="Setting Up Firefox" /><published>2024-07-11T00:00:00+05:30</published><updated>2024-08-18T19:16:23+05:30</updated><id>https://kenhv.com/blog/setting-up-firefox</id><content type="html" xml:base="https://kenhv.com/blog/setting-up-firefox"><![CDATA[<p>Google is <a href="https://blog.chromium.org/2024/05/manifest-v2-phase-out-begins.html">killing Manifest v2</a> in an attempt to kill ad blockers. This change will affect not only Chrome, but browsers based on Chromium such as Edge. It’s a good time to switch to Firefox. Everything just works; I’ve faced zero breakage on any site, even with some additional privacy protection settings turned on.</p>
+<p>If you have any problems or questions, check out the <a href="https://broadband.forum/forums/bsnl-broadband/">India Broadband Forum</a> or the <a href="https://t.me/BSNLTelegram">BSNL Telegram group</a>.</p>]]></content><author><name>Ken Harris</name></author><summary type="html"><![CDATA[A guide to set up BSNL FTTH with third-party routers and modems.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://kenhv.com/assets/images/og/posts/configuring-bsnl-ftth.png" /><media:content medium="image" url="https://kenhv.com/assets/images/og/posts/configuring-bsnl-ftth.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Setting Up Firefox</title><link href="https://kenhv.com/blog/setting-up-firefox" rel="alternate" type="text/html" title="Setting Up Firefox" /><published>2024-07-11T00:00:00+05:30</published><updated>2024-08-28T23:29:13+05:30</updated><id>https://kenhv.com/blog/setting-up-firefox</id><content type="html" xml:base="https://kenhv.com/blog/setting-up-firefox"><![CDATA[<p>Google is <a href="https://blog.chromium.org/2024/05/manifest-v2-phase-out-begins.html">killing Manifest v2</a> in an attempt to kill ad blockers. This change will affect not only Chrome, but browsers based on Chromium such as Edge. It’s a good time to switch to Firefox. Everything just works; I’ve faced zero breakage on any site, even with some additional privacy protection settings turned on.</p>
 
 <p>Most Firefox guides out there recommend using <a href="https://github.com/arkenfox/user.js">hardened configs</a> or <a href="https://librewolf.net">forks</a>. The only thing they harden is your life. I want to get shit done, not fumble around with my settings trying to unbreak a site every 30 seconds. My configuration is the middle ground, where your browser protects your privacy <em>and</em> your sanity.</p>
 
@@ -488,7 +542,7 @@ nginx <span class="nt">-t</span> <span class="o">&amp;&amp;</span> systemctl rel
       <p>I use <a href="https://quad9.net">Quad9</a> (<code class="language-plaintext highlighter-rouge">https://dns.quad9.net/dns-query</code>) as my DNS provider. <a href="#fnref:2" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
     </li>
   </ol>
-</div>]]></content><author><name>Ken Harris</name></author><summary type="html"><![CDATA[A list of extensions and tweaks to improve Firefox without breakage.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://kenhv.com/assets/images/og/posts/setting-up-firefox.png" /><media:content medium="image" url="https://kenhv.com/assets/images/og/posts/setting-up-firefox.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Highlights From Children of Dune</title><link href="https://kenhv.com/blog/highlights-from-children-of-dune" rel="alternate" type="text/html" title="Highlights From Children of Dune" /><published>2024-07-08T00:00:00+05:30</published><updated>2024-07-19T13:55:12+05:30</updated><id>https://kenhv.com/blog/highlights-from-children-of-dune</id><content type="html" xml:base="https://kenhv.com/blog/highlights-from-children-of-dune"><![CDATA[<p>I’ve never highlighted this many passages from a non-philosophy book. Half a century later, the Dune saga is more relevant than ever. A must-read for sure.</p>
+</div>]]></content><author><name>Ken Harris</name></author><summary type="html"><![CDATA[A list of extensions and tweaks to improve Firefox without breakage.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://kenhv.com/assets/images/og/posts/setting-up-firefox.png" /><media:content medium="image" url="https://kenhv.com/assets/images/og/posts/setting-up-firefox.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Highlights From Children of Dune</title><link href="https://kenhv.com/blog/highlights-from-children-of-dune" rel="alternate" type="text/html" title="Highlights From Children of Dune" /><published>2024-07-08T00:00:00+05:30</published><updated>2024-08-28T23:29:13+05:30</updated><id>https://kenhv.com/blog/highlights-from-children-of-dune</id><content type="html" xml:base="https://kenhv.com/blog/highlights-from-children-of-dune"><![CDATA[<p>I’ve never highlighted this many passages from a non-philosophy book. Half a century later, the Dune saga is more relevant than ever. A must-read for sure.</p>
 
 <h4 id="page-154">Page 154</h4>
 
@@ -572,7 +626,7 @@ nginx <span class="nt">-t</span> <span class="o">&amp;&amp;</span> systemctl rel
 
 <blockquote>
   <p>“There’s always a prevailing mystique in any civilization,” Leto said. “It builds itself as a barrier against change, and that always leaves future generations unprepared for the universe’s treachery. All mystiques are the same in building these barriers—the religious mystique, the hero-leader mystique, the messiah mystique, the mystique of science/technology, and the mystique of nature itself. We live in an Imperium which such a mystique has shaped, and now that Imperium is falling apart because most people don’t distinguish between mystique and their universe. You see, the mystique is like demon possession; it tends to take over the consciousness, becoming all things to the observer.”</p>
-</blockquote>]]></content><author><name>Ken Harris</name></author><summary type="html"><![CDATA[A collection of my highlights from Frank Herbert's Children of Dune.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://kenhv.com/assets/images/og/posts/highlights-from-children-of-dune.png" /><media:content medium="image" url="https://kenhv.com/assets/images/og/posts/highlights-from-children-of-dune.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">The Comfiest Streaming Service</title><link href="https://kenhv.com/blog/the-comfiest-streaming-service" rel="alternate" type="text/html" title="The Comfiest Streaming Service" /><published>2024-06-30T00:00:00+05:30</published><updated>2024-07-16T12:05:48+05:30</updated><id>https://kenhv.com/blog/the-comfiest-streaming-service</id><content type="html" xml:base="https://kenhv.com/blog/the-comfiest-streaming-service"><![CDATA[<p>What if I told you there’s a streaming service that</p>
+</blockquote>]]></content><author><name>Ken Harris</name></author><summary type="html"><![CDATA[A collection of my highlights from Frank Herbert's Children of Dune.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://kenhv.com/assets/images/og/posts/highlights-from-children-of-dune.png" /><media:content medium="image" url="https://kenhv.com/assets/images/og/posts/highlights-from-children-of-dune.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">The Comfiest Streaming Service</title><link href="https://kenhv.com/blog/the-comfiest-streaming-service" rel="alternate" type="text/html" title="The Comfiest Streaming Service" /><published>2024-06-30T00:00:00+05:30</published><updated>2024-08-28T23:29:13+05:30</updated><id>https://kenhv.com/blog/the-comfiest-streaming-service</id><content type="html" xml:base="https://kenhv.com/blog/the-comfiest-streaming-service"><![CDATA[<p>What if I told you there’s a streaming service that</p>
 
 <ul>
   <li>Has all movies, shows, anime, documentaries, etc. ever made</li>
@@ -626,7 +680,7 @@ nginx <span class="nt">-t</span> <span class="o">&amp;&amp;</span> systemctl rel
 
 <p>I pay for music streaming because it’s convenient. It has everything I want to listen to in one place and has recommendations, curated playlists, statistics; everything I need. There is simply no movie streaming service that’s convenient. Every service has a limited and different catalogue, they don’t have all the editions of a movie, and quite a lot of content is simply not available on any service. I made a fully automated media server years ago, but that isn’t as convenient as this setup is either. Like Gabe said, it’s not a problem of pricing. I am willing to pay for convenience. It’s just that there’s nothing convenient about the streaming services available today.</p>
 
-<p>Oh and of course, all this information is purely for educational purposes, I am not responsible, blah blah. Have a good day.</p>]]></content><author><name>Ken Harris</name></author><summary type="html"><![CDATA[The $3 streaming service that beats everything on the market combined.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://kenhv.com/assets/images/og/posts/the-comfiest-streaming-service.png" /><media:content medium="image" url="https://kenhv.com/assets/images/og/posts/the-comfiest-streaming-service.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Setting up MPV - The Supreme Media Player</title><link href="https://kenhv.com/blog/setting-up-mpv" rel="alternate" type="text/html" title="Setting up MPV - The Supreme Media Player" /><published>2024-06-09T00:00:00+05:30</published><updated>2024-08-15T00:08:43+05:30</updated><id>https://kenhv.com/blog/setting-up-mpv</id><content type="html" xml:base="https://kenhv.com/blog/setting-up-mpv"><![CDATA[<p>The media player you use sucks. Switch to MPV.</p>
+<p>Oh and of course, all this information is purely for educational purposes, I am not responsible, blah blah. Have a good day.</p>]]></content><author><name>Ken Harris</name></author><summary type="html"><![CDATA[The $3 streaming service that beats everything on the market combined.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://kenhv.com/assets/images/og/posts/the-comfiest-streaming-service.png" /><media:content medium="image" url="https://kenhv.com/assets/images/og/posts/the-comfiest-streaming-service.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Setting up MPV - The Supreme Media Player</title><link href="https://kenhv.com/blog/setting-up-mpv" rel="alternate" type="text/html" title="Setting up MPV - The Supreme Media Player" /><published>2024-06-09T00:00:00+05:30</published><updated>2024-08-28T23:29:13+05:30</updated><id>https://kenhv.com/blog/setting-up-mpv</id><content type="html" xml:base="https://kenhv.com/blog/setting-up-mpv"><![CDATA[<p>The media player you use sucks. Switch to MPV.</p>
 
 <h2 id="installation">Installation</h2>
 
@@ -687,7 +741,7 @@ nginx <span class="nt">-t</span> <span class="o">&amp;&amp;</span> systemctl rel
 
 <p>If MPV lags when you play media that matches your display resolution, try removing the smoothmotion section from the config.</p>
 
-<p>If you face crashes or weird glitches, set <code class="language-plaintext highlighter-rouge">vo=gpu</code> in your config file.</p>]]></content><author><name>Ken Harris</name></author><summary type="html"><![CDATA[The media player you use sucks. Switch to MPV.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://kenhv.com/assets/images/og/posts/setting-up-mpv.png" /><media:content medium="image" url="https://kenhv.com/assets/images/og/posts/setting-up-mpv.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Treat Yourself to Good Typography</title><link href="https://kenhv.com/blog/treat-yourself-to-good-typography" rel="alternate" type="text/html" title="Treat Yourself to Good Typography" /><published>2024-06-02T00:00:00+05:30</published><updated>2024-07-25T17:56:56+05:30</updated><id>https://kenhv.com/blog/treat-yourself-to-good-typography</id><content type="html" xml:base="https://kenhv.com/blog/treat-yourself-to-good-typography"><![CDATA[<p>Ah, typography, the cornerstone of great design. Optimising your fonts and typography settings will go a long way in improving readability, especially if you’re someone who reads a lot. Here’s how I setup my devices.</p>
+<p>If you face crashes or weird glitches, set <code class="language-plaintext highlighter-rouge">vo=gpu</code> in your config file.</p>]]></content><author><name>Ken Harris</name></author><summary type="html"><![CDATA[The media player you use sucks. Switch to MPV.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://kenhv.com/assets/images/og/posts/setting-up-mpv.png" /><media:content medium="image" url="https://kenhv.com/assets/images/og/posts/setting-up-mpv.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Treat Yourself to Good Typography</title><link href="https://kenhv.com/blog/treat-yourself-to-good-typography" rel="alternate" type="text/html" title="Treat Yourself to Good Typography" /><published>2024-06-02T00:00:00+05:30</published><updated>2024-08-28T23:29:13+05:30</updated><id>https://kenhv.com/blog/treat-yourself-to-good-typography</id><content type="html" xml:base="https://kenhv.com/blog/treat-yourself-to-good-typography"><![CDATA[<p>Ah, typography, the cornerstone of great design. Optimising your fonts and typography settings will go a long way in improving readability, especially if you’re someone who reads a lot. Here’s how I setup my devices.</p>
 
 <h2 id="windows-vs-mac">Windows vs Mac</h2>
 
@@ -721,7 +775,7 @@ nginx <span class="nt">-t</span> <span class="o">&amp;&amp;</span> systemctl rel
 
 <h2 id="the-end">The End</h2>
 
-<p>If you made it all the way here, you might want to look into getting a shiny new high DPI monitor. If you have any suggestions, feel free to mail me.</p>]]></content><author><name>Ken Harris</name></author><summary type="html"><![CDATA[A guide to improve font rendering on all devices and browsers.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://kenhv.com/assets/images/og/posts/treat-yourself-to-good-typography.png" /><media:content medium="image" url="https://kenhv.com/assets/images/og/posts/treat-yourself-to-good-typography.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Supercharge Your Linux System</title><link href="https://kenhv.com/blog/linux-tweaks" rel="alternate" type="text/html" title="Supercharge Your Linux System" /><published>2023-07-17T00:00:00+05:30</published><updated>2024-08-15T20:07:54+05:30</updated><id>https://kenhv.com/blog/linux-tweaks</id><content type="html" xml:base="https://kenhv.com/blog/linux-tweaks"><![CDATA[<p>This post started out as a repository of tweaks for Arch Linux, although you can apply most of it to any distro. To ensure this post stays relevant, I’ve linked to Arch Wiki sections when possible. AMD-specific optimisations are not covered. <a href="#ubuntu-specific-optimisations">Ubuntu-specific optimisations</a> can be found at the end of the post.</p>
+<p>If you made it all the way here, you might want to look into getting a shiny new high DPI monitor. If you have any suggestions, feel free to mail me.</p>]]></content><author><name>Ken Harris</name></author><summary type="html"><![CDATA[A guide to improve font rendering on all devices and browsers.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://kenhv.com/assets/images/og/posts/treat-yourself-to-good-typography.png" /><media:content medium="image" url="https://kenhv.com/assets/images/og/posts/treat-yourself-to-good-typography.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Supercharge Your Linux System</title><link href="https://kenhv.com/blog/linux-tweaks" rel="alternate" type="text/html" title="Supercharge Your Linux System" /><published>2023-07-17T00:00:00+05:30</published><updated>2024-08-28T23:29:13+05:30</updated><id>https://kenhv.com/blog/linux-tweaks</id><content type="html" xml:base="https://kenhv.com/blog/linux-tweaks"><![CDATA[<p>This post started out as a repository of tweaks for Arch Linux, although you can apply most of it to any distro. To ensure this post stays relevant, I’ve linked to Arch Wiki sections when possible. AMD-specific optimisations are not covered. <a href="#ubuntu-specific-optimisations">Ubuntu-specific optimisations</a> can be found at the end of the post.</p>
 
 <p>I update this post regularly. If you have any suggestions, feel free to <a href="mailto:ken@kenhv.com">mail me</a>!</p>
 

@@ -52,13 +52,13 @@ Add the following cronjob using `sudo crontab -e`:
 
 Add this line to the `http` block in your Nginx config `/etc/nginx/nginx.conf`:
 
-```
+```nginx
 include /etc/nginx/cloudflare;
 ```
 
 Now for every service you're reverse-proxying, add this line inside `location` in the `server` block:
 
-```
+```nginx
 include proxy_params;
 ```
 
@@ -145,13 +145,13 @@ Depending on your config, you might want to set [chain = FORWARD](https://github
 
 Add the following line to the `http` block in your main Nginx config (`/etc/nginx/nginx.conf`):
 
-```
+```nginx
 map $remote_addr $ip_blacklisted { include blacklisted-sessions.map; }
 ```
 
 Add the following line to the `server` block of services you're reverse-proxying:
 
-```
+```nginx
 if ($ip_blacklisted) { return 444; }
 ```
 
