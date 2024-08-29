@@ -28,6 +28,14 @@ usermod --append --groups sudo <user>
 
 You can now logout and log back in as the new user.
 
+For added security, you can set `root`'s shell to `nologin`. This disables logging in as `root`. Run the following command:
+
+```bash
+sudo usermod root --shell /sbin/nologin
+```
+
+If you need a root shell, you can use `sudo -s`. `su` or `sudo -i` won't work anymore.
+
 ## SSH
 
 Follow the [SSH Hardening Guide](https://ssh-audit.com/hardening_guides.html). It ensures that only strong algorithms are used for encryption. I do this on all my machines, both clients and servers. You can skip the "connection rate throttling" section, we'll be setting up Fail2Ban to handle that.
