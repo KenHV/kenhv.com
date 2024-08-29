@@ -16,7 +16,7 @@ Go through the [Arch installation guide](https://wiki.archlinux.org/title/Insta
 
 ## Desktop Environment
 
-GNOME AND XFCE are both solid options for a desktop environment. I prefer GNOME. Installing `gnome-shell-performance` and `mutter-performance` from the AUR will greatly improve your experience. If your PC is extremely slow, you can use XFCE with it's compositor disabled for more performance. [Enable TearFree](https://wiki.archlinux.org/title/intel_graphics#Tearing) to eliminate screen tearing when the compositor is off.
+GNOME and XFCE are both solid options for a desktop environment. I prefer GNOME. Installing `gnome-shell-performance` and `mutter-performance` from the AUR will greatly improve your experience. If your PC is extremely slow, you can use XFCE with it's compositor disabled for more performance. [Enable TearFree](https://wiki.archlinux.org/title/intel_graphics#Tearing) to eliminate screen tearing when the compositor is off.
 
 ## Graphics
 

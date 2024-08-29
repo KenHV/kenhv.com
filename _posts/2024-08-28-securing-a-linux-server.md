@@ -86,6 +86,8 @@ sudo ufw allow <port>/tcp comment "OpenSSH"
 sudo ufw enable
 ```
 
+If you're using Docker, we need to make some changes to the UFW config to ensure UFW works as intended. Explanation and instructions are given in [this GitHub repo](https://github.com/chaifeng/ufw-docker#solving-ufw-and-docker-issues) (thanks to [u/s0ftcorn](https://www.reddit.com/r/selfhosted/comments/1f3y16m/comment/lkinkub/?context=3)).
+
 I also like to disable UFW logging. **Do not** do this unless you know what you're doing: `sudo ufw logging off`.
 
 Next up, we'll be blocking known bad IPs. [CrowdSec](https://www.crowdsec.net/) is complicated to set up, wastes resources, requires an account, and in my opinion, overkill. Instead, we'll just stick to a simple bash script and a cronjob.
@@ -259,3 +261,8 @@ If you're using Cloudflare proxy, we need to do a bit more so that Fail2Ban bans
 That pretty much covers it. Just make sure you're using strong and random passwords/passphrases for everything.
 
 If you have any comments or suggestions, feel free to [mail me](mailto:ken@kenhv.com)!
+
+## Changelog
+
+- `29 Aug 24`: Added info about UFW and Docker
+- `29 Aug 24`: Added nologin setup for root

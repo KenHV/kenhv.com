@@ -113,7 +113,7 @@ code {
     font-feature-settings: normal;
 }
 
-p code {
+code:not(pre code) {
     padding: 0.125em 0.25em;
     border-radius: 0.25em;
     word-wrap: break-word;
