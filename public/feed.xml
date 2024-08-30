@@ -1,8 +1,8 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.3">Jekyll</generator><link href="https://kenhv.com/feed.xml" rel="self" type="application/atom+xml" /><link href="https://kenhv.com/" rel="alternate" type="text/html" /><updated>2024-08-29T22:32:50+05:30</updated><id>https://kenhv.com/feed.xml</id><title type="html">Ken Harris</title><subtitle>Tech enthusiast. Occasional doer of stuff. @KenHV</subtitle><author><name>Ken Harris</name></author><entry><title type="html">Securing A Linux Server</title><link href="https://kenhv.com/blog/securing-a-linux-server" rel="alternate" type="text/html" title="Securing A Linux Server" /><published>2024-08-28T00:00:00+05:30</published><updated>2024-08-29T17:55:25+05:30</updated><id>https://kenhv.com/blog/securing-a-linux-server</id><content type="html" xml:base="https://kenhv.com/blog/securing-a-linux-server"><![CDATA[<p>This post goes over the following: adding a non-root user, securing SSH, setting up a firewall (UFW), blocking known bad IPs with a script, hardening Nginx reverse-proxy configs, implementing Nginx Proxy Manager’s “block common exploits” functionality, setting up Fail2Ban, and implementing LinuxServer’s SWAG’s Fail2Ban jails. Additional instructions for Cloudflare proxy are provided as well.</p>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.3">Jekyll</generator><link href="https://kenhv.com/feed.xml" rel="self" type="application/atom+xml" /><link href="https://kenhv.com/" rel="alternate" type="text/html" /><updated>2024-08-30T18:28:01+05:30</updated><id>https://kenhv.com/feed.xml</id><title type="html">Ken Harris</title><subtitle>Tech enthusiast. Occasional doer of stuff. @KenHV</subtitle><author><name>Ken Harris</name></author><entry><title type="html">Securing A Linux Server</title><link href="https://kenhv.com/blog/securing-a-linux-server" rel="alternate" type="text/html" title="Securing A Linux Server" /><published>2024-08-28T00:00:00+05:30</published><updated>2024-08-29T22:33:42+05:30</updated><id>https://kenhv.com/blog/securing-a-linux-server</id><content type="html" xml:base="https://kenhv.com/blog/securing-a-linux-server"><![CDATA[<p>This post goes over the following: adding a non-root user, securing SSH, setting up a firewall (UFW), blocking known bad IPs with a script, hardening Nginx reverse-proxy configs, implementing Nginx Proxy Manager’s “block common exploits” functionality, setting up Fail2Ban, and implementing LinuxServer’s SWAG’s Fail2Ban jails. Additional instructions for Cloudflare proxy are provided as well.</p>
 
 <h2 id="non-root-user">Non-Root User</h2>
 
-<p>If you’re using a VPS, the default user will be <code class="language-plaintext highlighter-rouge">root</code>. We need to set up a non-root user first.</p>
+<p>If you’re using a VPS, the default user will be <code class="language-plaintext highlighter-rouge">root</code>. The principle of least privilege is a security concept where everything only has access to what it needs. To abide by this concept, we need to set up a non-root user.</p>
 
 <p>To add a new non-root user, run the following command as <code class="language-plaintext highlighter-rouge">root</code>:</p>
 
@@ -29,7 +29,7 @@
 
 <p>Follow the <a href="https://ssh-audit.com/hardening_guides.html">SSH Hardening Guide</a>. It ensures that only strong algorithms are used for encryption. I do this on all my machines, both clients and servers. You can skip the “connection rate throttling” section, we’ll be setting up Fail2Ban to handle that.</p>
 
-<p>Generate an Ed25519 key:</p>
+<p>Generate an Ed25519 key (passphrase is optional but recommended):</p>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssh-keygen <span class="nt">-t</span> ed25519
 </code></pre></div></div>
@@ -50,6 +50,8 @@
 <span class="n">KbdInteractiveAuthentication</span> <span class="n">no</span>
 <span class="n">X11Forwarding</span> <span class="n">no</span>
 </code></pre></div></div>
+
+<p>The above snippet does a few things. It disables the old protocol 1 and enforces protocol 2 for increased security. It disallows login attempts to <code class="language-plaintext highlighter-rouge">root</code>. Everything other than key-based authentication is disabled. X11 forwarding is also disabled; you’ll know it if you need it.</p>
 
 <p>You can change the SSH port to a random number in the same file. Finally, run the following command to restart the SSH daemon:</p>
 
@@ -101,7 +103,9 @@
 <span class="k">add_header</span> <span class="s">X-Frame-Options</span> <span class="s">"SAMEORIGIN"</span><span class="p">;</span>
 </code></pre></div></div>
 
-<p>To implement Nginx Proxy Manager’s (not to be confused with Nginx) “block common exploits” functionality, do the following. Download the config file:</p>
+<p>The above snippet sets some headers to prevent certain attacks. The first header prevents MIME sniffing attacks, the second header prevents cross-site scripting attacks, and the third header prevents your site from being embedded in another domain, preventing clickjacking attacks.</p>
+
+<p>Nginx Proxy Manager (not to be confused with Nginx) has a feature called “block common exploits”, which blocks SQL injection attacks, file injection attacks, and more. To implement it in Nginx, download the config file:</p>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>wget https://raw.githubusercontent.com/NginxProxyManager/nginx-proxy-manager/develop/docker/rootfs/etc/nginx/conf.d/include/block-exploits.conf <span class="nt">-O</span> /etc/nginx/block-exploits.conf
 </code></pre></div></div>
@@ -190,7 +194,9 @@
 <span class="py">enabled</span> <span class="p">=</span> <span class="kc">true</span>
 </code></pre></div></div>
 
-<p>Just make sure all your Nginx <code class="language-plaintext highlighter-rouge">location</code> blocks have the following line:</p>
+<p>The HTTP auth jail filters incorrect login attempts to Nginx’s basic auth. Bad request jail filters, well, bad requests (400 error). Botsearch jail filters requests for certain URLs if they don’t exist (such as /wp-login, /admin).</p>
+
+<p>To make sure that the IPs are the real IPs of the end user, add the following line to your Nginx <code class="language-plaintext highlighter-rouge">location</code> blocks:</p>
 
 <div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">include</span> <span class="n">proxy_params</span>;
 </code></pre></div></div>
@@ -223,6 +229,8 @@
 <span class="py">logpath</span>  <span class="p">=</span> <span class="err">%(nginx_access_log)s</span>
 </code></pre></div></div>
 
+<p>Badbots jail filters known bad bots by their user-agents. Deny jail filters requests that you’ve blocked in your Nginx config. Unauthorized jail filters, well, unauthorized requests (401 error).</p>
+
 <h2 id="cloudflare">Cloudflare</h2>
 
 <p>If you’re using Cloudflare proxy, we need to do a bit more so that Fail2Ban bans the end user’s IP and not Cloudflare IPs. Follow my blog post on <a href="https://kenhv.com/blog/fail2ban-with-nginx-and-cloudflare-ipv6">setting up Fail2Ban With Nginx and Cloudflare Free</a>. For all Nginx jails, you should be using the same <code class="language-plaintext highlighter-rouge">action</code> as the ones in that post.</p>
@@ -234,6 +242,7 @@
 <h2 id="changelog">Changelog</h2>
 
 <ul>
+  <li><code class="language-plaintext highlighter-rouge">30 Aug 24</code>: Added basic explanations</li>
   <li><code class="language-plaintext highlighter-rouge">29 Aug 24</code>: Added info about UFW and Docker</li>
   <li><code class="language-plaintext highlighter-rouge">29 Aug 24</code>: Added nologin setup for root</li>
 </ul>]]></content><author><name>Ken Harris</name></author><summary type="html"><![CDATA[A guide to secure and harden a Linux server install.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://kenhv.com/assets/images/og/posts/securing-a-linux-server.png" /><media:content medium="image" url="https://kenhv.com/assets/images/og/posts/securing-a-linux-server.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Fail2Ban With Nginx and Cloudflare Free (With IPv6 Support)</title><link href="https://kenhv.com/blog/fail2ban-with-nginx-and-cloudflare-ipv6" rel="alternate" type="text/html" title="Fail2Ban With Nginx and Cloudflare Free (With IPv6 Support)" /><published>2024-08-04T00:00:00+05:30</published><updated>2024-08-29T12:38:59+05:30</updated><id>https://kenhv.com/blog/fail2ban-with-nginx-and-cloudflare-ipv6</id><content type="html" xml:base="https://kenhv.com/blog/fail2ban-with-nginx-and-cloudflare-ipv6"><![CDATA[<p>This post will teach you how to set up Fail2Ban actions for services reverse-proxied by Nginx and proxied by Cloudflare. I’ll be using Vaultwarden as an example. I have Nginx and Fail2Ban installed natively, and Vaultwarden in a Docker container. You can adjust it to work with Nginx and/or Fail2Ban running in Docker containers.</p>
@@ -791,7 +800,7 @@ nginx <span class="nt">-t</span> <span class="o">&amp;&amp;</span> systemctl rel
 
 <h2 id="the-end">The End</h2>
 
-<p>If you made it all the way here, you might want to look into getting a shiny new high DPI monitor. If you have any suggestions, feel free to mail me.</p>]]></content><author><name>Ken Harris</name></author><summary type="html"><![CDATA[A guide to improve font rendering on all devices and browsers.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://kenhv.com/assets/images/og/posts/treat-yourself-to-good-typography.png" /><media:content medium="image" url="https://kenhv.com/assets/images/og/posts/treat-yourself-to-good-typography.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Supercharge Your Linux System</title><link href="https://kenhv.com/blog/linux-tweaks" rel="alternate" type="text/html" title="Supercharge Your Linux System" /><published>2023-07-17T00:00:00+05:30</published><updated>2024-08-28T23:29:13+05:30</updated><id>https://kenhv.com/blog/linux-tweaks</id><content type="html" xml:base="https://kenhv.com/blog/linux-tweaks"><![CDATA[<p>This post started out as a repository of tweaks for Arch Linux, although you can apply most of it to any distro. To ensure this post stays relevant, I’ve linked to Arch Wiki sections when possible. AMD-specific optimisations are not covered. <a href="#ubuntu-specific-optimisations">Ubuntu-specific optimisations</a> can be found at the end of the post.</p>
+<p>If you made it all the way here, you might want to look into getting a shiny new high DPI monitor. If you have any suggestions, feel free to mail me.</p>]]></content><author><name>Ken Harris</name></author><summary type="html"><![CDATA[A guide to improve font rendering on all devices and browsers.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://kenhv.com/assets/images/og/posts/treat-yourself-to-good-typography.png" /><media:content medium="image" url="https://kenhv.com/assets/images/og/posts/treat-yourself-to-good-typography.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Supercharge Your Linux System</title><link href="https://kenhv.com/blog/linux-tweaks" rel="alternate" type="text/html" title="Supercharge Your Linux System" /><published>2023-07-17T00:00:00+05:30</published><updated>2024-08-29T22:33:42+05:30</updated><id>https://kenhv.com/blog/linux-tweaks</id><content type="html" xml:base="https://kenhv.com/blog/linux-tweaks"><![CDATA[<p>This post started out as a repository of tweaks for Arch Linux, although you can apply most of it to any distro. To ensure this post stays relevant, I’ve linked to Arch Wiki sections when possible. AMD-specific optimisations are not covered. <a href="#ubuntu-specific-optimisations">Ubuntu-specific optimisations</a> can be found at the end of the post.</p>
 
 <p>I update this post regularly. If you have any suggestions, feel free to <a href="mailto:ken@kenhv.com">mail me</a>!</p>
 

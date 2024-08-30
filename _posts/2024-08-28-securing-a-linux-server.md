@@ -3,14 +3,14 @@ layout: post
 title: "Securing A Linux Server"
 description: "A guide to secure and harden a Linux server install."
 seo:
-  date_modified: 2024-08-29
+  date_modified: 2024-08-30
 ---
 
 This post goes over the following: adding a non-root user, securing SSH, setting up a firewall (UFW), blocking known bad IPs with a script, hardening Nginx reverse-proxy configs, implementing Nginx Proxy Manager's "block common exploits" functionality, setting up Fail2Ban, and implementing LinuxServer's SWAG's Fail2Ban jails. Additional instructions for Cloudflare proxy are provided as well.
 
 ## Non-Root User
 
-If you're using a VPS, the default user will be `root`. We need to set up a non-root user first.
+If you're using a VPS, the default user will be `root`. The principle of least privilege is a security concept where everything only has access to what it needs. To abide by this concept, we need to set up a non-root user.
 
 To add a new non-root user, run the following command as `root`:
 
@@ -40,7 +40,7 @@ If you need a root shell, you can use `sudo -s`. `su` or `sudo -i` won't work an
 
 Follow the [SSH Hardening Guide](https://ssh-audit.com/hardening_guides.html). It ensures that only strong algorithms are used for encryption. I do this on all my machines, both clients and servers. You can skip the "connection rate throttling" section, we'll be setting up Fail2Ban to handle that.
 
-Generate an Ed25519 key:
+Generate an Ed25519 key (passphrase is optional but recommended):
 
 ```bash
 ssh-keygen -t ed25519
@@ -64,6 +64,8 @@ AuthenticationMethods publickey
 KbdInteractiveAuthentication no
 X11Forwarding no
 ```
+
+The above snippet does a few things. It disables the old protocol 1 and enforces protocol 2 for increased security. It disallows login attempts to `root`. Everything other than key-based authentication is disabled. X11 forwarding is also disabled; you'll know it if you need it.
 
 You can change the SSH port to a random number in the same file. Finally, run the following command to restart the SSH daemon:
 
@@ -121,7 +123,9 @@ add_header X-XSS-Protection "1; mode=block";
 add_header X-Frame-Options "SAMEORIGIN";
 ```
 
-To implement Nginx Proxy Manager's (not to be confused with Nginx) "block common exploits" functionality, do the following. Download the config file:
+The above snippet sets some headers to prevent certain attacks. The first header prevents MIME sniffing attacks, the second header prevents cross-site scripting attacks, and the third header prevents your site from being embedded in another domain, preventing clickjacking attacks.
+
+Nginx Proxy Manager (not to be confused with Nginx) has a feature called "block common exploits", which blocks SQL injection attacks, file injection attacks, and more. To implement it in Nginx, download the config file:
 
 ```bash
 sudo wget https://raw.githubusercontent.com/NginxProxyManager/nginx-proxy-manager/develop/docker/rootfs/etc/nginx/conf.d/include/block-exploits.conf -O /etc/nginx/block-exploits.conf
@@ -218,7 +222,9 @@ enabled = true
 enabled = true
 ```
 
-Just make sure all your Nginx `location` blocks have the following line:
+The HTTP auth jail filters incorrect login attempts to Nginx's basic auth. Bad request jail filters, well, bad requests (400 error). Botsearch jail filters requests for certain URLs if they don't exist (such as /wp-login, /admin).
+
+To make sure that the IPs are the real IPs of the end user, add the following line to your Nginx `location` blocks:
 
 ```conf
 include proxy_params;
@@ -254,6 +260,8 @@ filter   = nginx-unauthorized
 logpath  = %(nginx_access_log)s
 ```
 
+Badbots jail filters known bad bots by their user-agents. Deny jail filters requests that you've blocked in your Nginx config. Unauthorized jail filters, well, unauthorized requests (401 error).
+
 ## Cloudflare
 
 If you're using Cloudflare proxy, we need to do a bit more so that Fail2Ban bans the end user's IP and not Cloudflare IPs. Follow my blog post on [setting up Fail2Ban With Nginx and Cloudflare Free](https://kenhv.com/blog/fail2ban-with-nginx-and-cloudflare-ipv6). For all Nginx jails, you should be using the same `action` as the ones in that post.
@@ -264,5 +272,6 @@ If you have any comments or suggestions, feel free to [mail me](mailto:ken@kenhv
 
 ## Changelog
 
+- `30 Aug 24`: Added basic explanations
 - `29 Aug 24`: Added info about UFW and Docker
 - `29 Aug 24`: Added nologin setup for root
