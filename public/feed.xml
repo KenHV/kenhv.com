@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.3">Jekyll</generator><link href="https://kenhv.com/feed.xml" rel="self" type="application/atom+xml" /><link href="https://kenhv.com/" rel="alternate" type="text/html" /><updated>2024-08-30T18:28:01+05:30</updated><id>https://kenhv.com/feed.xml</id><title type="html">Ken Harris</title><subtitle>Tech enthusiast. Occasional doer of stuff. @KenHV</subtitle><author><name>Ken Harris</name></author><entry><title type="html">Securing A Linux Server</title><link href="https://kenhv.com/blog/securing-a-linux-server" rel="alternate" type="text/html" title="Securing A Linux Server" /><published>2024-08-28T00:00:00+05:30</published><updated>2024-08-29T22:33:42+05:30</updated><id>https://kenhv.com/blog/securing-a-linux-server</id><content type="html" xml:base="https://kenhv.com/blog/securing-a-linux-server"><![CDATA[<p>This post goes over the following: adding a non-root user, securing SSH, setting up a firewall (UFW), blocking known bad IPs with a script, hardening Nginx reverse-proxy configs, implementing Nginx Proxy Manager’s “block common exploits” functionality, setting up Fail2Ban, and implementing LinuxServer’s SWAG’s Fail2Ban jails. Additional instructions for Cloudflare proxy are provided as well.</p>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.3">Jekyll</generator><link href="https://kenhv.com/feed.xml" rel="self" type="application/atom+xml" /><link href="https://kenhv.com/" rel="alternate" type="text/html" /><updated>2024-09-06T11:32:56+05:30</updated><id>https://kenhv.com/feed.xml</id><title type="html">Ken Harris</title><subtitle>Tech enthusiast. Occasional doer of stuff. @KenHV</subtitle><author><name>Ken Harris</name></author><entry><title type="html">Securing A Linux Server</title><link href="https://kenhv.com/blog/securing-a-linux-server" rel="alternate" type="text/html" title="Securing A Linux Server" /><published>2024-08-28T00:00:00+05:30</published><updated>2024-08-30T18:28:35+05:30</updated><id>https://kenhv.com/blog/securing-a-linux-server</id><content type="html" xml:base="https://kenhv.com/blog/securing-a-linux-server"><![CDATA[<p>This post goes over the following: adding a non-root user, securing SSH, setting up a firewall (UFW), blocking known bad IPs with a script, hardening Nginx reverse-proxy configs, implementing Nginx Proxy Manager’s “block common exploits” functionality, setting up Fail2Ban, and implementing LinuxServer’s SWAG’s Fail2Ban jails. Additional instructions for Cloudflare proxy are provided as well.</p>
 
 <h2 id="non-root-user">Non-Root User</h2>
 
@@ -21,6 +21,7 @@
 <p>For added security, you can set <code class="language-plaintext highlighter-rouge">root</code>’s shell to <code class="language-plaintext highlighter-rouge">nologin</code>. This disables logging in as <code class="language-plaintext highlighter-rouge">root</code>. Run the following command:</p>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>usermod root <span class="nt">--shell</span> /sbin/nologin
+<span class="nb">sudo </span>passwd <span class="nt">--lock</span> root
 </code></pre></div></div>
 
 <p>If you need a root shell, you can use <code class="language-plaintext highlighter-rouge">sudo -s</code>. <code class="language-plaintext highlighter-rouge">su</code> or <code class="language-plaintext highlighter-rouge">sudo -i</code> won’t work anymore.</p>
@@ -73,7 +74,12 @@
 
 <p>If you’re using Docker, we need to make some changes to the UFW config to ensure UFW works as intended. Explanation and instructions are given in <a href="https://github.com/chaifeng/ufw-docker#solving-ufw-and-docker-issues">this GitHub repo</a> (thanks to <a href="https://www.reddit.com/r/selfhosted/comments/1f3y16m/comment/lkinkub/?context=3">u/s0ftcorn</a>).</p>
 
-<p>I also like to disable UFW logging. <strong>Do not</strong> do this unless you know what you’re doing: <code class="language-plaintext highlighter-rouge">sudo ufw logging off</code>.</p>
+<p>I also like to disable UFW logging. <strong>Do not</strong> do this unless you know what you’re doing:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>ufw logging off
+<span class="nb">echo</span> <span class="s2">"&amp; stop"</span> | <span class="nb">sudo tee</span> <span class="nt">--append</span> /etc/rsyslog.d/20-ufw.conf
+<span class="nb">sudo </span>systemctl restart rsyslog
+</code></pre></div></div>
 
 <p>Next up, we’ll be blocking known bad IPs. <a href="https://www.crowdsec.net/">CrowdSec</a> is complicated to set up, wastes resources, requires an account, and in my opinion, overkill. Instead, we’ll just stick to a simple bash script and a cronjob.</p>
 
@@ -242,6 +248,7 @@
 <h2 id="changelog">Changelog</h2>
 
 <ul>
+  <li><code class="language-plaintext highlighter-rouge">06 Sep 24</code>: Added <code class="language-plaintext highlighter-rouge">passwd --lock</code> and expanded snippet to disable UFW syslog spam</li>
   <li><code class="language-plaintext highlighter-rouge">30 Aug 24</code>: Added basic explanations</li>
   <li><code class="language-plaintext highlighter-rouge">29 Aug 24</code>: Added info about UFW and Docker</li>
   <li><code class="language-plaintext highlighter-rouge">29 Aug 24</code>: Added nologin setup for root</li>
@@ -849,9 +856,11 @@ nginx <span class="nt">-t</span> <span class="o">&amp;&amp;</span> systemctl rel
 <span class="nt">WantedBy</span><span class="p">=</span>multi-user.target
 </code></pre></div></div>
 
-<p>For CPU frequency scaling, you have two options. You can let the kernel do the heavy lifting by installing <a href="https://gitlab.freedesktop.org/upower/power-profiles-daemon">power-profiles-daemon</a>. Or, you can install <a href="https://github.com/AdnanHodzic/auto-cpufreq">auto-cpufreq</a>, which is a userspace daemon that does the work. Try both and see what works best for you. <a href="https://github.com/AdnanHodzic/auto-cpufreq#troubleshooting">Disable pstate drivers</a> if you’re using auto-cpufreq. Zen kernel disables pstate drivers by default; to enable it, pass <code class="language-plaintext highlighter-rouge">intel_pstate=enable</code> to the kernel args. Install <a href="https://wiki.archlinux.org/title/CPU_frequency_scaling#thermald">thermald</a> along with either of the programs. Do not touch TLP, it’s a dumpster fire.</p>
+<p>For CPU frequency scaling, install <code class="language-plaintext highlighter-rouge">power-profiles-daemon</code> and enable it. If your CPU doesn’t support hardware P-states (you can check your <a href="https://gitlab.freedesktop.org/upower/power-profiles-daemon#operations-on-intel-based-machines">Intel</a> or <a href="https://gitlab.freedesktop.org/upower/power-profiles-daemon#operations-on-amd-based-machines">AMD</a> CPU), you can use <a href="https://github.com/AdnanHodzic/auto-cpufreq">auto-cpufreq</a> instead. Note that Zen kernel disables the <code class="language-plaintext highlighter-rouge">intel_pstate</code> driver needed by power-profiles-daemon; pass <code class="language-plaintext highlighter-rouge">intel_pstate=enable</code> to the kernel args to enable it. Don’t bother with TLP or other such tools.</p>
 
-<p>If possible, <a href="https://wiki.archlinux.org/title/Undervolting_CPU">undervolt</a> your CPU and GPU. For Intel, you can disable SGX in your BIOS to disable the Plundervolt fixes, which will enable undervolting on newer machines. Don’t be put off by the warning on the Arch Wiki page. I have my CPU undervolted to -150mV and GPU to -100mV. Your mileage <strong>will</strong> vary. Start at -80mV for the CPU and -50mV for the GPU.</p>
+<p>Install <a href="https://wiki.archlinux.org/title/CPU_frequency_scaling#thermald">thermald</a> if you have an Intel CPU.</p>
+
+<p>If possible, <a href="https://wiki.archlinux.org/title/Undervolting_CPU">undervolt</a> your CPU and GPU. For Intel, you can disable SGX in your BIOS to disable the Plundervolt fixes, which should enable undervolting on newer machines. Don’t be put off by the warning on the Arch Wiki page. I have my CPU undervolted to -150mV and GPU to -100mV. Your mileage <strong>will</strong> vary. Start at -80mV for the CPU and -50mV for the GPU.</p>
 
 <h2 id="memory-management">Memory Management</h2>
 
@@ -886,4 +895,12 @@ nginx <span class="nt">-t</span> <span class="o">&amp;&amp;</span> systemctl rel
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="nt">-s</span> <span class="s1">'https://liquorix.net/install-liquorix.sh'</span> | <span class="nb">sudo </span>bash
 </code></pre></div></div>
 
-<p>Ubuntu 24.04 added several low-latency tunables to their default kernel, explained in <a href="https://discourse.ubuntu.com/t/fine-tuning-the-ubuntu-24-04-kernel-for-low-latency-throughput-and-power-efficiency/44834">this post</a>. I use the following: <code class="language-plaintext highlighter-rouge">preempt=full rcu_nocbs=all rcutree.enable_rcu_lazy=1</code></p>]]></content><author><name>Ken Harris</name></author><summary type="html"><![CDATA[A repository of tweaks for desktop Linux.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://kenhv.com/assets/images/og/posts/linux-tweaks.png" /><media:content medium="image" url="https://kenhv.com/assets/images/og/posts/linux-tweaks.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>
+<p>Ubuntu 24.04 added several low-latency tunables to their default kernel, explained in <a href="https://discourse.ubuntu.com/t/fine-tuning-the-ubuntu-24-04-kernel-for-low-latency-throughput-and-power-efficiency/44834">this post</a>. I use the following: <code class="language-plaintext highlighter-rouge">preempt=full rcu_nocbs=all rcutree.enable_rcu_lazy=1</code></p>
+
+<h2 id="changelog">Changelog</h2>
+
+<p>Note: Changes made before <code class="language-plaintext highlighter-rouge">06 Sep 24</code> are not covered.</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">06 Sep 24</code>: Improve CPU frequency scaling section</li>
+</ul>]]></content><author><name>Ken Harris</name></author><summary type="html"><![CDATA[A repository of tweaks for desktop Linux.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://kenhv.com/assets/images/og/posts/linux-tweaks.png" /><media:content medium="image" url="https://kenhv.com/assets/images/og/posts/linux-tweaks.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>

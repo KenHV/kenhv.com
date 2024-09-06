@@ -3,7 +3,7 @@ layout: post
 title: "Securing A Linux Server"
 description: "A guide to secure and harden a Linux server install."
 seo:
-  date_modified: 2024-08-30
+  date_modified: 2024-09-06
 ---
 
 This post goes over the following: adding a non-root user, securing SSH, setting up a firewall (UFW), blocking known bad IPs with a script, hardening Nginx reverse-proxy configs, implementing Nginx Proxy Manager's "block common exploits" functionality, setting up Fail2Ban, and implementing LinuxServer's SWAG's Fail2Ban jails. Additional instructions for Cloudflare proxy are provided as well.
@@ -32,6 +32,7 @@ For added security, you can set `root`'s shell to `nologin`. This disables loggi
 
 ```bash
 sudo usermod root --shell /sbin/nologin
+sudo passwd --lock root
 ```
 
 If you need a root shell, you can use `sudo -s`. `su` or `sudo -i` won't work anymore.
@@ -90,7 +91,13 @@ sudo ufw enable
 
 If you're using Docker, we need to make some changes to the UFW config to ensure UFW works as intended. Explanation and instructions are given in [this GitHub repo](https://github.com/chaifeng/ufw-docker#solving-ufw-and-docker-issues) (thanks to [u/s0ftcorn](https://www.reddit.com/r/selfhosted/comments/1f3y16m/comment/lkinkub/?context=3)).
 
-I also like to disable UFW logging. **Do not** do this unless you know what you're doing: `sudo ufw logging off`.
+I also like to disable UFW logging. **Do not** do this unless you know what you're doing:
+
+```bash
+sudo ufw logging off
+echo "& stop" | sudo tee --append /etc/rsyslog.d/20-ufw.conf
+sudo systemctl restart rsyslog
+```
 
 Next up, we'll be blocking known bad IPs. [CrowdSec](https://www.crowdsec.net/) is complicated to set up, wastes resources, requires an account, and in my opinion, overkill. Instead, we'll just stick to a simple bash script and a cronjob.
 
@@ -272,6 +279,7 @@ If you have any comments or suggestions, feel free to [mail me](mailto:ken@kenhv
 
 ## Changelog
 
+- `06 Sep 24`: Added `passwd --lock` and expanded snippet to disable UFW syslog spam
 - `30 Aug 24`: Added basic explanations
 - `29 Aug 24`: Added info about UFW and Docker
 - `29 Aug 24`: Added nologin setup for root

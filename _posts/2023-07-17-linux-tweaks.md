@@ -3,7 +3,7 @@ layout: post
 title: "Supercharge Your Linux System"
 description: "A repository of tweaks for desktop Linux."
 seo:
-  date_modified: 2024-08-15
+  date_modified: 2024-09-06
 ---
 
 This post started out as a repository of tweaks for Arch Linux, although you can apply most of it to any distro. To ensure this post stays relevant, I've linked to Arch Wiki sections when possible. AMD-specific optimisations are not covered. [Ubuntu-specific optimisations](#ubuntu-specific-optimisations) can be found at the end of the post.
@@ -56,9 +56,11 @@ WantedBy=hybrid-sleep.target
 WantedBy=multi-user.target
 ```
 
-For CPU frequency scaling, you have two options. You can let the kernel do the heavy lifting by installing [power-profiles-daemon](https://gitlab.freedesktop.org/upower/power-profiles-daemon). Or, you can install [auto-cpufreq](https://github.com/AdnanHodzic/auto-cpufreq), which is a userspace daemon that does the work. Try both and see what works best for you. [Disable pstate drivers](https://github.com/AdnanHodzic/auto-cpufreq#troubleshooting) if you're using auto-cpufreq. Zen kernel disables pstate drivers by default; to enable it, pass `intel_pstate=enable` to the kernel args. Install [thermald](https://wiki.archlinux.org/title/CPU_frequency_scaling#thermald) along with either of the programs. Do not touch TLP, it's a dumpster fire.
+For CPU frequency scaling, install `power-profiles-daemon` and enable it. If your CPU doesn't support hardware P-states (you can check your [Intel](https://gitlab.freedesktop.org/upower/power-profiles-daemon#operations-on-intel-based-machines) or [AMD](https://gitlab.freedesktop.org/upower/power-profiles-daemon#operations-on-amd-based-machines) CPU), you can use [auto-cpufreq](https://github.com/AdnanHodzic/auto-cpufreq) instead. Note that Zen kernel disables the `intel_pstate` driver needed by power-profiles-daemon; pass `intel_pstate=enable` to the kernel args to enable it. Don't bother with TLP or other such tools.
 
-If possible, [undervolt](https://wiki.archlinux.org/title/Undervolting_CPU) your CPU and GPU. For Intel, you can disable SGX in your BIOS to disable the Plundervolt fixes, which will enable undervolting on newer machines. Don't be put off by the warning on the Arch Wiki page. I have my CPU undervolted to -150mV and GPU to -100mV. Your mileage **will** vary. Start at -80mV for the CPU and -50mV for the GPU.
+Install [thermald](https://wiki.archlinux.org/title/CPU_frequency_scaling#thermald) if you have an Intel CPU.
+
+If possible, [undervolt](https://wiki.archlinux.org/title/Undervolting_CPU) your CPU and GPU. For Intel, you can disable SGX in your BIOS to disable the Plundervolt fixes, which should enable undervolting on newer machines. Don't be put off by the warning on the Arch Wiki page. I have my CPU undervolted to -150mV and GPU to -100mV. Your mileage **will** vary. Start at -80mV for the CPU and -50mV for the GPU.
 
 ## Memory Management
 
@@ -93,3 +95,9 @@ curl -s 'https://liquorix.net/install-liquorix.sh' | sudo bash
 ```
 
 Ubuntu 24.04 added several low-latency tunables to their default kernel, explained in [this post](https://discourse.ubuntu.com/t/fine-tuning-the-ubuntu-24-04-kernel-for-low-latency-throughput-and-power-efficiency/44834). I use the following: `preempt=full rcu_nocbs=all rcutree.enable_rcu_lazy=1`
+
+## Changelog
+
+Note: Changes made before `06 Sep 24` are not covered.
+
+- `06 Sep 24`: Improve CPU frequency scaling section
