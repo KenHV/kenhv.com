@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.3">Jekyll</generator><link href="https://kenhv.com/feed.xml" rel="self" type="application/atom+xml" /><link href="https://kenhv.com/" rel="alternate" type="text/html" /><updated>2024-09-07T14:02:59+05:30</updated><id>https://kenhv.com/feed.xml</id><title type="html">Ken Harris</title><subtitle>Tech enthusiast. Occasional doer of stuff. @KenHV</subtitle><author><name>Ken Harris</name></author><entry><title type="html">Securing A Linux Server</title><link href="https://kenhv.com/blog/securing-a-linux-server" rel="alternate" type="text/html" title="Securing A Linux Server" /><published>2024-08-28T00:00:00+05:30</published><updated>2024-09-06T11:33:42+05:30</updated><id>https://kenhv.com/blog/securing-a-linux-server</id><content type="html" xml:base="https://kenhv.com/blog/securing-a-linux-server"><![CDATA[<p>This post goes over the following: adding a non-root user, securing SSH, setting up a firewall (UFW), blocking known bad IPs with a script, hardening Nginx reverse-proxy configs, implementing Nginx Proxy Manager’s “block common exploits” functionality, setting up Fail2Ban, and implementing LinuxServer’s SWAG’s Fail2Ban jails. Additional instructions for Cloudflare proxy are provided as well.</p>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.3">Jekyll</generator><link href="https://kenhv.com/feed.xml" rel="self" type="application/atom+xml" /><link href="https://kenhv.com/" rel="alternate" type="text/html" /><updated>2024-09-09T13:49:40+05:30</updated><id>https://kenhv.com/feed.xml</id><title type="html">Ken Harris</title><subtitle>Tech enthusiast. Occasional doer of stuff. @KenHV</subtitle><author><name>Ken Harris</name></author><entry><title type="html">Securing A Linux Server</title><link href="https://kenhv.com/blog/securing-a-linux-server" rel="alternate" type="text/html" title="Securing A Linux Server" /><published>2024-08-28T00:00:00+05:30</published><updated>2024-09-06T11:33:42+05:30</updated><id>https://kenhv.com/blog/securing-a-linux-server</id><content type="html" xml:base="https://kenhv.com/blog/securing-a-linux-server"><![CDATA[<p>This post goes over the following: adding a non-root user, securing SSH, setting up a firewall (UFW), blocking known bad IPs with a script, hardening Nginx reverse-proxy configs, implementing Nginx Proxy Manager’s “block common exploits” functionality, setting up Fail2Ban, implementing LinuxServer’s SWAG’s Fail2Ban jails, and implementing CIS benchmarks. Additional instructions for Cloudflare proxy are provided as well.</p>
 
 <h2 id="non-root-user">Non-Root User</h2>
 
@@ -241,6 +241,14 @@
 
 <p>If you’re using Cloudflare proxy, we need to do a bit more so that Fail2Ban bans the end user’s IP and not Cloudflare IPs. Follow my blog post on <a href="https://kenhv.com/blog/fail2ban-with-nginx-and-cloudflare-ipv6">setting up Fail2Ban With Nginx and Cloudflare Free</a>. For all Nginx jails, you should be using the same <code class="language-plaintext highlighter-rouge">action</code> as the ones in that post.</p>
 
+<h2 id="cis-benchmarks">CIS Benchmarks</h2>
+
+<p><a href="https://www.cisecurity.org/cis-benchmarks">CIS benchmarks</a> are configuration recommendations and best practices to harden and protect your servers. They provide benchmarks for operating systems, cloud providers, and several applications like Docker and Nginx. You can download their benchmarks <a href="https://downloads.cisecurity.org/">here</a>. Applying their level 1 profiles is good enough for most.</p>
+
+<p>Ubuntu Pro users can use the <a href="https://ubuntu.com/security/certifications/docs/usg">Ubuntu Security Guide</a> tool to audit and apply CIS and DISA-STIG (security guidelines from the U.S. Department of Defense) profiles automatically. For Debian, OVHCloud maintains scripts that you can use. You can find the scripts and instructions in <a href="https://github.com/ovh/debian-cis">this GitHub repo</a>.</p>
+
+<p>Make sure not to blindly apply everything. Go through each and every configuration.</p>
+
 <p>That pretty much covers it. Just make sure you’re using strong and random passwords/passphrases for everything.</p>
 
 <p>If you have any comments or suggestions, feel free to <a href="mailto:ken@kenhv.com">mail me</a>!</p>
@@ -248,6 +256,7 @@
 <h2 id="changelog">Changelog</h2>
 
 <ul>
+  <li><code class="language-plaintext highlighter-rouge">09 Sep 24</code>: Added CIS benchmarks section</li>
   <li><code class="language-plaintext highlighter-rouge">06 Sep 24</code>: Added <code class="language-plaintext highlighter-rouge">passwd --lock</code> and expanded snippet to disable UFW syslog spam</li>
   <li><code class="language-plaintext highlighter-rouge">30 Aug 24</code>: Added basic explanations</li>
   <li><code class="language-plaintext highlighter-rouge">29 Aug 24</code>: Added info about UFW and Docker</li>

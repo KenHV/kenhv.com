@@ -6,7 +6,7 @@ seo:
   date_modified: 2024-09-06
 ---
 
-This post goes over the following: adding a non-root user, securing SSH, setting up a firewall (UFW), blocking known bad IPs with a script, hardening Nginx reverse-proxy configs, implementing Nginx Proxy Manager's "block common exploits" functionality, setting up Fail2Ban, and implementing LinuxServer's SWAG's Fail2Ban jails. Additional instructions for Cloudflare proxy are provided as well.
+This post goes over the following: adding a non-root user, securing SSH, setting up a firewall (UFW), blocking known bad IPs with a script, hardening Nginx reverse-proxy configs, implementing Nginx Proxy Manager's "block common exploits" functionality, setting up Fail2Ban, implementing LinuxServer's SWAG's Fail2Ban jails, and implementing CIS benchmarks. Additional instructions for Cloudflare proxy are provided as well.
 
 ## Non-Root User
 
@@ -273,12 +273,21 @@ Badbots jail filters known bad bots by their user-agents. Deny jail filters requ
 
 If you're using Cloudflare proxy, we need to do a bit more so that Fail2Ban bans the end user's IP and not Cloudflare IPs. Follow my blog post on [setting up Fail2Ban With Nginx and Cloudflare Free](https://kenhv.com/blog/fail2ban-with-nginx-and-cloudflare-ipv6). For all Nginx jails, you should be using the same `action` as the ones in that post.
 
+## CIS Benchmarks
+
+[CIS benchmarks](https://www.cisecurity.org/cis-benchmarks) are configuration recommendations and best practices to harden and protect your servers. They provide benchmarks for operating systems, cloud providers, and several applications like Docker and Nginx. You can download their benchmarks [here](https://downloads.cisecurity.org/). Applying their level 1 profiles is good enough for most.
+
+Ubuntu Pro users can use the [Ubuntu Security Guide](https://ubuntu.com/security/certifications/docs/usg) tool to audit and apply CIS and DISA-STIG (security guidelines from the U.S. Department of Defense) profiles automatically. For Debian, OVHCloud maintains scripts that you can use. You can find the scripts and instructions in [this GitHub repo](https://github.com/ovh/debian-cis).
+
+Make sure not to blindly apply everything. Go through each and every configuration.
+
 That pretty much covers it. Just make sure you're using strong and random passwords/passphrases for everything.
 
 If you have any comments or suggestions, feel free to [mail me](mailto:ken@kenhv.com)!
 
 ## Changelog
 
+- `09 Sep 24`: Added CIS benchmarks section
 - `06 Sep 24`: Added `passwd --lock` and expanded snippet to disable UFW syslog spam
 - `30 Aug 24`: Added basic explanations
 - `29 Aug 24`: Added info about UFW and Docker
