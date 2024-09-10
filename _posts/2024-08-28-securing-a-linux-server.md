@@ -6,11 +6,11 @@ seo:
   date_modified: 2024-09-10
 ---
 
-This post goes over the following: adding a non-root user, securing SSH, setting up a firewall (UFW), blocking known bad IPs with a script, hardening Nginx reverse-proxy configs, implementing Nginx Proxy Manager's "block common exploits" functionality, setting up Fail2Ban, implementing LinuxServer's SWAG's Fail2Ban jails, and implementing CIS benchmarks. Additional instructions for Cloudflare proxy are provided as well.
+This post goes over the following: adding a non-root user, setting up system users, securing SSH, setting up a firewall (UFW), blocking known bad IPs with a script, hardening Nginx reverse-proxy configs, implementing Nginx Proxy Manager's "block common exploits" functionality, setting up Fail2Ban, implementing LinuxServer's SWAG's Fail2Ban jails, and implementing CIS benchmarks. Additional instructions for Cloudflare proxy are provided as well.
 
 ## Non-Root User
 
-If you're using a VPS, the default user will be `root`. The principle of least privilege is a security concept where everything only has access to what it needs. To abide by this concept, we need to set up a non-root user.
+If you're using a VPS, the default user will be `root`. The principle of least privilege is a security concept where each entity only has access to what it needs. To abide by this concept, we need to set up a non-root user.
 
 To add a new non-root user, run the following command as `root`:
 
@@ -18,7 +18,7 @@ To add a new non-root user, run the following command as `root`:
 adduser <user>
 ```
 
-You can leave all the information empty. I recommend using a randomly generated passphrase, as it's easier to remember and type.
+You can leave all the information empty. I recommend using a randomly generated passphrase; it's easier to remember and type.
 
 To give the new user rights to use `sudo`, run the following command as `root`:
 
@@ -26,9 +26,9 @@ To give the new user rights to use `sudo`, run the following command as `root`:
 usermod --append --groups sudo <user>
 ```
 
-You can now logout and log back in as the new user.
+You can now log out and log back in as the new user.
 
-For added security, you can set `root`'s shell to `nologin`. This disables logging in as `root`. Run the following command:
+For added security, you can set `root`'s shell to `nologin` and lock the account. Run the following command:
 
 ```bash
 sudo usermod root --shell /sbin/nologin
@@ -36,6 +36,51 @@ sudo passwd --lock root
 ```
 
 If you need a root shell, you can use `sudo -s`. `su` or `sudo -i` won't work anymore.
+
+## System User
+
+System users are special user accounts created for running applications. This way, the application will only have access to what it needs. For instance, web servers run under `www-data` and Docker runs under `docker`.
+
+To create a system user, run the following command:
+
+```bash
+sudo adduser --system --home <path> --shell /sbin/nologin --group <user>
+```
+
+If you don't want the user to have a home directory, you can remove that argument. If you need shell access, you can run `sudo -u <user> bash`.
+
+Let's say I want to run an example application called `app` on my server. Here's how I would do it:
+
+```bash
+sudo adduser --system --home /opt/app --shell /sbin/nologin --group app
+```
+
+Then I'll get a shell as `app` using `sudo -u app bash` and run the following:
+
+```
+cd ~
+git clone app
+exit
+```
+
+I've downloaded the app. Now I'll set up a systemd service for the app by creating `/etc/systemd/system/app.service`:
+
+```systemd
+[Unit]
+Description=App
+
+[Service]
+User=app
+Group=app
+Type=simple
+Restart=always
+ExecStart=/opt/app/run.sh --db=/opt/app/db.sqlite3
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Note the `User` and `Group` entries under `[Service]`. This will run the service as our system user `app`. Now, I can run `sudo systemctl enable --now app.service` to enable and start the application. Neat! You can apply this example to any application you want to run.
 
 ## SSH
 
@@ -66,7 +111,7 @@ KbdInteractiveAuthentication no
 X11Forwarding no
 ```
 
-The above snippet does a few things. It disables the old protocol 1 and enforces protocol 2 for increased security. It disallows login attempts to `root`. Everything other than key-based authentication is disabled. X11 forwarding is also disabled; you'll know it if you need it.
+The above snippet does a few things. It disables the old protocol 1 and enforces protocol 2 for increased security. It prevents login attempts to `root`. Everything other than key-based authentication is disabled. X11 forwarding is also disabled; you'll know it if you need it.
 
 You can change the SSH port to a random number in the same file. Finally, run the following command to restart the SSH daemon:
 
@@ -125,9 +170,9 @@ Nginx is my preferred reverse-proxy. There are a few things you can configure to
 Add the following lines to your `server` blocks:
 
 ```nginx
-add_header X-Content-Type-Options "nosniff";
-add_header X-XSS-Protection "1; mode=block";
-add_header X-Frame-Options "SAMEORIGIN";
+add_header X-Content-Type-Options "nosniff" always;
+add_header X-XSS-Protection "1; mode=block" always;
+add_header X-Frame-Options "SAMEORIGIN" always;
 ```
 
 The above snippet sets some headers to prevent certain attacks. The first header prevents MIME sniffing attacks, the second header prevents cross-site scripting attacks, and the third header prevents your site from being embedded in another domain, preventing clickjacking attacks.
@@ -147,9 +192,17 @@ include block-exploits.conf
 To avoid getting indexed by search engines, add the following lines to your `server` blocks:
 
 ```nginx
-add_header X-Robots-Tag "noindex, nofollow, nosnippet, noarchive";
+add_header X-Robots-Tag "noindex, nofollow, nosnippet, noarchive" always;
 location /robots.txt { return 200 "User-agent: *\nDisallow: /\n"; }
 ```
+
+To prevent referrer info being sent to external sites, add the following line to your `server` block:
+
+```nginx
+add_header Referrer-Policy "same-origin" always;
+```
+
+I suggest configuring CSP (Content Security Policy) and HSTS (HTTP Strict Transport Security) as well. CSP declares which external resources are allowed to be loaded, you can find the documentation [here](https://content-security-policy.com/). HSTS instructs the browser to only allow HTTPS connections; MDN has good documentation [here](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security).
 
 Keep in mind that inheritance works differently in Nginx for array directives such as `add_header` and `proxy_set_header`. If you have any array directives in the block above, you **need to re-add** them in the current block.
 
@@ -279,7 +332,7 @@ If you're using Cloudflare proxy, we need to do a bit more so that Fail2Ban bans
 
 Ubuntu Pro users can use the [Ubuntu Security Guide](https://ubuntu.com/security/certifications/docs/usg) tool to audit and apply CIS and DISA-STIG (security guidelines from the U.S. Department of Defense) profiles automatically. For Debian, OVHCloud maintains scripts that you can use. You can find the scripts and instructions in [this GitHub repo](https://github.com/ovh/debian-cis).
 
-Make sure not to blindly apply everything. Go through each and every configuration.
+Ensure you don’t blindly apply everything. Go through each and every configuration.
 
 That pretty much covers it. Just make sure you're using strong and random passwords/passphrases for everything.
 
@@ -287,7 +340,7 @@ If you have any comments or suggestions, feel free to [mail me](mailto:ken@kenhv
 
 ## Changelog
 
-- `10 Sep 24`: Added `rsyslog` to firewall and Fail2Ban sections
+- `10 Sep 24`: Added system account section, additional Nginx headers, and `rsyslog` dependency to firewall and Fail2Ban sections
 - `09 Sep 24`: Added CIS benchmarks section
 - `06 Sep 24`: Added `passwd --lock` and expanded snippet to disable UFW syslog spam
 - `30 Aug 24`: Added basic explanations

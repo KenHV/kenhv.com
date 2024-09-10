@@ -1,30 +1,71 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.3">Jekyll</generator><link href="https://kenhv.com/feed.xml" rel="self" type="application/atom+xml" /><link href="https://kenhv.com/" rel="alternate" type="text/html" /><updated>2024-09-10T14:55:44+05:30</updated><id>https://kenhv.com/feed.xml</id><title type="html">Ken Harris</title><subtitle>Tech enthusiast. Occasional doer of stuff. @KenHV</subtitle><author><name>Ken Harris</name></author><entry><title type="html">Securing A Linux Server</title><link href="https://kenhv.com/blog/securing-a-linux-server" rel="alternate" type="text/html" title="Securing A Linux Server" /><published>2024-08-28T00:00:00+05:30</published><updated>2024-09-09T13:50:06+05:30</updated><id>https://kenhv.com/blog/securing-a-linux-server</id><content type="html" xml:base="https://kenhv.com/blog/securing-a-linux-server"><![CDATA[<p>This post goes over the following: adding a non-root user, securing SSH, setting up a firewall (UFW), blocking known bad IPs with a script, hardening Nginx reverse-proxy configs, implementing Nginx Proxy Manager’s “block common exploits” functionality, setting up Fail2Ban, implementing LinuxServer’s SWAG’s Fail2Ban jails, and implementing CIS benchmarks. Additional instructions for Cloudflare proxy are provided as well.</p>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.3">Jekyll</generator><link href="https://kenhv.com/feed.xml" rel="self" type="application/atom+xml" /><link href="https://kenhv.com/" rel="alternate" type="text/html" /><updated>2024-09-10T18:21:49+05:30</updated><id>https://kenhv.com/feed.xml</id><title type="html">Ken Harris</title><subtitle>Tech enthusiast. Occasional doer of stuff. @KenHV</subtitle><author><name>Ken Harris</name></author><entry><title type="html">Securing A Linux Server</title><link href="https://kenhv.com/blog/securing-a-linux-server" rel="alternate" type="text/html" title="Securing A Linux Server" /><published>2024-08-28T00:00:00+05:30</published><updated>2024-09-10T14:55:59+05:30</updated><id>https://kenhv.com/blog/securing-a-linux-server</id><content type="html" xml:base="https://kenhv.com/blog/securing-a-linux-server"><![CDATA[<p>This post goes over the following: adding a non-root user, setting up system users, securing SSH, setting up a firewall (UFW), blocking known bad IPs with a script, hardening Nginx reverse-proxy configs, implementing Nginx Proxy Manager’s “block common exploits” functionality, setting up Fail2Ban, implementing LinuxServer’s SWAG’s Fail2Ban jails, and implementing CIS benchmarks. Additional instructions for Cloudflare proxy are provided as well.</p>
 
 <h2 id="non-root-user">Non-Root User</h2>
 
-<p>If you’re using a VPS, the default user will be <code class="language-plaintext highlighter-rouge">root</code>. The principle of least privilege is a security concept where everything only has access to what it needs. To abide by this concept, we need to set up a non-root user.</p>
+<p>If you’re using a VPS, the default user will be <code class="language-plaintext highlighter-rouge">root</code>. The principle of least privilege is a security concept where each entity only has access to what it needs. To abide by this concept, we need to set up a non-root user.</p>
 
 <p>To add a new non-root user, run the following command as <code class="language-plaintext highlighter-rouge">root</code>:</p>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>adduser &lt;user&gt;
 </code></pre></div></div>
 
-<p>You can leave all the information empty. I recommend using a randomly generated passphrase, as it’s easier to remember and type.</p>
+<p>You can leave all the information empty. I recommend using a randomly generated passphrase; it’s easier to remember and type.</p>
 
 <p>To give the new user rights to use <code class="language-plaintext highlighter-rouge">sudo</code>, run the following command as <code class="language-plaintext highlighter-rouge">root</code>:</p>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>usermod <span class="nt">--append</span> <span class="nt">--groups</span> <span class="nb">sudo</span> &lt;user&gt;
 </code></pre></div></div>
 
-<p>You can now logout and log back in as the new user.</p>
+<p>You can now log out and log back in as the new user.</p>
 
-<p>For added security, you can set <code class="language-plaintext highlighter-rouge">root</code>’s shell to <code class="language-plaintext highlighter-rouge">nologin</code>. This disables logging in as <code class="language-plaintext highlighter-rouge">root</code>. Run the following command:</p>
+<p>For added security, you can set <code class="language-plaintext highlighter-rouge">root</code>’s shell to <code class="language-plaintext highlighter-rouge">nologin</code> and lock the account. Run the following command:</p>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>usermod root <span class="nt">--shell</span> /sbin/nologin
 <span class="nb">sudo </span>passwd <span class="nt">--lock</span> root
 </code></pre></div></div>
 
 <p>If you need a root shell, you can use <code class="language-plaintext highlighter-rouge">sudo -s</code>. <code class="language-plaintext highlighter-rouge">su</code> or <code class="language-plaintext highlighter-rouge">sudo -i</code> won’t work anymore.</p>
+
+<h2 id="system-user">System User</h2>
+
+<p>System users are special user accounts created for running applications. This way, the application will only have access to what it needs. For instance, web servers run under <code class="language-plaintext highlighter-rouge">www-data</code> and Docker runs under <code class="language-plaintext highlighter-rouge">docker</code>.</p>
+
+<p>To create a system user, run the following command:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>adduser <span class="nt">--system</span> <span class="nt">--home</span> &lt;path&gt; <span class="nt">--shell</span> /sbin/nologin <span class="nt">--group</span> &lt;user&gt;
+</code></pre></div></div>
+
+<p>If you don’t want the user to have a home directory, you can remove that argument. If you need shell access, you can run <code class="language-plaintext highlighter-rouge">sudo -u &lt;user&gt; bash</code>.</p>
+
+<p>Let’s say I want to run an example application called <code class="language-plaintext highlighter-rouge">app</code> on my server. Here’s how I would do it:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>adduser <span class="nt">--system</span> <span class="nt">--home</span> /opt/app <span class="nt">--shell</span> /sbin/nologin <span class="nt">--group</span> app
+</code></pre></div></div>
+
+<p>Then I’ll get a shell as <code class="language-plaintext highlighter-rouge">app</code> using <code class="language-plaintext highlighter-rouge">sudo -u app bash</code> and run the following:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd ~
+git clone app
+exit
+</code></pre></div></div>
+
+<p>I’ve downloaded the app. Now I’ll set up a systemd service for the app by creating <code class="language-plaintext highlighter-rouge">/etc/systemd/system/app.service</code>:</p>
+
+<div class="language-systemd highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">[Unit]</span>
+<span class="nt">Description</span><span class="p">=</span>App
+
+<span class="k">[Service]</span>
+<span class="nt">User</span><span class="p">=</span>app
+<span class="nt">Group</span><span class="p">=</span>app
+<span class="nt">Type</span><span class="p">=</span>simple
+<span class="nt">Restart</span><span class="p">=</span>always
+<span class="nt">ExecStart</span><span class="p">=</span>/opt/app/run.sh --db=/opt/app/db.sqlite3
+
+<span class="k">[Install]</span>
+<span class="nt">WantedBy</span><span class="p">=</span>multi-user.target
+</code></pre></div></div>
+
+<p>Note the <code class="language-plaintext highlighter-rouge">User</code> and <code class="language-plaintext highlighter-rouge">Group</code> entries under <code class="language-plaintext highlighter-rouge">[Service]</code>. This will run the service as our system user <code class="language-plaintext highlighter-rouge">app</code>. Now, I can run <code class="language-plaintext highlighter-rouge">sudo systemctl enable --now app.service</code> to enable and start the application. Neat! You can apply this example to any application you want to run.</p>
 
 <h2 id="ssh">SSH</h2>
 
@@ -52,7 +93,7 @@
 <span class="n">X11Forwarding</span> <span class="n">no</span>
 </code></pre></div></div>
 
-<p>The above snippet does a few things. It disables the old protocol 1 and enforces protocol 2 for increased security. It disallows login attempts to <code class="language-plaintext highlighter-rouge">root</code>. Everything other than key-based authentication is disabled. X11 forwarding is also disabled; you’ll know it if you need it.</p>
+<p>The above snippet does a few things. It disables the old protocol 1 and enforces protocol 2 for increased security. It prevents login attempts to <code class="language-plaintext highlighter-rouge">root</code>. Everything other than key-based authentication is disabled. X11 forwarding is also disabled; you’ll know it if you need it.</p>
 
 <p>You can change the SSH port to a random number in the same file. Finally, run the following command to restart the SSH daemon:</p>
 
@@ -104,9 +145,9 @@
 
 <p>Add the following lines to your <code class="language-plaintext highlighter-rouge">server</code> blocks:</p>
 
-<div class="language-nginx highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">add_header</span> <span class="s">X-Content-Type-Options</span> <span class="s">"nosniff"</span><span class="p">;</span>
-<span class="k">add_header</span> <span class="s">X-XSS-Protection</span> <span class="s">"1</span><span class="p">;</span> <span class="k">mode=block"</span><span class="p">;</span>
-<span class="k">add_header</span> <span class="s">X-Frame-Options</span> <span class="s">"SAMEORIGIN"</span><span class="p">;</span>
+<div class="language-nginx highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">add_header</span> <span class="s">X-Content-Type-Options</span> <span class="s">"nosniff"</span> <span class="s">always</span><span class="p">;</span>
+<span class="k">add_header</span> <span class="s">X-XSS-Protection</span> <span class="s">"1</span><span class="p">;</span> <span class="k">mode=block"</span> <span class="s">always</span><span class="p">;</span>
+<span class="k">add_header</span> <span class="s">X-Frame-Options</span> <span class="s">"SAMEORIGIN"</span> <span class="s">always</span><span class="p">;</span>
 </code></pre></div></div>
 
 <p>The above snippet sets some headers to prevent certain attacks. The first header prevents MIME sniffing attacks, the second header prevents cross-site scripting attacks, and the third header prevents your site from being embedded in another domain, preventing clickjacking attacks.</p>
@@ -123,9 +164,16 @@
 
 <p>To avoid getting indexed by search engines, add the following lines to your <code class="language-plaintext highlighter-rouge">server</code> blocks:</p>
 
-<div class="language-nginx highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">add_header</span> <span class="s">X-Robots-Tag</span> <span class="s">"noindex,</span> <span class="s">nofollow,</span> <span class="s">nosnippet,</span> <span class="s">noarchive"</span><span class="p">;</span>
+<div class="language-nginx highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">add_header</span> <span class="s">X-Robots-Tag</span> <span class="s">"noindex,</span> <span class="s">nofollow,</span> <span class="s">nosnippet,</span> <span class="s">noarchive"</span> <span class="s">always</span><span class="p">;</span>
 <span class="k">location</span> <span class="n">/robots.txt</span> <span class="p">{</span> <span class="kn">return</span> <span class="mi">200</span> <span class="s">"User-agent:</span> <span class="s">*</span><span class="err">\</span><span class="s">nDisallow:</span> <span class="n">/\n"</span><span class="p">;</span> <span class="p">}</span>
 </code></pre></div></div>
+
+<p>To prevent referrer info being sent to external sites, add the following line to your <code class="language-plaintext highlighter-rouge">server</code> block:</p>
+
+<div class="language-nginx highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">add_header</span> <span class="s">Referrer-Policy</span> <span class="s">"same-origin"</span> <span class="s">always</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>I suggest configuring CSP (Content Security Policy) and HSTS (HTTP Strict Transport Security) as well. CSP declares which external resources are allowed to be loaded, you can find the documentation <a href="https://content-security-policy.com/">here</a>. HSTS instructs the browser to only allow HTTPS connections; MDN has good documentation <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security">here</a>.</p>
 
 <p>Keep in mind that inheritance works differently in Nginx for array directives such as <code class="language-plaintext highlighter-rouge">add_header</code> and <code class="language-plaintext highlighter-rouge">proxy_set_header</code>. If you have any array directives in the block above, you <strong>need to re-add</strong> them in the current block.</p>
 
@@ -247,7 +295,7 @@
 
 <p>Ubuntu Pro users can use the <a href="https://ubuntu.com/security/certifications/docs/usg">Ubuntu Security Guide</a> tool to audit and apply CIS and DISA-STIG (security guidelines from the U.S. Department of Defense) profiles automatically. For Debian, OVHCloud maintains scripts that you can use. You can find the scripts and instructions in <a href="https://github.com/ovh/debian-cis">this GitHub repo</a>.</p>
 
-<p>Make sure not to blindly apply everything. Go through each and every configuration.</p>
+<p>Ensure you don’t blindly apply everything. Go through each and every configuration.</p>
 
 <p>That pretty much covers it. Just make sure you’re using strong and random passwords/passphrases for everything.</p>
 
@@ -256,7 +304,7 @@
 <h2 id="changelog">Changelog</h2>
 
 <ul>
-  <li><code class="language-plaintext highlighter-rouge">10 Sep 24</code>: Added <code class="language-plaintext highlighter-rouge">rsyslog</code> to firewall and Fail2Ban sections</li>
+  <li><code class="language-plaintext highlighter-rouge">10 Sep 24</code>: Added system account section, additional Nginx headers, and <code class="language-plaintext highlighter-rouge">rsyslog</code> dependency to firewall and Fail2Ban sections</li>
   <li><code class="language-plaintext highlighter-rouge">09 Sep 24</code>: Added CIS benchmarks section</li>
   <li><code class="language-plaintext highlighter-rouge">06 Sep 24</code>: Added <code class="language-plaintext highlighter-rouge">passwd --lock</code> and expanded snippet to disable UFW syslog spam</li>
   <li><code class="language-plaintext highlighter-rouge">30 Aug 24</code>: Added basic explanations</li>
