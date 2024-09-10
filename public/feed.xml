@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.3">Jekyll</generator><link href="https://kenhv.com/feed.xml" rel="self" type="application/atom+xml" /><link href="https://kenhv.com/" rel="alternate" type="text/html" /><updated>2024-09-09T13:49:40+05:30</updated><id>https://kenhv.com/feed.xml</id><title type="html">Ken Harris</title><subtitle>Tech enthusiast. Occasional doer of stuff. @KenHV</subtitle><author><name>Ken Harris</name></author><entry><title type="html">Securing A Linux Server</title><link href="https://kenhv.com/blog/securing-a-linux-server" rel="alternate" type="text/html" title="Securing A Linux Server" /><published>2024-08-28T00:00:00+05:30</published><updated>2024-09-06T11:33:42+05:30</updated><id>https://kenhv.com/blog/securing-a-linux-server</id><content type="html" xml:base="https://kenhv.com/blog/securing-a-linux-server"><![CDATA[<p>This post goes over the following: adding a non-root user, securing SSH, setting up a firewall (UFW), blocking known bad IPs with a script, hardening Nginx reverse-proxy configs, implementing Nginx Proxy Manager’s “block common exploits” functionality, setting up Fail2Ban, implementing LinuxServer’s SWAG’s Fail2Ban jails, and implementing CIS benchmarks. Additional instructions for Cloudflare proxy are provided as well.</p>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.3">Jekyll</generator><link href="https://kenhv.com/feed.xml" rel="self" type="application/atom+xml" /><link href="https://kenhv.com/" rel="alternate" type="text/html" /><updated>2024-09-10T14:55:44+05:30</updated><id>https://kenhv.com/feed.xml</id><title type="html">Ken Harris</title><subtitle>Tech enthusiast. Occasional doer of stuff. @KenHV</subtitle><author><name>Ken Harris</name></author><entry><title type="html">Securing A Linux Server</title><link href="https://kenhv.com/blog/securing-a-linux-server" rel="alternate" type="text/html" title="Securing A Linux Server" /><published>2024-08-28T00:00:00+05:30</published><updated>2024-09-09T13:50:06+05:30</updated><id>https://kenhv.com/blog/securing-a-linux-server</id><content type="html" xml:base="https://kenhv.com/blog/securing-a-linux-server"><![CDATA[<p>This post goes over the following: adding a non-root user, securing SSH, setting up a firewall (UFW), blocking known bad IPs with a script, hardening Nginx reverse-proxy configs, implementing Nginx Proxy Manager’s “block common exploits” functionality, setting up Fail2Ban, implementing LinuxServer’s SWAG’s Fail2Ban jails, and implementing CIS benchmarks. Additional instructions for Cloudflare proxy are provided as well.</p>
 
 <h2 id="non-root-user">Non-Root User</h2>
 
@@ -63,7 +63,7 @@
 
 <p>Make sure the required packages are installed:</p>
 
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>apt <span class="nb">install </span>iptables ipset ufw cron curl wget <span class="nt">-y</span>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>apt <span class="nb">install </span>iptables ipset ufw cron curl wget rsyslog <span class="nt">-y</span>
 </code></pre></div></div>
 
 <p>Allow the SSH port and enable UFW:</p>
@@ -168,9 +168,9 @@
 
 <h2 id="fail2ban">Fail2Ban</h2>
 
-<p>Install Fail2Ban:</p>
+<p>Install Fail2Ban and dependencies:</p>
 
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>apt <span class="nb">install </span>fail2ban <span class="nt">-y</span>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>apt <span class="nb">install </span>fail2ban rsyslog <span class="nt">-y</span>
 </code></pre></div></div>
 
 <p><strong>Do not</strong> copy <code class="language-plaintext highlighter-rouge">/etc/fail2ban/jail.conf</code> to <code class="language-plaintext highlighter-rouge">/etc/fail2ban/jail.local</code>. Most guides I’ve seen suggest doing this, but this <a href="https://github.com/fail2ban/fail2ban/wiki/Proper-fail2ban-configuration">isn’t the right way</a>. Create <code class="language-plaintext highlighter-rouge">/etc/fail2ban/jail.local</code> with the following contents:</p>
@@ -256,6 +256,7 @@
 <h2 id="changelog">Changelog</h2>
 
 <ul>
+  <li><code class="language-plaintext highlighter-rouge">10 Sep 24</code>: Added <code class="language-plaintext highlighter-rouge">rsyslog</code> to firewall and Fail2Ban sections</li>
   <li><code class="language-plaintext highlighter-rouge">09 Sep 24</code>: Added CIS benchmarks section</li>
   <li><code class="language-plaintext highlighter-rouge">06 Sep 24</code>: Added <code class="language-plaintext highlighter-rouge">passwd --lock</code> and expanded snippet to disable UFW syslog spam</li>
   <li><code class="language-plaintext highlighter-rouge">30 Aug 24</code>: Added basic explanations</li>

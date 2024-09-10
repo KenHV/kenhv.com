@@ -3,7 +3,7 @@ layout: post
 title: "Securing A Linux Server"
 description: "A guide to secure and harden a Linux server install."
 seo:
-  date_modified: 2024-09-06
+  date_modified: 2024-09-10
 ---
 
 This post goes over the following: adding a non-root user, securing SSH, setting up a firewall (UFW), blocking known bad IPs with a script, hardening Nginx reverse-proxy configs, implementing Nginx Proxy Manager's "block common exploits" functionality, setting up Fail2Ban, implementing LinuxServer's SWAG's Fail2Ban jails, and implementing CIS benchmarks. Additional instructions for Cloudflare proxy are provided as well.
@@ -79,7 +79,7 @@ sudo systemctl restart ssh
 Make sure the required packages are installed:
 
 ```bash
-sudo apt install iptables ipset ufw cron curl wget -y
+sudo apt install iptables ipset ufw cron curl wget rsyslog -y
 ```
 
 Allow the SSH port and enable UFW:
@@ -194,10 +194,10 @@ http {
 
 ## Fail2Ban
 
-Install Fail2Ban:
+Install Fail2Ban and dependencies:
 
 ```bash
-sudo apt install fail2ban -y
+sudo apt install fail2ban rsyslog -y
 ```
 
 **Do not** copy `/etc/fail2ban/jail.conf` to `/etc/fail2ban/jail.local`. Most guides I've seen suggest doing this, but this [isn't the right way](https://github.com/fail2ban/fail2ban/wiki/Proper-fail2ban-configuration). Create `/etc/fail2ban/jail.local` with the following contents:
@@ -287,6 +287,7 @@ If you have any comments or suggestions, feel free to [mail me](mailto:ken@kenhv
 
 ## Changelog
 
+- `10 Sep 24`: Added `rsyslog` to firewall and Fail2Ban sections
 - `09 Sep 24`: Added CIS benchmarks section
 - `06 Sep 24`: Added `passwd --lock` and expanded snippet to disable UFW syslog spam
 - `30 Aug 24`: Added basic explanations
