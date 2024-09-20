@@ -1,11 +1,13 @@
+@use "sass:color";
+
 $foreground: #121212;
 $background: #fff;
-$secondary: darken($background, 10%);
+$secondary: color.scale($background, $lightness: -10%);
 $link: #0066cc;
 
 $foreground-dark: #ccc;
 $background-dark: #111;
-$secondary-dark: lighten($background-dark, 10%);
+$secondary-dark: color.scale($background-dark, $lightness: 10%);
 $link-dark: #46a2ff;
 
 @mixin light-theme {

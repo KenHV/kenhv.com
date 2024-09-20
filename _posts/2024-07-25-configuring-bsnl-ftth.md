@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Configuring BSNL FTTH"
-description: "A guide to set up BSNL FTTH with third-party routers and modems."
+description: "A guide to setting up BSNL FTTH with third-party routers and modems."
 seo:
   date_modified: 2024-08-18
 ---

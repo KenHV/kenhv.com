@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Smartphone Privacy For Everyone"
-description: "A guide to protect your privacy while using privacy-invasive platforms."
+description: "A guide to protecting your privacy while using privacy-invasive platforms."
 seo:
   date_modified: 2024-06-29
 ---

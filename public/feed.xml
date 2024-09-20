@@ -1,4 +1,66 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.3">Jekyll</generator><link href="https://kenhv.com/feed.xml" rel="self" type="application/atom+xml" /><link href="https://kenhv.com/" rel="alternate" type="text/html" /><updated>2024-09-10T18:21:49+05:30</updated><id>https://kenhv.com/feed.xml</id><title type="html">Ken Harris</title><subtitle>Tech enthusiast. Occasional doer of stuff. @KenHV</subtitle><author><name>Ken Harris</name></author><entry><title type="html">Securing A Linux Server</title><link href="https://kenhv.com/blog/securing-a-linux-server" rel="alternate" type="text/html" title="Securing A Linux Server" /><published>2024-08-28T00:00:00+05:30</published><updated>2024-09-10T14:55:59+05:30</updated><id>https://kenhv.com/blog/securing-a-linux-server</id><content type="html" xml:base="https://kenhv.com/blog/securing-a-linux-server"><![CDATA[<p>This post goes over the following: adding a non-root user, setting up system users, securing SSH, setting up a firewall (UFW), blocking known bad IPs with a script, hardening Nginx reverse-proxy configs, implementing Nginx Proxy Manager’s “block common exploits” functionality, setting up Fail2Ban, implementing LinuxServer’s SWAG’s Fail2Ban jails, and implementing CIS benchmarks. Additional instructions for Cloudflare proxy are provided as well.</p>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.4">Jekyll</generator><link href="https://kenhv.com/feed.xml" rel="self" type="application/atom+xml" /><link href="https://kenhv.com/" rel="alternate" type="text/html" /><updated>2024-09-20T17:00:38+05:30</updated><id>https://kenhv.com/feed.xml</id><title type="html">Ken Harris</title><subtitle>Tech enthusiast. Occasional doer of stuff. @KenHV</subtitle><author><name>Ken Harris</name></author><entry><title type="html">Sideloading on Any Apple Product</title><link href="https://kenhv.com/blog/sideloading-on-any-apple-product" rel="alternate" type="text/html" title="Sideloading on Any Apple Product" /><published>2024-09-20T00:00:00+05:30</published><updated>2024-09-20T17:00:23+05:30</updated><id>https://kenhv.com/blog/sideloading-on-any-apple-product</id><content type="html" xml:base="https://kenhv.com/blog/sideloading-on-any-apple-product"><![CDATA[<p>Did you know that it’s possible to sideload apps onto your iPhone, iPad, Apple TV, Apple Watch, and even Vision Pro? It’s not the EU method, and it doesn’t involve jailbreaking. This is an official method supported by Apple. The setup is kinda complicated (it’s Apple after all) and has a few caveats, but it is doable.</p>
+
+<p>You can get back Apollo for Reddit, a ReVanced equivalent for YouTube, Minecraft Java Edition, and much more. Even Fortnite.</p>
+
+<p>Apple allows developers to sideload apps for development and testing purposes. If you pay for a developer account, you get to sideload as much as you want. If not, you’re limited to 3 sideloaded apps per Apple ID (it doesn’t stack up with multiple accounts on the same device). Developer accounts cost $100/year, but there is a much cheaper way around this.</p>
+
+<p>The official Apple way of doing this is with Xcode. For Apple Watch and Vision Pro, this is also the only way. But for iPhones, iPads, and Apple TVs, there are tools and apps that make this process a whole lot easier.</p>
+
+<p>I won’t be providing step-by-step instructions; that will make this post several times bigger. I’ll list out all your options and link to all the relevant documentation and instructions.</p>
+
+<h2 id="the-free-route">The Free Route</h2>
+
+<p>If you’re not going to sideload more than three apps, you can use this method. You have two options here: you can either trade one app slot for convenience, or you can sideload three different apps but deal with the additional complexity.</p>
+
+<p>When sideloading with this method, you have to deal with a concept called “refreshing” your apps. Apps sideloaded with free developer accounts need to be resigned every 7 days. If you’re willing to sacrifice one app slot, you can refresh your sideloaded apps on-device.</p>
+
+<p>The first option is <a href="https://sidestore.io/">SideStore</a>, a fork of <a href="https://altstore.io/">AltStore</a>. It can be used on iOS and iPadOS. The difference between SideStore and AltStore is that SideStore only requires computer access for the initial setup. It handles installing, updating, and refreshing, all on-device. They have excellent, detailed documentation explaining every step.</p>
+
+<p>The second option is <a href="https://sideloadly.io/">Sideloadly</a>. Sideloadly is more powerful, but you need a computer to install, update and refresh apps. It supports sideloading to iOS, iPadOS, tvOS and Apple Silicon Macs. You get to keep all three free slots with this option.</p>
+
+<h2 id="the-paid-route">The Paid Route</h2>
+
+<p>If you don’t want to spend $100/year for a developer account, you can purchase signing certificates from third party services. These services buy developer accounts from Apple and set everything up. Each developer account has 100 slots. Each slot gets a developer certificate that can be used to sign apps. When you purchase from them, you’re basically purchasing one individual slot. I use <a href="https://apptesters.org/">AppTesters</a> and I can vouch for them. If you go with them, I’ll be grateful if you use the referral code “80085” :P. You can also check out <a href="https://kravasign.com/">KravaSign</a> (previously MapleSign) and <a href="https://www.signulous.com/">Signulous</a>.</p>
+
+<p>While it’s pretty rare, Apple <em>has</em> revoked some of these services’ developer accounts in the past. All the above mentioned services have a track record of issuing new certificates for free in these rare instances. Just check if the service offers “revoke protection” before buying.</p>
+
+<p>Once you have your certificate (either directly from Apple or from a third party service), you can then use <a href="https://github.com/khcrysalis/Feather">Feather</a> or <a href="https://esign.yyyue.xyz/">ESign</a> to sideload apps. Feather is a new and open source app. ESign is a closed source Chinese app, but it’s stable and feature-complete. I know the choice is obvious, but Feather is extremely new, so you might have to use ESign if Feather doesn’t play well with something.</p>
+
+<p>To install Feather/ESign, you can use Sideloadly with your developer certificate. There are online IPA signers as well, like <a href="https://sign.apptesters.org/">AppTesters’ Signer</a> and <a href="https://sign.kravasign.com/">KravaSigner</a>. These let you sign and install IPAs from your device’s browser. Of course, you can install ESign using Feather and vice versa.</p>
+
+<p>AppTesters has video instructions on installing and setting up ESign, which you can find <a href="https://apptesters.org/instructions/">here</a>. You can follow the same process for installing Feather. Note that if you want notifications support on Feather, you have to disable “PPQCheck Protections” in Feather’s settings. It’s not as bad as the app says; no other signing app has this protection. Notifications work out of the box on ESign.</p>
+
+<p>To install apps on iOS 18, you need to use the online install option on Feather and the WiFi option on ESign.</p>
+
+<h2 id="apps-and-tweaks">Apps and Tweaks</h2>
+
+<p>The equivalent of Android’s APKs on iOS are IPAs. To get a usable decrypted IPA, you’ll need a jailbroken device. Fortunately for us, there are places where we can get decrypted IPAs. AppTesters host a Telegram bot that you can access <a href="https://t.me/AppleTesters/58881">here</a>. You can also use <a href="https://decrypt.day/">decrypt.day</a> and <a href="https://armconverter.com/decryptedappstore/us">armconverter</a>. Once you have a decrypted IPA, you can sideload it as it is or inject tweaks into it. Tweaks are like ReVanced patches.</p>
+
+<p>Here are some apps/tweaks to get you started:</p>
+
+<ul>
+  <li><a href="https://balackburn.github.io/Apollo/">Apollo for Reddit</a></li>
+  <li><a href="https://github.com/dayanch96/YTLite">YouTube Plus</a></li>
+  <li><a href="https://github.com/BandarHL/BHTwitter">BHTwitter</a> and <a href="https://github.com/ghl3m0n/FuckElon/">FuckElon</a></li>
+  <li><a href="https://github.com/whoeevee/EeveeSpotify">EeveeSpotify</a></li>
+  <li><a href="https://github.com/SoCuul/SCInsta">SCInsta</a> (free) and <a href="https://regram.fouadraheb.com/">Regram</a> (paid)</li>
+  <li><a href="https://github.com/pyoncord/BunnyTweak">Bunny</a> (Discord)</li>
+  <li><a href="https://pojavlauncherteam.github.io/INSTALL.html#ios">PojavLauncher</a> (check the “Sideloading (Jailed)” section)</li>
+  <li><a href="https://aidoku.app/">Aidoku</a></li>
+  <li><a href="https://www.kingbri.dev/ferrite">Ferrite</a></li>
+</ul>
+
+<p>Everything listed above is open source (except Regram).</p>
+
+<h2 id="related-communities">Related Communities</h2>
+
+<p>I strongly recommend joining these communities to get updates and news. You can discover a lot of cool apps to sideload too.</p>
+
+<ul>
+  <li><a href="https://t.me/AppleTesters">AppTesters Telegram group</a></li>
+  <li><a href="https://discord.gg/kravasign">KravaSign Discord server</a></li>
+  <li><a href="https://reddit.com/r/sideloaded">r/sideloaded</a></li>
+</ul>]]></content><author><name>Ken Harris</name></author><summary type="html"><![CDATA[A guide to sideloading apps on any and all Apple products.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://kenhv.com/assets/images/og/posts/sideloading-on-any-apple-product.png" /><media:content medium="image" url="https://kenhv.com/assets/images/og/posts/sideloading-on-any-apple-product.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Securing A Linux Server</title><link href="https://kenhv.com/blog/securing-a-linux-server" rel="alternate" type="text/html" title="Securing A Linux Server" /><published>2024-08-28T00:00:00+05:30</published><updated>2024-09-10T18:22:07+05:30</updated><id>https://kenhv.com/blog/securing-a-linux-server</id><content type="html" xml:base="https://kenhv.com/blog/securing-a-linux-server"><![CDATA[<p>This post goes over the following: adding a non-root user, setting up system users, securing SSH, setting up a firewall (UFW), blocking known bad IPs with a script, hardening Nginx reverse-proxy configs, implementing Nginx Proxy Manager’s “block common exploits” functionality, setting up Fail2Ban, implementing LinuxServer’s SWAG’s Fail2Ban jails, and implementing CIS benchmarks. Additional instructions for Cloudflare proxy are provided as well.</p>
 
 <h2 id="non-root-user">Non-Root User</h2>
 
@@ -310,7 +372,7 @@ exit
   <li><code class="language-plaintext highlighter-rouge">30 Aug 24</code>: Added basic explanations</li>
   <li><code class="language-plaintext highlighter-rouge">29 Aug 24</code>: Added info about UFW and Docker</li>
   <li><code class="language-plaintext highlighter-rouge">29 Aug 24</code>: Added nologin setup for root</li>
-</ul>]]></content><author><name>Ken Harris</name></author><summary type="html"><![CDATA[A guide to secure and harden a Linux server install.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://kenhv.com/assets/images/og/posts/securing-a-linux-server.png" /><media:content medium="image" url="https://kenhv.com/assets/images/og/posts/securing-a-linux-server.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Fail2Ban With Nginx and Cloudflare Free (With IPv6 Support)</title><link href="https://kenhv.com/blog/fail2ban-with-nginx-and-cloudflare-ipv6" rel="alternate" type="text/html" title="Fail2Ban With Nginx and Cloudflare Free (With IPv6 Support)" /><published>2024-08-04T00:00:00+05:30</published><updated>2024-08-29T12:38:59+05:30</updated><id>https://kenhv.com/blog/fail2ban-with-nginx-and-cloudflare-ipv6</id><content type="html" xml:base="https://kenhv.com/blog/fail2ban-with-nginx-and-cloudflare-ipv6"><![CDATA[<p>This post will teach you how to set up Fail2Ban actions for services reverse-proxied by Nginx and proxied by Cloudflare. I’ll be using Vaultwarden as an example. I have Nginx and Fail2Ban installed natively, and Vaultwarden in a Docker container. You can adjust it to work with Nginx and/or Fail2Ban running in Docker containers.</p>
+</ul>]]></content><author><name>Ken Harris</name></author><summary type="html"><![CDATA[A guide to securing and hardening a Linux server install.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://kenhv.com/assets/images/og/posts/securing-a-linux-server.png" /><media:content medium="image" url="https://kenhv.com/assets/images/og/posts/securing-a-linux-server.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Fail2Ban With Nginx and Cloudflare Free (With IPv6 Support)</title><link href="https://kenhv.com/blog/fail2ban-with-nginx-and-cloudflare-ipv6" rel="alternate" type="text/html" title="Fail2Ban With Nginx and Cloudflare Free (With IPv6 Support)" /><published>2024-08-04T00:00:00+05:30</published><updated>2024-08-29T12:38:59+05:30</updated><id>https://kenhv.com/blog/fail2ban-with-nginx-and-cloudflare-ipv6</id><content type="html" xml:base="https://kenhv.com/blog/fail2ban-with-nginx-and-cloudflare-ipv6"><![CDATA[<p>This post will teach you how to set up Fail2Ban actions for services reverse-proxied by Nginx and proxied by Cloudflare. I’ll be using Vaultwarden as an example. I have Nginx and Fail2Ban installed natively, and Vaultwarden in a Docker container. You can adjust it to work with Nginx and/or Fail2Ban running in Docker containers.</p>
 
 <h2 id="unmask-visitor-ip-in-nginx">Unmask Visitor IP in Nginx</h2>
 
@@ -453,7 +515,7 @@ nginx <span class="nt">-t</span> <span class="o">&amp;&amp;</span> systemctl rel
 
 <h2 id="test-your-config">Test Your Config</h2>
 
-<p>To verify if everything is working, go to your Vaultwarden instance and try logging in with incorrect credentials 3 times. Check <code class="language-plaintext highlighter-rouge">/var/log/fail2ban.log</code> (<code class="language-plaintext highlighter-rouge">sudo tail -f /var/log/fail2ban.log</code>), it should say that your IP has been banned. Without reloading your Vaultwarden web vault page, try logging in with the correct credentials. It won’t work, as Nginx will only return 403. If you reload the page, Cloudflare will say you’ve been banned. To unban yourself, run <code class="language-plaintext highlighter-rouge">sudo fail2ban-client set vaultwarden unbanip &lt;banned-ip&gt;</code>. Congrats! You have secured your Vaultwarden instance with two layers of protection using Fail2Ban.</p>]]></content><author><name>Ken Harris</name></author><summary type="html"><![CDATA[A guide to set up Fail2Ban with Nginx and Cloudflare free plan with IPv6 support. Includes instructions to restore original visitor IP in Nginx.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://kenhv.com/assets/images/og/posts/fail2ban-with-nginx-and-cloudflare-ipv6.png" /><media:content medium="image" url="https://kenhv.com/assets/images/og/posts/fail2ban-with-nginx-and-cloudflare-ipv6.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">I Switched to Ubuntu and You Should Too</title><link href="https://kenhv.com/blog/i-switched-to-ubuntu-and-you-should-too" rel="alternate" type="text/html" title="I Switched to Ubuntu and You Should Too" /><published>2024-08-02T00:00:00+05:30</published><updated>2024-08-28T23:29:13+05:30</updated><id>https://kenhv.com/blog/i-switched-to-ubuntu-and-you-should-too</id><content type="html" xml:base="https://kenhv.com/blog/i-switched-to-ubuntu-and-you-should-too"><![CDATA[<figure>
+<p>To verify if everything is working, go to your Vaultwarden instance and try logging in with incorrect credentials 3 times. Check <code class="language-plaintext highlighter-rouge">/var/log/fail2ban.log</code> (<code class="language-plaintext highlighter-rouge">sudo tail -f /var/log/fail2ban.log</code>), it should say that your IP has been banned. Without reloading your Vaultwarden web vault page, try logging in with the correct credentials. It won’t work, as Nginx will only return 403. If you reload the page, Cloudflare will say you’ve been banned. To unban yourself, run <code class="language-plaintext highlighter-rouge">sudo fail2ban-client set vaultwarden unbanip &lt;banned-ip&gt;</code>. Congrats! You have secured your Vaultwarden instance with two layers of protection using Fail2Ban.</p>]]></content><author><name>Ken Harris</name></author><summary type="html"><![CDATA[A guide to setting up Fail2Ban with Nginx and Cloudflare free plan with IPv6 support. Includes instructions to restore original visitor IP in Nginx.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://kenhv.com/assets/images/og/posts/fail2ban-with-nginx-and-cloudflare-ipv6.png" /><media:content medium="image" url="https://kenhv.com/assets/images/og/posts/fail2ban-with-nginx-and-cloudflare-ipv6.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">I Switched to Ubuntu and You Should Too</title><link href="https://kenhv.com/blog/i-switched-to-ubuntu-and-you-should-too" rel="alternate" type="text/html" title="I Switched to Ubuntu and You Should Too" /><published>2024-08-02T00:00:00+05:30</published><updated>2024-08-28T23:29:13+05:30</updated><id>https://kenhv.com/blog/i-switched-to-ubuntu-and-you-should-too</id><content type="html" xml:base="https://kenhv.com/blog/i-switched-to-ubuntu-and-you-should-too"><![CDATA[<figure>
     <img decoding="async" fetchpriority="high" style="aspect-ratio:16/9" width="650" src="/assets/images/bell-curve-linux-distros.webp" alt="Bell curve meme about Linux distros." />
     <figcaption>Don't be the midwit.</figcaption>
 </figure>
@@ -554,7 +616,7 @@ nginx <span class="nt">-t</span> <span class="o">&amp;&amp;</span> systemctl rel
 
 <h2 id="support">Support</h2>
 
-<p>If you have any problems or questions, check out the <a href="https://broadband.forum/forums/bsnl-broadband/">India Broadband Forum</a> or the <a href="https://t.me/BSNLTelegram">BSNL Telegram group</a>.</p>]]></content><author><name>Ken Harris</name></author><summary type="html"><![CDATA[A guide to set up BSNL FTTH with third-party routers and modems.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://kenhv.com/assets/images/og/posts/configuring-bsnl-ftth.png" /><media:content medium="image" url="https://kenhv.com/assets/images/og/posts/configuring-bsnl-ftth.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Setting Up Firefox</title><link href="https://kenhv.com/blog/setting-up-firefox" rel="alternate" type="text/html" title="Setting Up Firefox" /><published>2024-07-11T00:00:00+05:30</published><updated>2024-08-28T23:29:13+05:30</updated><id>https://kenhv.com/blog/setting-up-firefox</id><content type="html" xml:base="https://kenhv.com/blog/setting-up-firefox"><![CDATA[<p>Google is <a href="https://blog.chromium.org/2024/05/manifest-v2-phase-out-begins.html">killing Manifest v2</a> in an attempt to kill ad blockers. This change will affect not only Chrome, but browsers based on Chromium such as Edge. It’s a good time to switch to Firefox. Everything just works; I’ve faced zero breakage on any site, even with some additional privacy protection settings turned on.</p>
+<p>If you have any problems or questions, check out the <a href="https://broadband.forum/forums/bsnl-broadband/">India Broadband Forum</a> or the <a href="https://t.me/BSNLTelegram">BSNL Telegram group</a>.</p>]]></content><author><name>Ken Harris</name></author><summary type="html"><![CDATA[A guide to setting up BSNL FTTH with third-party routers and modems.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://kenhv.com/assets/images/og/posts/configuring-bsnl-ftth.png" /><media:content medium="image" url="https://kenhv.com/assets/images/og/posts/configuring-bsnl-ftth.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Setting Up Firefox</title><link href="https://kenhv.com/blog/setting-up-firefox" rel="alternate" type="text/html" title="Setting Up Firefox" /><published>2024-07-11T00:00:00+05:30</published><updated>2024-08-28T23:29:13+05:30</updated><id>https://kenhv.com/blog/setting-up-firefox</id><content type="html" xml:base="https://kenhv.com/blog/setting-up-firefox"><![CDATA[<p>Google is <a href="https://blog.chromium.org/2024/05/manifest-v2-phase-out-begins.html">killing Manifest v2</a> in an attempt to kill ad blockers. This change will affect not only Chrome, but browsers based on Chromium such as Edge. It’s a good time to switch to Firefox. Everything just works; I’ve faced zero breakage on any site, even with some additional privacy protection settings turned on.</p>
 
 <p>Most Firefox guides out there recommend using <a href="https://github.com/arkenfox/user.js">hardened configs</a> or <a href="https://librewolf.net">forks</a>. The only thing they harden is your life. I want to get shit done, not fumble around with my settings trying to unbreak a site every 30 seconds. My configuration is the middle ground, where your browser protects your privacy <em>and</em> your sanity.</p>
 
@@ -865,100 +927,4 @@ nginx <span class="nt">-t</span> <span class="o">&amp;&amp;</span> systemctl rel
 
 <h2 id="the-end">The End</h2>
 
-<p>If you made it all the way here, you might want to look into getting a shiny new high DPI monitor. If you have any suggestions, feel free to mail me.</p>]]></content><author><name>Ken Harris</name></author><summary type="html"><![CDATA[A guide to improve font rendering on all devices and browsers.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://kenhv.com/assets/images/og/posts/treat-yourself-to-good-typography.png" /><media:content medium="image" url="https://kenhv.com/assets/images/og/posts/treat-yourself-to-good-typography.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Supercharge Your Linux System</title><link href="https://kenhv.com/blog/linux-tweaks" rel="alternate" type="text/html" title="Supercharge Your Linux System" /><published>2023-07-17T00:00:00+05:30</published><updated>2024-09-06T11:33:42+05:30</updated><id>https://kenhv.com/blog/linux-tweaks</id><content type="html" xml:base="https://kenhv.com/blog/linux-tweaks"><![CDATA[<p>This post started out as a repository of tweaks for Arch Linux, although you can apply most of it to any distro. To ensure this post stays relevant, I’ve linked to Arch Wiki sections when possible. AMD-specific optimisations are not covered. <a href="#ubuntu-specific-optimisations">Ubuntu-specific optimisations</a> can be found at the end of the post.</p>
-
-<p>I update this post regularly. If you have any suggestions, feel free to <a href="mailto:ken@kenhv.com">mail me</a>!</p>
-
-<h2 id="basics">Basics</h2>
-
-<p>Go through the <a href="https://wiki.archlinux.org/title/Installation_guide">Arch installation guide</a>. If you have an SSD and plan on wiping your drive, do a <a href="https://wiki.archlinux.org/title/Solid_state_drive/Memory_cell_clearing#NVMe_drive">memory cell clearing</a> to <a href="https://www.anandtech.com/show/2738/8">restore factory write speeds</a>. I go with Ext4 for my partitions. Refer to the <a href="https://wiki.archlinux.org/title/Ext4#Bytes-per-inode_ratio">bytes-per-inode ratio</a> and <a href="https://wiki.archlinux.org/title/Ext4#Reserved_blocks">reserved block</a> sections before creating your Ext4 partition. As for the kernel, just use the default or <code class="language-plaintext highlighter-rouge">linux-zen</code>. Don’t bother with all those fancy-sounding custom kernels you find out there. Go through the <a href="https://wiki.archlinux.org/title/General_recommendations">general recommendations</a>. Except for security, because protection is no fun.</p>
-
-<h2 id="desktop-environment">Desktop Environment</h2>
-
-<p>GNOME and XFCE are both solid options for a desktop environment. I prefer GNOME. Installing <code class="language-plaintext highlighter-rouge">gnome-shell-performance</code> and <code class="language-plaintext highlighter-rouge">mutter-performance</code> from the AUR will greatly improve your experience. If your PC is extremely slow, you can use XFCE with it’s compositor disabled for more performance. <a href="https://wiki.archlinux.org/title/intel_graphics#Tearing">Enable TearFree</a> to eliminate screen tearing when the compositor is off.</p>
-
-<h2 id="graphics">Graphics</h2>
-
-<p>Set up your GPU drivers. I use <a href="https://github.com/bayasdev/envycontrol">EnvyControl</a> to manage <a href="https://wiki.archlinux.org/title/NVIDIA_Optimus">NVIDIA Optimus</a>. I keep my dGPU disabled unless I need it for gaming. Go through <a href="https://wiki.archlinux.org/title/intel_graphics">Intel graphics</a> for Intel. Take a look at <a href="https://wiki.archlinux.org/title/intel_graphics#Enable_GuC_/_HuC_firmware_loading">GuC/HuC firmware loading</a>, <a href="https://wiki.archlinux.org/title/intel_graphics#Framebuffer_compression_(enable_fbc)">framebuffer compression</a>in particular. I would also suggest turning off GPU mitigations (<code class="language-plaintext highlighter-rouge">i915.mitigations=off</code>).</p>
-
-<p>Install appropriate drivers and verify <a href="https://wiki.archlinux.org/title/Hardware_video_acceleration">hardware video acceleration</a>. Set appropriate values for <code class="language-plaintext highlighter-rouge">LIBVA_DRIVER_NAME</code> and <code class="language-plaintext highlighter-rouge">VDPAU_DRIVER</code> by adding <code class="language-plaintext highlighter-rouge">export</code> commands to <code class="language-plaintext highlighter-rouge">/etc/profile.d/env.sh</code>. Adding them to <code class="language-plaintext highlighter-rouge">bashrc</code> won’t work, these environment variables must be set in the login shell.</p>
-
-<p>If you game, install and use <a href="https://github.com/FeralInteractive/gamemode">gamemode</a> to improve performance. I don’t game anymore, so I don’t keep up with gaming optimisations in particular.</p>
-
-<h2 id="browser">Browser</h2>
-
-<p>For Firefox, refer to the <a href="https://wiki.archlinux.org/title/Firefox#Hardware_video_acceleration">hardware acceleration</a> section. Check out <a href="https://wiki.archlinux.org/title/Firefox#Touchscreen_gestures_and_pixel-perfect_trackpad_scrolling">touchscreen gestures and pixel-perfect trackpad scrolling</a>. Export them from <code class="language-plaintext highlighter-rouge">env.sh</code>.</p>
-
-<p>For Chromium and Chromium-based browsers, refer to the <a href="https://wiki.archlinux.org/title/Chromium#Hardware_video_acceleration">hardware acceleration</a> and <a href="https://wiki.archlinux.org/title/Chromium#Force_GPU_acceleration">force GPU acceleration</a> sections. You can verify it at <code class="language-plaintext highlighter-rouge">chrome://gpu</code>. Video decoding information is at the bottom of the page. You can <a href="https://wiki.archlinux.org/title/Chromium#Touchpad_Gestures_for_Navigation">enable touchpad gestures</a> on Chromium too. To enable middle mouse button scrolling, add the following flags: <code class="language-plaintext highlighter-rouge">--test-type --enable-blink-features=MiddleClickAutoscroll</code>.</p>
-
-<p><a href="https://wiki.archlinux.org/title/Profile-sync-daemon">Profile-sync-daemon</a> can help speed up your browser performance by storing your browser profiles in tmpfs. You can also store your browser cache in tmpfs, Arch has instructions for both <a href="https://wiki.archlinux.org/title/Firefox/Tweaks#Move_disk_cache_to_RAM">Firefox</a> and <a href="https://wiki.archlinux.org/title/Chromium#Cache_in_tmpfs">Chromium</a>, although I only use PSD.</p>
-
-<h2 id="power-management">Power Management</h2>
-
-<p>Now onto power management. I use a script by <a href="https://kerneltoast.com">kerneltoast</a> that enables runtime power management for all devices (except USB). Create <code class="language-plaintext highlighter-rouge">/etc/systemd/system/powersave.service</code> with the following contents and enable it by <code class="language-plaintext highlighter-rouge">sudo systemctl enable --now powersave.service</code>.</p>
-
-<div class="language-systemd highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">[Unit]</span>
-<span class="nt">Description</span><span class="p">=</span>Powersave auto tune
-<span class="nt">After</span><span class="p">=</span>suspend.target
-<span class="nt">After</span><span class="p">=</span>hibernate.target
-<span class="nt">After</span><span class="p">=</span>hybrid-sleep.target
-
-<span class="k">[Service]</span>
-<span class="nt">Type</span><span class="p">=</span>oneshot
-<span class="nt">ExecStart</span><span class="p">=</span>/usr/bin/bash -c "find /sys -regex '.*?power/control$' ! -path '*usb*' -exec bash -c 'echo on &gt; {}; echo auto &gt; {}' \\;"
-
-<span class="k">[Install]</span>
-<span class="nt">WantedBy</span><span class="p">=</span>suspend.target
-<span class="nt">WantedBy</span><span class="p">=</span>hibernate.target
-<span class="nt">WantedBy</span><span class="p">=</span>hybrid-sleep.target
-<span class="nt">WantedBy</span><span class="p">=</span>multi-user.target
-</code></pre></div></div>
-
-<p>For CPU frequency scaling, install <code class="language-plaintext highlighter-rouge">power-profiles-daemon</code> and enable it. If your CPU doesn’t support hardware P-states (you can check your <a href="https://gitlab.freedesktop.org/upower/power-profiles-daemon#operations-on-intel-based-machines">Intel</a> or <a href="https://gitlab.freedesktop.org/upower/power-profiles-daemon#operations-on-amd-based-machines">AMD</a> CPU), you can use <a href="https://github.com/AdnanHodzic/auto-cpufreq">auto-cpufreq</a> instead. Note that Zen kernel disables the <code class="language-plaintext highlighter-rouge">intel_pstate</code> driver needed by power-profiles-daemon; pass <code class="language-plaintext highlighter-rouge">intel_pstate=enable</code> to the kernel args to enable it. Don’t bother with TLP or other such tools.</p>
-
-<p>Install <a href="https://wiki.archlinux.org/title/CPU_frequency_scaling#thermald">thermald</a> if you have an Intel CPU.</p>
-
-<p>If possible, <a href="https://wiki.archlinux.org/title/Undervolting_CPU">undervolt</a> your CPU and GPU. For Intel, you can disable SGX in your BIOS to disable the Plundervolt fixes, which should enable undervolting on newer machines. Don’t be put off by the warning on the Arch Wiki page. I have my CPU undervolted to -150mV and GPU to -100mV. Your mileage <strong>will</strong> vary. Start at -80mV for the CPU and -50mV for the GPU.</p>
-
-<h2 id="memory-management">Memory Management</h2>
-
-<p>Don’t use swapfiles or swap partitions, use <a href="https://wiki.archlinux.org/title/Zram">zram</a> instead. As we’re not swapping to disk, make sure to disable <a href="https://wiki.archlinux.org/title/Zswap">zswap</a> by adding the <code class="language-plaintext highlighter-rouge">zswap.enabled=0</code> kernel parameter. My machine has plenty of RAM, so I don’t use zram and also disable zswap.</p>
-
-<h2 id="misc-tweaks">Misc. Tweaks</h2>
-
-<p>Linux has had official NTFS drivers since 5.15, but there are no official userspace utilities for NTFS3. Install <code class="language-plaintext highlighter-rouge">ntfsprogs-ntfs3</code> from the AUR. This lets you use all the NTFS-3G utilities but with NTFS3 instead.</p>
-
-<p>Other tweaks that I perform:</p>
-
-<ul>
-  <li><a href="https://wiki.archlinux.org/title/Improving_performance#Turn_off_CPU_exploit_mitigations">Turning off CPU mitigations</a></li>
-  <li><a href="https://wiki.archlinux.org/title/Improving_performance#Watchdogs">Disabling watchdog</a></li>
-  <li><a href="https://wiki.archlinux.org/title/Power_management#Disabling_NMI_watchdog">Disabling NMI watchdog</a></li>
-  <li><a href="https://wiki.archlinux.org/title/Solid_state_drive#Periodic_TRIM">Enabling periodic TRIM</a></li>
-  <li><a href="https://wiki.archlinux.org/title/Systemd/Journal#Journal_size_limit">Journal size limit</a></li>
-  <li><a href="https://wiki.archlinux.org/title/Uniform_look_for_Qt_and_GTK_applications">Uniform look for Qt and GTK applications</a></li>
-  <li><a href="https://wiki.archlinux.org/title/IPv6#Prefer_IPv4_over_IPv6">Prefer IPv4 over IPv6</a></li>
-</ul>
-
-<h2 id="ubuntu-specific-optimisations">Ubuntu-Specific Optimisations</h2>
-
-<p><a href="https://launchpad.net/~arter97/+archive/ubuntu/zlib-ng/">Install zlib-ng</a>, the instructions are provided in the link.</p>
-
-<p>Disable swap by removing the <code class="language-plaintext highlighter-rouge">swap.img</code> line in <code class="language-plaintext highlighter-rouge">/etc/fstab</code> and running <code class="language-plaintext highlighter-rouge">sudo swapoff -a</code>. You can delete <code class="language-plaintext highlighter-rouge">/swap.img</code> to reclaim the disk space. Setup zram if needed. To setup zram, install <code class="language-plaintext highlighter-rouge">zram-tools</code> and run <code class="language-plaintext highlighter-rouge">sudo systemctl enable --now zramswap</code>. You can configure zram settings at <code class="language-plaintext highlighter-rouge">/etc/default/zramswap</code>.</p>
-
-<p>Disable AppArmor by adding <code class="language-plaintext highlighter-rouge">apparmor=0</code> to your kernel args and running <code class="language-plaintext highlighter-rouge">sudo systemctl disable --now apparmor</code>.</p>
-
-<p><a href="https://liquorix.net">Liquiorix kernel</a> is the Ubuntu equivalent of Zen on Arch Linux. I use the default kernel. If you want to install it, run the following command:</p>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="nt">-s</span> <span class="s1">'https://liquorix.net/install-liquorix.sh'</span> | <span class="nb">sudo </span>bash
-</code></pre></div></div>
-
-<p>Ubuntu 24.04 added several low-latency tunables to their default kernel, explained in <a href="https://discourse.ubuntu.com/t/fine-tuning-the-ubuntu-24-04-kernel-for-low-latency-throughput-and-power-efficiency/44834">this post</a>. I use the following: <code class="language-plaintext highlighter-rouge">preempt=full rcu_nocbs=all rcutree.enable_rcu_lazy=1</code></p>
-
-<h2 id="changelog">Changelog</h2>
-
-<p>Note: Changes made before <code class="language-plaintext highlighter-rouge">06 Sep 24</code> are not covered.</p>
-
-<ul>
-  <li><code class="language-plaintext highlighter-rouge">06 Sep 24</code>: Improve CPU frequency scaling section</li>
-</ul>]]></content><author><name>Ken Harris</name></author><summary type="html"><![CDATA[A repository of tweaks for desktop Linux.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://kenhv.com/assets/images/og/posts/linux-tweaks.png" /><media:content medium="image" url="https://kenhv.com/assets/images/og/posts/linux-tweaks.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>
+<p>If you made it all the way here, you might want to look into getting a shiny new high DPI monitor. If you have any suggestions, feel free to mail me.</p>]]></content><author><name>Ken Harris</name></author><summary type="html"><![CDATA[A guide to improving font rendering on all devices and browsers.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://kenhv.com/assets/images/og/posts/treat-yourself-to-good-typography.png" /><media:content medium="image" url="https://kenhv.com/assets/images/og/posts/treat-yourself-to-good-typography.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>

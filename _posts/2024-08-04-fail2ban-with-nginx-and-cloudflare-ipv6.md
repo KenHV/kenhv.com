@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Fail2Ban With Nginx and Cloudflare Free (With IPv6 Support)"
-description: "A guide to set up Fail2Ban with Nginx and Cloudflare free plan with IPv6 support. Includes instructions to restore original visitor IP in Nginx."
+description: "A guide to setting up Fail2Ban with Nginx and Cloudflare free plan with IPv6 support. Includes instructions to restore original visitor IP in Nginx."
 seo:
   date_modified: 2024-08-11
 ---

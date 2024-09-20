@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Securing A Linux Server"
-description: "A guide to secure and harden a Linux server install."
+description: "A guide to securing and hardening a Linux server install."
 seo:
   date_modified: 2024-09-10
 ---
