@@ -3,7 +3,7 @@ layout: post
 title: "Treat Yourself to Good Typography"
 description: "A guide to improving font rendering on all devices and browsers."
 seo:
-  date_modified: 2024-07-21
+  date_modified: 2024-09-24
 ---
 
 Ah, typography, the cornerstone of great design. Optimising your fonts and typography settings will go a long way in improving readability, especially if you're someone who reads a lot. Here's how I setup my devices.
@@ -25,6 +25,16 @@ The fix is pretty simple. Go to Settings, Display. Look at the scale percentage.
 Next up, let’s adjust ClearType settings. The inbuilt ClearType tuner is pretty bad. We’re going to use [Better ClearType Tuner](https://github.com/bp2008/BetterClearTypeTuner/), making the whole process much easier. Grab the zip from the [releases](https://github.com/bp2008/BetterClearTypeTuner/releases/tag/1.4.0.2) section, extract it and run the program as administrator. I use RGB with maximum contrast (2200), you can play around with the values.
 
 There is a program called [MacType](https://github.com/snowie2000/mactype), which replaces Windows’s font rendering system with a custom rendering system. It works great where it does, but is very problematic where it doesn’t. I have dabbled with it but uninstalled it at the end.
+
+## Improving Typography on Linux
+
+To get macOS-like bold fonts, add the following line to your `/etc/environment`:
+
+```bash
+FREETYPE_PROPERTIES="cff:no-stem-darkening=0 autofitter:no-stem-darkening=0"
+```
+
+This enables stem darkening (credits: [aktsbot's blog](https://blog.aktsbot.in/no-more-blurry-fonts.html)). Stem darkening emboldens glyphs at smaller sizes to make them more readable on common low-DPI screens. I also suggest switching to grayscale antialiasing.
 
 ## Improving Browser Fonts
 
