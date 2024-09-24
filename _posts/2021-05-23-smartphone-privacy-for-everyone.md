@@ -3,7 +3,7 @@ layout: post
 title: "Smartphone Privacy For Everyone"
 description: "A guide to protecting your privacy while using privacy-invasive platforms."
 seo:
-  date_modified: 2024-06-29
+  date_modified: 2024-09-24
 ---
 
 Smartphones are a crucial part of the modern-day. There's a 70% chance you're reading this from your smartphone. We use it for everything, from the simplest of tasks to computations that would be deemed impossible just a few years ago. In an ideal world, we would own the data that is on our phones. Unfortunately, we aren't living in a perfect world. Every single month, we hear about some new controversy regarding digital privacy. Yet we are stuck with using privacy-invasive platforms such as Facebook or YouTube. The reality is, there are simply no alternatives that have a userbase or content anywhere close to them.
@@ -40,7 +40,7 @@ For iOS, click [here](https://github.com/paulmillr/encrypted-dns/raw/master/sign
 
 Let's start with the App Store itself. On Android, we use Play Store to install, update and manage all our apps. There's an alternative called [Aurora Store](https://auroraoss.com/download/), which is a FOSS (Free and Open-Source) client for the Play Store service. You can do everything you do on Play Store with Aurora Store. It allows you to download older version of apps as well. There are also other app stores than Google's Play Store, such as F-Droid. F-Droid is a repository of FOSS applications only. You can access this store by using their [official client](https://f-droid.org/) or by [Aurora Droid](https://auroraoss.com/download/), a better looking client. All the apps listed in this article will be available via F-Droid.
 
-On iOS, you are stuck with Apple's App Store. Contrary to popular belief, Apple does allow sideloading, even outside the EU. But there is a lot of catches and is much more complicated than sideloading on Android, so I will just point you in the right direction. Check out [SideStore](https://sidestore.io/). Even for tech-savvy people, this is usually not worth it, but it is there if you need it.
+On iOS (and every Apple product), you are not actually stuck with Apple's App Store. Contrary to popular belief, Apple does officially allow sideloading, even outside the EU. This is not as straightforward as it is on Android though. Check out [my blog post](https://kenhv.com/blog/sideloading-on-any-apple-product) for more details.
 
 ## Basic Functionality
 
