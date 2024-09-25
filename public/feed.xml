@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.4">Jekyll</generator><link href="https://kenhv.com/feed.xml" rel="self" type="application/atom+xml" /><link href="https://kenhv.com/" rel="alternate" type="text/html" /><updated>2024-09-24T23:10:50+05:30</updated><id>https://kenhv.com/feed.xml</id><title type="html">Ken Harris</title><subtitle>Tech enthusiast. Occasional doer of stuff. @KenHV</subtitle><author><name>Ken Harris</name></author><entry><title type="html">Sideloading on Any Apple Product</title><link href="https://kenhv.com/blog/sideloading-on-any-apple-product" rel="alternate" type="text/html" title="Sideloading on Any Apple Product" /><published>2024-09-20T00:00:00+05:30</published><updated>2024-09-20T17:01:24+05:30</updated><id>https://kenhv.com/blog/sideloading-on-any-apple-product</id><content type="html" xml:base="https://kenhv.com/blog/sideloading-on-any-apple-product"><![CDATA[<p>Did you know that it’s possible to sideload apps onto your iPhone, iPad, Apple TV, Apple Watch, and even Vision Pro? It’s not the EU method, and it doesn’t involve jailbreaking. This is an official method supported by Apple. The setup is kinda complicated (it’s Apple after all) and has a few caveats, but it is doable.</p>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.4">Jekyll</generator><link href="https://kenhv.com/feed.xml" rel="self" type="application/atom+xml" /><link href="https://kenhv.com/" rel="alternate" type="text/html" /><updated>2024-09-25T16:33:11+05:30</updated><id>https://kenhv.com/feed.xml</id><title type="html">Ken Harris</title><subtitle>Tech enthusiast. Occasional doer of stuff. @KenHV</subtitle><author><name>Ken Harris</name></author><entry><title type="html">Sideloading on Any Apple Product</title><link href="https://kenhv.com/blog/sideloading-on-any-apple-product" rel="alternate" type="text/html" title="Sideloading on Any Apple Product" /><published>2024-09-20T00:00:00+05:30</published><updated>2024-09-20T17:01:24+05:30</updated><id>https://kenhv.com/blog/sideloading-on-any-apple-product</id><content type="html" xml:base="https://kenhv.com/blog/sideloading-on-any-apple-product"><![CDATA[<p>Did you know that it’s possible to sideload apps onto your iPhone, iPad, Apple TV, Apple Watch, and even Vision Pro? It’s not the EU method, and it doesn’t involve jailbreaking. This is an official method supported by Apple. The setup is kinda complicated (it’s Apple after all) and has a few caveats, but it is doable.</p>
 
 <p>You can get back Apollo for Reddit, a ReVanced equivalent for YouTube, Minecraft Java Edition, and much more. Even Fortnite.</p>
 
@@ -663,11 +663,17 @@ nginx <span class="nt">-t</span> <span class="o">&amp;&amp;</span> systemctl rel
 
 <p><a href="https://addons.mozilla.org/en-US/firefox/addon/enforce-browser-fonts/">Enforce Browser Fonts</a> lets you disable web fonts and use the browser configured fonts (<a href="/blog/treat-yourself-to-good-typography#improving-browser-fonts">related blog post</a>). You can change the default mode to whitelist or blacklist in the Manage Extension page.</p>
 
+<p><a href="https://addons.mozilla.org/en-US/firefox/addon/imagus-mod/">Imagus Mod</a> is a continuation of the Imagus mod. It enlarges media on hover. After installing it, go to the extension’s settings, sieve tab, click the remove all button, click the update sieve button, then save. I also set it so that it only triggers if Ctrl is pressed.</p>
+
+<p><a href="https://addons.mozilla.org/en-US/firefox/addon/dictionary-anyvhere/">Dictionary Anywhere</a> shows you the definition when you double-click a word.</p>
+
 <h2 id="aboutconfig">about:config</h2>
 
 <p>Setting <code class="language-plaintext highlighter-rouge">accessibility.force_disabled</code> to <code class="language-plaintext highlighter-rouge">1</code> in helps with <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1726887">memory usage and performance</a>.</p>
 
 <p>To disable fullscreen fade animations, set <code class="language-plaintext highlighter-rouge">full-screen-api.transition-duration.enter</code> and <code class="language-plaintext highlighter-rouge">full-screen-api.transition-duration.leave</code> to <code class="language-plaintext highlighter-rouge">0 0</code>.</p>
+
+<p>To disable fullscreen warnings, set <code class="language-plaintext highlighter-rouge">full-screen-api.warning.timeout</code> to <code class="language-plaintext highlighter-rouge">0</code>.</p>
 
 <p>If you don’t use Pocket, you can disable it by setting <code class="language-plaintext highlighter-rouge">extensions.pocket.enabled</code> to <code class="language-plaintext highlighter-rouge">false</code>.</p>
 
@@ -682,6 +688,14 @@ nginx <span class="nt">-t</span> <span class="o">&amp;&amp;</span> systemctl rel
 <h2 id="thoughts-on-telemetry">Thoughts on Telemetry</h2>
 
 <p>I’ve left telemetry on, and you should consider the same for FOSS applications. This helps the developers improve their applications. Remember: telemetry is not inherently evil, privacy-invasive telemetry is. You can visit <code class="language-plaintext highlighter-rouge">about:telemetry</code> in Firefox to view all the telemetry being sent.</p>
+
+<h2 id="changelog">Changelog</h2>
+
+<p>Note: Changes made before <code class="language-plaintext highlighter-rouge">25 Sep 24</code> are not covered.</p>
+
+<ul>
+  <li>Added Imagus Mod and Dictionary Anywhere extensions, added tweak to disable fullscreen warning</li>
+</ul>
 
 <h2 id="footnotes">Footnotes</h2>
 

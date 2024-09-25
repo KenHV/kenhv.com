@@ -3,7 +3,7 @@ layout: post
 title: "Setting Up Firefox"
 description: "A list of extensions and tweaks to improve Firefox without breakage."
 seo:
-  date_modified: 2024-08-18
+  date_modified: 2024-09-25
 ---
 
 Google is [killing Manifest v2](https://blog.chromium.org/2024/05/manifest-v2-phase-out-begins.html) in an attempt to kill ad blockers. This change will affect not only Chrome, but browsers based on Chromium such as Edge. It's a good time to switch to Firefox. Everything just works; I've faced zero breakage on any site, even with some additional privacy protection settings turned on.
@@ -47,11 +47,17 @@ Most Firefox guides out there recommend using [hardened configs](https://github.
 
 [Enforce Browser Fonts](https://addons.mozilla.org/en-US/firefox/addon/enforce-browser-fonts/) lets you disable web fonts and use the browser configured fonts ([related blog post](/blog/treat-yourself-to-good-typography#improving-browser-fonts)). You can change the default mode to whitelist or blacklist in the Manage Extension page.
 
+[Imagus Mod](https://addons.mozilla.org/en-US/firefox/addon/imagus-mod/) is a continuation of the Imagus mod. It enlarges media on hover. After installing it, go to the extension's settings, sieve tab, click the remove all button, click the update sieve button, then save. I also set it so that it only triggers if Ctrl is pressed.
+
+[Dictionary Anywhere](https://addons.mozilla.org/en-US/firefox/addon/dictionary-anyvhere/) shows you the definition when you double-click a word.
+
 ## about:config
 
 Setting `accessibility.force_disabled` to `1` in helps with [memory usage and performance](https://bugzilla.mozilla.org/show_bug.cgi?id=1726887).
 
 To disable fullscreen fade animations, set `full-screen-api.transition-duration.enter` and `full-screen-api.transition-duration.leave` to `0 0`.
+
+To disable fullscreen warnings, set `full-screen-api.warning.timeout` to `0`.
 
 If you don't use Pocket, you can disable it by setting `extensions.pocket.enabled` to `false`.
 
@@ -66,6 +72,12 @@ Firefox lets you sync custom preferences. Let's take `accessibility.force_disabl
 ## Thoughts on Telemetry
 
 I've left telemetry on, and you should consider the same for FOSS applications. This helps the developers improve their applications. Remember: telemetry is not inherently evil, privacy-invasive telemetry is. You can visit `about:telemetry` in Firefox to view all the telemetry being sent.
+
+## Changelog
+
+Note: Changes made before `25 Sep 24` are not covered.
+
+- Added Imagus Mod and Dictionary Anywhere extensions, added tweak to disable fullscreen warning
 
 ## Footnotes
 
