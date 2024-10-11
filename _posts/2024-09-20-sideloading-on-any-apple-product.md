@@ -26,7 +26,7 @@ The second option is [Sideloadly](https://sideloadly.io/). Sideloadly is more po
 
 ## The Paid Route
 
-If you don’t want to spend $100/year for a developer account, you can purchase signing certificates from third party services. These services buy developer accounts from Apple and set everything up. Each developer account has 100 slots. Each slot gets a developer certificate that can be used to sign apps. When you purchase from them, you're basically purchasing one individual slot. I use [AppTesters](https://apptesters.org/) and I can vouch for them. If you go with them, I'll be grateful if you use the referral code "80085" :P. You can also check out [KravaSign](https://kravasign.com/) (previously MapleSign) and [Signulous](https://www.signulous.com/).
+If you don’t want to spend $100/year for a developer account, you can purchase signing certificates from third party services. These services buy developer accounts from Apple and set everything up. Each developer account has 100 slots. Each slot gets a developer certificate that can be used to sign apps. When you purchase from them, you're basically purchasing one individual slot. I use [AppTesters](https://apptesters.org/) and I can vouch for them. You can also check out [KravaSign](https://kravasign.com/) (previously MapleSign) and [Signulous](https://www.signulous.com/).
 
 While it’s pretty rare, Apple _has_ revoked some of these services’ developer accounts in the past. All the above mentioned services have a track record of issuing new certificates for free in these rare instances. Just check if the service offers “revoke protection” before buying.
 
